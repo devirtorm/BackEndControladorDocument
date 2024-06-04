@@ -8,16 +8,16 @@ $router->get('/', function() {
     </div>';
 });
 
-// Get All Books And Authors
-$router->get('/all', 'Books@index');
 
 $router->post('/add-person', 'Personas@addPerson');
 
 $router->get('/personas', 'Personas@personas');
 
-$router->post('/add-book', 'Books@addBook');    
+$router->post('/subprocesos', 'Subprocesos@crearSubproceso');
 
 $router->get('/xd', 'Prueba@index');
+
+$router->post('/add-book', 'Books@addBook');   
 
 // install system
 $router->get('/install', 'System@index');
@@ -29,6 +29,9 @@ $router->get('/books/:page', 'Books@books');
 // search books
 $router->get('/books/title/:title', 'Books@searchBooksByTitle');
 $router->get('/books/title/:title/:page', 'Books@searchBooksByTitle');
+
+// Get All Books And Authors
+$router->get('/all', 'Books@index');
 
 $router->get('/books/isbn/:isbn', 'Books@searchBooksByISBN');
 
