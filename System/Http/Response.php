@@ -143,6 +143,14 @@ class Response {
         $this->headers[] = $header;
     }
 
+    public function sendHeaders() {
+        if (!headers_sent()) {
+            foreach ($this->headers as $header) {
+                header($header, true);
+            }
+        }
+    }
+
     /**
      *  Get the response Headers.
      *
@@ -192,9 +200,10 @@ class Response {
         return $statusCode < 100 || $statusCode >= 600;
     }
 
-    public function sendStatus($code) {
+    public function sendStatus(int $code) {
         if (!$this->isInvalid($code)) {
-            $this->setHeader(sprintf('HTTP/1.1 ' . $code . ' %s' , $this->getStatusCodeText($code)));
+            $this->setHeader(sprintf('HTTP/1.1 %d %s', $code, $this->getStatusCodeText($code)));
+            $this->sendHeaders();
         }
     }
 
@@ -203,16 +212,8 @@ class Response {
      */
     public function render() {
         if ($this->content) {
-            $output = $this->content;
-
-            // Headers
-            if (!headers_sent()) {
-                foreach ($this->headers as $header) {
-                    header($header, true);
-                }
-            }
-            
-            echo $output;
+            $this->sendHeaders();
+            echo $this->content;
         }
     }
 }

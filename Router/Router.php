@@ -15,6 +15,9 @@ $router->get('/personas', 'Personas@personas');
 
 $router->post('/subprocesos', 'Subprocesos@crearSubproceso');
 
+$router->get('/subprocesos', 'Subprocesos@obtenerSubprocesos');
+
+
 $router->get('/xd', 'Prueba@index');
 
 $router->post('/add-book', 'Books@addBook');   

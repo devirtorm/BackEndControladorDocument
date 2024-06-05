@@ -4,28 +4,40 @@ use MVC\Controller;
 
 class ControllersSubprocesos extends Controller
 {
-    public function crearSubproceso() {
-        // Conectar al modelo
+
+    public function obtenerSubprocesos()
+    {
+
+        // Connect to database
         $model = $this->model('Subprocesos');
-    
-        // Leer los datos JSON de la solicitud
+
+        $data_list = $model->subprocesos();
+
+        // Send Response
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
+
+    public function crearSubproceso() {
+        $model = $this->model('Subprocesos');
         $json_data = file_get_contents('php://input');
+        error_log("JSON Data: " . $json_data);
         $data = json_decode($json_data, true);
     
-        // Verificar si se recibieron datos válidos
         if ($data !== null && isset($data['subproceso'])) {
-            // Insertar la persona en la base de datos
-            $inserted = $model->insertarSubproceso($data);
+            $subproceso = filter_var($data['subproceso'], FILTER_SANITIZE_STRING);
+            $inserted = $model->insertarSubproceso(['subproceso' => $subproceso]);
     
-            // Verificar si la inserción fue exitosa
             if ($inserted) {
-                echo "Subproceso guardado correctamente.";
+                echo json_encode(['message' => 'Subproceso guardado correctamente.']);
             } else {
-                echo "Error al guardar subproceso.";
+                echo json_encode(['message' => 'Error al guardar subproceso.']);
             }
         } else {
-            // Si no se recibieron datos válidos, mostrar un mensaje de error
-            echo "Error: Los datos de subproceso son inválidos o incompletos.";
+            echo json_encode(['message' => 'Error: Los datos de subproceso son inválidos o incompletos.']);
         }
     }
+    
+
+
 }

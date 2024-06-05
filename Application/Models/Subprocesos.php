@@ -3,6 +3,36 @@
 use MVC\Model;
 
 class ModelsSubprocesos extends Model {
+
+    public function subprocesos() {
+        // sql statement
+        $sql = "SELECT * FROM " . DB_PREFIX . "subproceso";
+
+        // exec query
+        $query = $this->db->query($sql);
+
+        $data = [];
+        // Ensure page_data is defined if needed, otherwise remove this line
+        // $data['page_data'] = $page_data;
+
+        // Initialize books as an empty array
+        $data['data'] = [];
+
+        // Conclusion
+        if ($query->num_rows) {
+            foreach($query->rows as $value) {
+                $data['data'][] = [
+                    'subproceso'    => $value,
+                ];
+            }
+        } else {
+            $data['data'][] = [
+                'subproceso'    => [],
+            ];
+        }
+
+        return $data;
+    }
     
     public function insertarSubproceso($subprocesoData) {
         // Extract person data
