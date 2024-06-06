@@ -48,3 +48,10 @@ $router->get('/authors/:page', 'Books@authors');
 // search author
 $router->get('/authors/:author', 'Books@searchBooksByAuthors');
 $router->get('/authors/:author/:page', 'Books@searchBooksByAuthors');
+
+// Direccion routes
+$router->get('/direcciones', 'Direcciones@ObtenerDirecciones');
+$router->get('/direcciones/:id', 'Direcciones@ObtenerDireccion');
+$router->post('/direcciones', 'Direcciones@CrearDireccion');
+$router->put('/direcciones/:id', 'Direcciones@ActualizarDireccion');
+$router->delete('/direcciones/:id', 'Direcciones@EliminarDireccion');
