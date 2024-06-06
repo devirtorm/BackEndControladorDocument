@@ -6,33 +6,50 @@ class ModelsSubprocesos extends Model {
 
     public function subprocesos() {
         // sql statement
-        $sql = "SELECT * FROM " . DB_PREFIX . "subproceso";
-
+        $sql = "SELECT * FROM " . DB_PREFIX . "subproceso WHERE activo = 1";
+    
         // exec query
         $query = $this->db->query($sql);
-
+    
+        // Initialize data as an empty array
         $data = [];
-        // Ensure page_data is defined if needed, otherwise remove this line
-        // $data['page_data'] = $page_data;
-
-        // Initialize books as an empty array
-        $data['data'] = [];
-
-        // Conclusion
+    
+        // Check if there are any rows
         if ($query->num_rows) {
             foreach($query->rows as $value) {
-                $data['data'][] = [
-                    'subproceso'    => $value,
-                ];
+                $data['data'][] = $value;
             }
         } else {
-            $data['data'][] = [
-                'subproceso'    => [],
-            ];
+            $data['data'] = [];
         }
-
+    
+        // Return the data array
         return $data;
     }
+
+    public function subprocesosDesactivados() {
+        // sql statement
+        $sql = "SELECT * FROM " . DB_PREFIX . "subproceso WHERE activo = 0";
+    
+        // exec query
+        $query = $this->db->query($sql);
+    
+        // Initialize data as an empty array
+        $data = [];
+    
+        // Check if there are any rows
+        if ($query->num_rows) {
+            foreach($query->rows as $value) {
+                $data['data'][] = $value;
+            }
+        } else {
+            $data['data'] = [];
+        }
+    
+        // Return the data array
+        return $data;
+    }
+    
     
     public function insertarSubproceso($subprocesoData) {
         // Extract person data
@@ -72,5 +89,43 @@ class ModelsSubprocesos extends Model {
             return false;
         }
     }
+
+
+    public function eliminarSubproceso($id) {
+        // Escapar el id para evitar inyecciones SQL
+        $id = (int)$id;
+    
+        // sql statement
+        $sql = "DELETE FROM " . DB_PREFIX . "subproceso WHERE id_subproceso = " . $id;
+    
+        // Preparar y ejecutar la consulta
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+    
+        // Verificar si la fila fue afectada (eliminada)
+        return $stmt->rowCount() > 0;
+    }
+
+
+    public function actualizarActivo($id, $activo) {
+        // Escapar el id y el valor de activo para evitar inyecciones SQL
+        $id = (int)$id;
+        $activo = (int)$activo;
+    
+        // sql statement
+        $sql = "UPDATE " . DB_PREFIX . "subproceso SET activo = :activo WHERE id_subproceso = :id";
+    
+        // Preparar y ejecutar la consulta
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':activo', $activo, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        // Verificar si la fila fue afectada (actualizada)
+        return $stmt->rowCount() > 0;
+    }
+    
+    
+    
     
 }

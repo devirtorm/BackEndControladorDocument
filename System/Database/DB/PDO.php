@@ -92,6 +92,7 @@ final class PDO {
         return $this->pdo->prepare($sql);
     }
 
+
     public function __destruct() {
         $this->pdo = null;
     }

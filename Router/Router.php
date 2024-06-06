@@ -9,13 +9,22 @@ $router->get('/', function() {
 });
 
 
-$router->post('/add-person', 'Personas@addPerson');
+$router->post('/add-person', 'Personas@addPerson'); //agrega registro para personas
 
-$router->get('/personas', 'Personas@personas');
+$router->get('/personas', 'Personas@personas'); // Muestra registros de personas
 
-$router->post('/subprocesos', 'Subprocesos@crearSubproceso');
+$router->post('/subprocesos', 'Subprocesos@crearSubproceso'); // Guarda subprocesos
+
+$router->get('/subprocesos/desactivados', 'Subprocesos@obtenerSubprocesosDesactivados'); // Muestra subprocesos desactivados
 
 $router->get('/subprocesos', 'Subprocesos@obtenerSubprocesos');
+
+$router->delete('/subprocesos/:id', 'Subprocesos@eliminarSubproceso');
+
+$router->put('/subprocesos/:id/desactivar', 'Subprocesos@actualizarSubprocesoActivo');
+
+
+
 
 
 $router->get('/xd', 'Prueba@index');
