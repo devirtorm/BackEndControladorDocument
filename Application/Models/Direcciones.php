@@ -60,14 +60,16 @@ class ModelsDirecciones extends Model {
 
     public function updateDireccion($id, $data) { //funciona
         $nombre_direccion = $data['nombre_direccion'];
-        $sql = "UPDATE direccion SET nombre_direccion = ? WHERE id_direccion = ?";
+        $activo = $data['activo'];
+        $sql = "UPDATE direccion SET nombre_direccion = ?, activo = ? WHERE id_direccion = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(1, $nombre_direccion, PDO::PARAM_STR);
-        $stmt->bindParam(2, $id, PDO::PARAM_INT);
+        $stmt->bindParam(2, $activo, PDO::PARAM_INT);
+        $stmt->bindParam(3, $id, PDO::PARAM_INT);
     
         // Ejecutar la actualización y retornar el resultado
         return $stmt->execute();
-    }
+    }    
 
     public function deleteDireccion($id) { //funciona
         $sql = "DELETE FROM direccion WHERE id_direccion = ?";

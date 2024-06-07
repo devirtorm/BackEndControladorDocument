@@ -85,9 +85,16 @@ class ControllersDirecciones extends Controller
         $json_data = file_get_contents('php://input');
         $data = json_decode($json_data, true);
 
-        if ($data !== null && isset($data['nombre_direccion'])) {
+        if ($data !== null && isset($data['nombre_direccion']) && isset($data['activo'])) {
             $nombre_direccion = filter_var($data['nombre_direccion'], FILTER_SANITIZE_STRING);
-            $updated = $model->updateDireccion($id, ['nombre_direccion' => $nombre_direccion]);
+            $activo = filter_var($data['activo'], FILTER_VALIDATE_INT);
+            
+            if ($activo === false) {
+                echo json_encode(['message' => 'Error: El campo activo debe ser un entero.']);
+                return;
+            }
+
+            $updated = $model->updateDireccion($id, ['nombre_direccion' => $nombre_direccion, 'activo' => $activo]);
 
             if ($updated) {
                 echo json_encode(['message' => 'Dirección actualizada correctamente.']);
@@ -98,7 +105,6 @@ class ControllersDirecciones extends Controller
             echo json_encode(['message' => 'Error: Los datos de dirección son inválidos o incompletos.']);
         }
     }
-
 
     public function EliminarDireccion($id) //funciona
     {
