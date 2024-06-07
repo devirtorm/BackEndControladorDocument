@@ -84,7 +84,7 @@ class ControllersSubprocesos extends Controller
         return filter_var($id, FILTER_VALIDATE_INT) !== false && $id > 0;
     }
 
-    public function actualizarSubprocesoActivo($param) {
+    public function desactivarSubproceso($param) {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     

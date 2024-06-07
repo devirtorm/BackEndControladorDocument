@@ -21,7 +21,21 @@ $router->get('/subprocesos', 'Subprocesos@obtenerSubprocesos');
 
 $router->delete('/subprocesos/:id', 'Subprocesos@eliminarSubproceso');
 
-$router->put('/subprocesos/:id/desactivar', 'Subprocesos@actualizarSubprocesoActivo');
+$router->put('/subprocesos/:id/desactivar', 'Subprocesos@desactivarSubproceso');
+
+
+//########################## RUTAS PARA AREA #######################################
+
+$router->post('/areas', 'Areas@crearArea'); // Guarda areas
+$router->get('/areas', 'Areas@obtenerAreas'); // Muestra los registros de las areas
+$router->get('/area/:id', 'Areas@obtenerArea'); // Muestra los datos de un area
+$router->get('/areas/desactivadas', 'Areas@obtenerAreasDesactivadas'); // Muestra los registros de las areas
+$router->put('/areas/:id/desactivar', 'Areas@desactivarArea'); // Muestra los registros de las areas
+$router->put('/areas/:id', 'Areas@actualizarArea'); // actualizar datos de area
+$router->delete('/areas/:id', 'Areas@eliminarArea'); // Muestra los registros de las areas
+
+
+
 
 
 
