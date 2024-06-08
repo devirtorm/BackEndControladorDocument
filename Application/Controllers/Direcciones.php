@@ -4,6 +4,15 @@ use MVC\Controller;
 
 class ControllersDirecciones extends Controller
 {
+    public function ObtenerDirecciones() //funciona
+    {
+        $model = $this->model('Direcciones');
+        $data_list = $model->Direcciones();
+
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
+    
     public function ObtenerDireccionesActivas() //funciona
     {
         $model = $this->model('Direcciones');

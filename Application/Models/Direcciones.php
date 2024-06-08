@@ -4,6 +4,20 @@ use MVC\Model;
 
 class ModelsDirecciones extends Model {
 
+    public function Direcciones() { //funciona
+        $sql = "SELECT * FROM direccion";
+        $query = $this->db->query($sql);
+        $data = [];
+
+        if ($query->num_rows) {
+            foreach ($query->rows as $value) {
+                $data[] = $value;
+            }
+        }
+
+        return $data;
+    }
+    
     public function DireccionesActivas() { //funciona
         $sql = "SELECT * FROM direccion WHERE activo = 1";
         $query = $this->db->query($sql);
