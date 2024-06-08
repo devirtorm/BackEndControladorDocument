@@ -35,11 +35,12 @@ $router->delete('/areas/:id', 'Areas@eliminarArea'); // Elimina un area en espec
 
 $router->get('/direcciones/activas', 'Direcciones@ObtenerDireccionesActivas'); // Obtiene todos los datos de todas las direcciones activas
 $router->get('/direcciones/inactivas', 'Direcciones@ObtenerDireccionesInactivas'); // Obtiene todos los datos de todas las direcciones inactivas
+$router->get('/direcciones', 'Direcciones@ObtenerDirecciones'); // Obtiene todos los datos de todas las direcciones
 $router->get('/direcciones/:id', 'Direcciones@ObtenerDireccion'); // Obtiene datos de una direccion en especifico
 $router->post('/direcciones', 'Direcciones@CrearDireccion'); // Crea nuevas direcciones
 $router->put('/direcciones/:id', 'Direcciones@ActualizarDireccion'); // Actualiza datos de una direccion
-$router->put('/direcciones/desactivar/:id', 'Direcciones@DesactivarDireccion'); // Desactivar una direccion
-$router->put('/direcciones/activar/:id', 'Direcciones@ActivarDireccion'); // Activar una direccion
+$router->put('/direcciones/desactivar/:id', 'Direcciones@DesactivarDireccion'); // Desactiva una direccion
+$router->put('/direcciones/activar/:id', 'Direcciones@ActivarDireccion'); // Activa una direccion
 $router->delete('/direcciones/:id', 'Direcciones@EliminarDireccion'); // Eliminar una direccion
 
 //########################## RUTAS PARA CARRERAS #######################################

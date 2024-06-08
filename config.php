@@ -26,7 +26,7 @@ define('DATABASE', [
     'Driver' => 'PDO',
     'Name'   => 'portal_calidad',
     'User'   => 'postgres',
-    'Pass'   => '0623',
+    'Pass'   => '11014423',
     'Prefix' => 'l_'
 ]);
 
