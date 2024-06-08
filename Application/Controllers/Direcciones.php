@@ -4,10 +4,19 @@ use MVC\Controller;
 
 class ControllersDirecciones extends Controller
 {
-    public function ObtenerDirecciones() //funciona
+    public function ObtenerDireccionesActivas() //funciona
     {
         $model = $this->model('Direcciones');
-        $data_list = $model->Direcciones();
+        $data_list = $model->DireccionesActivas();
+
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
+
+    public function ObtenerDireccionesInactivas() //funciona
+    {
+        $model = $this->model('Direcciones');
+        $data_list = $model->DireccionesInactivas();
 
         $this->response->sendStatus(200);
         $this->response->setContent($data_list);
@@ -65,44 +74,76 @@ class ControllersDirecciones extends Controller
         }
     }
 
-    public function ActualizarDireccion() //funciona
-    {
+    public function ActualizarDireccion() { //funciona
         // Obtener el último segmento de la URL que corresponde al ID
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
-
+    
         // Convertir $id a entero
         $id = intval($id);
-
+    
         // Verificar si se proporcionó un ID válido
         if ($id === 0) {
-            // Manejar el caso en que no se proporciona un ID válido
             echo json_encode(['message' => 'Error: ID inválido.']);
             return;
         }
-
+    
         $model = $this->model('Direcciones');
         $json_data = file_get_contents('php://input');
         $data = json_decode($json_data, true);
-
-        if ($data !== null && isset($data['nombre_direccion']) && isset($data['activo'])) {
+    
+        if ($data !== null && isset($data['nombre_direccion'])) {
             $nombre_direccion = filter_var($data['nombre_direccion'], FILTER_SANITIZE_STRING);
-            $activo = filter_var($data['activo'], FILTER_VALIDATE_INT);
-            
-            if ($activo === false) {
-                echo json_encode(['message' => 'Error: El campo activo debe ser un entero.']);
-                return;
-            }
-
-            $updated = $model->updateDireccion($id, ['nombre_direccion' => $nombre_direccion, 'activo' => $activo]);
-
+    
+            $updated = $model->updateDireccion($id, $nombre_direccion);
+    
             if ($updated) {
-                echo json_encode(['message' => 'Dirección actualizada correctamente.']);
+                echo json_encode(['message' => 'Nombre de dirección actualizado correctamente.']);
             } else {
-                echo json_encode(['message' => 'Error al actualizar dirección.']);
+                echo json_encode(['message' => 'Error al actualizar nombre de dirección.']);
             }
         } else {
             echo json_encode(['message' => 'Error: Los datos de dirección son inválidos o incompletos.']);
+        }
+    }
+
+    public function DesactivarDireccion() {
+        $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
+        $id = end($segments);
+        $id = intval($id);
+    
+        if ($id === 0) {
+            echo json_encode(['message' => 'Error: ID inválido.']);
+            return;
+        }
+    
+        $model = $this->model('Direcciones');
+        $updated = $model->updateActivo($id, 0);
+    
+        if ($updated) {
+            echo json_encode(['message' => 'Dirección desactivada correctamente.']);
+        } else {
+            echo json_encode(['message' => 'Error al desactivar dirección.']);
+        }
+    }
+    
+    public function ActivarDireccion() {
+        $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
+        $id = end($segments);
+        $id = intval($id);
+    
+        if ($id === 0) {
+            echo json_encode(['message' => 'Error: ID inválido.']);
+            return;
+        }
+    
+        $model = $this->model('Direcciones');
+        $updated = $model->updateActivo($id, 1);
+    
+        if ($updated) {
+            echo json_encode(['message' => 'Dirección activada correctamente.']);
+        } else {
+            echo json_encode(['message' => 'Error al activar dirección.']);
         }
     }
 
