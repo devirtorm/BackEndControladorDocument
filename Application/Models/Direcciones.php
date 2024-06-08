@@ -4,8 +4,22 @@ use MVC\Model;
 
 class ModelsDirecciones extends Model {
 
-    public function Direcciones() { //funciona
-        $sql = "SELECT * FROM direccion";
+    public function DireccionesActivas() { //funciona
+        $sql = "SELECT * FROM direccion WHERE activo = 1";
+        $query = $this->db->query($sql);
+        $data = [];
+
+        if ($query->num_rows) {
+            foreach ($query->rows as $value) {
+                $data[] = $value;
+            }
+        }
+
+        return $data;
+    }
+
+    public function DireccionesInactivas() { //funciona
+        $sql = "SELECT * FROM direccion WHERE activo = 0";
         $query = $this->db->query($sql);
         $data = [];
 
@@ -58,18 +72,23 @@ class ModelsDirecciones extends Model {
         return $stmt->execute();
     }
 
-    public function updateDireccion($id, $data) { //funciona
-        $nombre_direccion = $data['nombre_direccion'];
-        $activo = $data['activo'];
-        $sql = "UPDATE direccion SET nombre_direccion = ?, activo = ? WHERE id_direccion = ?";
+    public function updateDireccion($id, $nombre_direccion) {
+        $sql = "UPDATE direccion SET nombre_direccion = ? WHERE id_direccion = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(1, $nombre_direccion, PDO::PARAM_STR);
-        $stmt->bindParam(2, $activo, PDO::PARAM_INT);
-        $stmt->bindParam(3, $id, PDO::PARAM_INT);
+        $stmt->bindParam(2, $id, PDO::PARAM_INT);
     
-        // Ejecutar la actualización y retornar el resultado
         return $stmt->execute();
-    }    
+    }
+
+    public function updateActivo($id, $activo) {
+        $sql = "UPDATE direccion SET activo = ? WHERE id_direccion = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(1, $activo, PDO::PARAM_INT);
+        $stmt->bindParam(2, $id, PDO::PARAM_INT);
+    
+        return $stmt->execute();
+    }
 
     public function deleteDireccion($id) { //funciona
         $sql = "DELETE FROM direccion WHERE id_direccion = ?";
