@@ -8,13 +8,14 @@ $router->get('/', function() {
     </div>';
 });
 
+//########################## RUTAS PARA PERSONAS #######################################
 
 $router->post('/add-person', 'Personas@addPerson'); //agrega registro para personas
-
 $router->get('/personas', 'Personas@personas'); // Muestra registros de personas
 
-$router->post('/subprocesos', 'Subprocesos@crearSubproceso'); // Guarda subprocesos
+//########################## RUTAS PARA SUBPROCESOS #######################################
 
+$router->post('/subprocesos', 'Subprocesos@crearSubproceso'); // Crea nuevos subprocesos
 $router->get('/subprocesos/desactivados', 'Subprocesos@obtenerSubprocesosDesactivados'); // Muestra subprocesos desactivados
 
 $router->get('/subprocesos', 'Subprocesos@obtenerSubprocesos');
@@ -24,10 +25,13 @@ $router->delete('/subprocesos/:id', 'Subprocesos@eliminarSubproceso');
 $router->put('/subprocesos/:id/desactivar', 'Subprocesos@desactivarSubproceso');
 
 $router->put('/subprocesos/:id/activar', 'Subprocesos@activarSubproceso');
+$router->get('/subprocesos', 'Subprocesos@obtenerSubprocesos'); // Obtiene todos los subprocesos
+$router->delete('/subprocesos/:id', 'Subprocesos@eliminarSubproceso'); // Elimina un subproceso
+$router->put('/subprocesos/:id/desactivar', 'Subprocesos@desactivarSubproceso'); // Desactiva un subproceso
 
 //########################## RUTAS PARA AREA #######################################
 
-$router->post('/areas', 'Areas@crearArea'); // Guarda areas
+$router->post('/areas', 'Areas@crearArea'); // Crea nuevas areas
 $router->get('/areas', 'Areas@obtenerAreas'); // Muestra los registros de las areas
 $router->get('/area/:id', 'Areas@obtenerArea'); // Muestra los datos de un area
 $router->get('/areas/desactivadas', 'Areas@obtenerAreasDesactivadas'); // Muestra los registros de las areas
@@ -37,13 +41,36 @@ $router->put('/areas/:id', 'Areas@actualizarArea'); // actualizar datos de area
 $router->delete('/areas/:id', 'Areas@eliminarArea'); // Muestra los registros de las areas
 
 
+$router->get('/areas/desactivadas', 'Areas@obtenerAreasDesactivadas'); // Muestra los registros de las areas desactivadas
+$router->put('/areas/:id/desactivar', 'Areas@desactivarArea'); // Desactiva un area en especifico 
+$router->put('/areas/:id', 'Areas@actualizarArea'); // Actualiza datos de un area
+$router->delete('/areas/:id', 'Areas@eliminarArea'); // Elimina un area en especifico
 
+//########################## RUTAS PARA DIRECCIONES #######################################
 
+$router->get('/direcciones/activas', 'Direcciones@ObtenerDireccionesActivas'); // Obtiene todos los datos de todas las direcciones activas
+$router->get('/direcciones/inactivas', 'Direcciones@ObtenerDireccionesInactivas'); // Obtiene todos los datos de todas las direcciones inactivas
+$router->get('/direcciones', 'Direcciones@ObtenerDirecciones'); // Obtiene todos los datos de todas las direcciones
+$router->get('/direcciones/:id', 'Direcciones@ObtenerDireccion'); // Obtiene datos de una direccion en especifico
+$router->post('/direcciones', 'Direcciones@CrearDireccion'); // Crea nuevas direcciones
+$router->put('/direcciones/:id', 'Direcciones@ActualizarDireccion'); // Actualiza datos de una direccion
+$router->put('/direcciones/desactivar/:id', 'Direcciones@DesactivarDireccion'); // Desactiva una direccion
+$router->put('/direcciones/activar/:id', 'Direcciones@ActivarDireccion'); // Activa una direccion
+$router->delete('/direcciones/:id', 'Direcciones@EliminarDireccion'); // Eliminar una direccion
 
+//########################## RUTAS PARA CARRERAS #######################################
 
+$router->get('/carreras', 'Carreras@ObtenerCarreras'); // Obtiene todos los datos de todas las carreras
+$router->get('/carreras/:id', 'Carreras@ObtenerCarrera'); // Obtiene datos de una carrera en especifico
+$router->post('/carreras', 'Carreras@CrearCarrera'); // Crea nuevas carreras
+$router->put('/carreras/:id', 'Carreras@ActualizarCarrera'); // Actualiza datos una carrera
+$router->delete('/carreras/:id', 'Carreras@EliminarCarrera'); // Elimina una carrera
 
+//########################## RUTA DE PRUEBA #######################################
 
 $router->get('/xd', 'Prueba@index');
+
+//########################## RUTAS POR DEFAULT #######################################
 
 $router->post('/add-book', 'Books@addBook');   
 
@@ -73,10 +100,3 @@ $router->get('/authors/:page', 'Books@authors');
 // search author
 $router->get('/authors/:author', 'Books@searchBooksByAuthors');
 $router->get('/authors/:author/:page', 'Books@searchBooksByAuthors');
-
-// Direccion routes
-$router->get('/direcciones', 'Direcciones@ObtenerDirecciones');
-$router->get('/direcciones/:id', 'Direcciones@ObtenerDireccion');
-$router->post('/direcciones', 'Direcciones@CrearDireccion');
-$router->put('/direcciones/:id', 'Direcciones@ActualizarDireccion');
-$router->delete('/direcciones/:id', 'Direcciones@EliminarDireccion');
