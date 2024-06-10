@@ -18,7 +18,7 @@ class ModelsDirecciones extends Model {
         return $data;
     }
     
-    public function DireccionesActivas() {
+    public function DireccionesActivas() { //funciona
         $sql = "SELECT * FROM direccion WHERE activo = 1";
         $query = $this->db->query($sql);
         $data = [];
@@ -34,7 +34,7 @@ class ModelsDirecciones extends Model {
         return $data;
     }
     
-    public function DireccionesInactivas() {
+    public function DireccionesInactivas() { //funciona
         $sql = "SELECT * FROM direccion WHERE activo = 0";
         $query = $this->db->query($sql);
         $data = [];
