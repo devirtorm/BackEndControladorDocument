@@ -14,22 +14,16 @@ class ModelsPersonas extends Model {
         // Ensure page_data is defined if needed, otherwise remove this line
         // $data['page_data'] = $page_data;
 
-        // Initialize books as an empty array
-        $data['personas'] = [];
-
-        // Conclusion
-        if ($query->num_rows) {
+           // Check if there are any rows
+           if ($query->num_rows) {
             foreach($query->rows as $value) {
-                $data['personas'][] = [
-                    'persona'    => $value,
-                ];
+                $data['data'][] = $value;
             }
         } else {
-            $data['personas'][] = [
-                'persona'    => [],
-            ];
+            $data['data'] = [];
         }
-
+    
+        // Return the data array
         return $data;
     }
 
