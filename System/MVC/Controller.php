@@ -61,9 +61,5 @@ class Controller {
         }
     }
 
-	// send response faster
-    public function send($status = 200, $msg) {
-        $this->response->setHeader(sprintf('HTTP/1.1 ' . $status . ' %s' , $this->response->getStatusCodeText($status)));
-        $this->response->setContent($msg);
-    }
+	
 }

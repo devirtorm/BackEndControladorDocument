@@ -16,7 +16,8 @@ $router->get('/personas', 'Personas@personas');
 $router->post('/subprocesos', 'Subprocesos@crearSubproceso');
 
 $router->get('/subprocesos', 'Subprocesos@obtenerSubprocesos');
-
+//login
+$router->post('/login', 'Login@loginAction');
 
 $router->get('/xd', 'Prueba@index');
 
@@ -48,3 +49,4 @@ $router->get('/authors/:page', 'Books@authors');
 // search author
 $router->get('/authors/:author', 'Books@searchBooksByAuthors');
 $router->get('/authors/:author/:page', 'Books@searchBooksByAuthors');
+
