@@ -6,7 +6,9 @@ class ModelsCarreras extends Model
 {
     public function Carreras()
     {
-        $sql = "SELECT * FROM carrera";
+        $sql = "SELECT c.*, d.nombre_direccion 
+                FROM carrera c
+                LEFT JOIN direccion d ON c.fk_direccion = d.id_direccion";
         $query = $this->db->query($sql);
         $data = [];
 
@@ -21,7 +23,10 @@ class ModelsCarreras extends Model
 
     public function CarrerasActivas()
     {
-        $sql = "SELECT * FROM carrera WHERE activo = 1";
+        $sql = "SELECT c.*, d.nombre_direccion 
+                FROM carrera c
+                LEFT JOIN direccion d ON c.fk_direccion = d.id_direccion
+                WHERE c.activo = 1";
         $query = $this->db->query($sql);
         $data = [];
 
@@ -38,7 +43,10 @@ class ModelsCarreras extends Model
 
     public function CarrerasInactivas()
     {
-        $sql = "SELECT * FROM carrera WHERE activo = 0";
+        $sql = "SELECT c.*, d.nombre_direccion 
+                FROM carrera c
+                LEFT JOIN direccion d ON c.fk_direccion = d.id_direccion
+                WHERE c.activo = 0";
         $query = $this->db->query($sql);
         $data = [];
 
@@ -56,7 +64,10 @@ class ModelsCarreras extends Model
     public function Carrera($id)
     {
         try {
-            $sql = "SELECT * FROM carrera WHERE id_carrera = ?";
+            $sql = "SELECT c.*, d.nombre_direccion 
+                    FROM carrera c
+                    LEFT JOIN direccion d ON c.fk_direccion = d.id_direccion
+                    WHERE c.id_carrera = ?";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$id]);
 
