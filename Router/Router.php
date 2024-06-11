@@ -41,14 +41,18 @@ $router->post('/direcciones', 'Direcciones@CrearDireccion'); // Crea nuevas dire
 $router->put('/direcciones/:id', 'Direcciones@ActualizarDireccion'); // Actualiza datos de una direccion
 $router->put('/direcciones/desactivar/:id', 'Direcciones@DesactivarDireccion'); // Desactiva una direccion
 $router->put('/direcciones/activar/:id', 'Direcciones@ActivarDireccion'); // Activa una direccion
-$router->delete('/direcciones/:id', 'Direcciones@EliminarDireccion'); // Eliminar una direccion
+$router->delete('/direcciones/:id', 'Direcciones@EliminarDireccion'); // Elimina una direccion
 
 //########################## RUTAS PARA CARRERAS #######################################
 
+$router->get('/carreras/activas', 'Carreras@ObtenerCarrerasActivas'); // Obtiene todos los datos de todas las carreras activas
+$router->get('/carreras/inactivas', 'Carreras@ObtenerCarrerasInactivas'); // Obtiene todos los datos de todas las carreras inactivas
 $router->get('/carreras', 'Carreras@ObtenerCarreras'); // Obtiene todos los datos de todas las carreras
 $router->get('/carreras/:id', 'Carreras@ObtenerCarrera'); // Obtiene datos de una carrera en especifico
 $router->post('/carreras', 'Carreras@CrearCarrera'); // Crea nuevas carreras
-$router->put('/carreras/:id', 'Carreras@ActualizarCarrera'); // Actualiza datos una carrera
+$router->put('/carreras/:id', 'Carreras@ActualizarCarrera'); // Actualiza datos de una carrera
+$router->put('/carreras/desactivar/:id', 'Carreras@DesactivarCarrera'); // Desactiva una carrera
+$router->put('/carreras/activar/:id', 'Carreras@ActivarCarrera'); // Activa una carrera
 $router->delete('/carreras/:id', 'Carreras@EliminarCarrera'); // Elimina una carrera
 
 //########################## RUTA DE PRUEBA #######################################
