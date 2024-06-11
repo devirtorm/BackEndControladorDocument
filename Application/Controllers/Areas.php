@@ -2,104 +2,85 @@
 
 use MVC\Controller;
 
-class ControllersSubprocesos extends Controller
+class ControllersAreas extends Controller
 {
 
-    public function obtenerSubprocesos()
+    public function obtenerAreas()
     {
 
         // Connect to database
-        $model = $this->model('Subprocesos');
+        $model = $this->model('Areas');
 
-        $data_list = $model->subprocesos();
+        $data_list = $model->areas(1);
 
         // Send Response
         $this->response->sendStatus(200);
         $this->response->setContent($data_list);
     }
 
-    public function obtenerSubprocesosDesactivados()
+
+    public function obtenerArea($param) {
+
+            $model = $this->model('Areas');
+            $result = $model->area($param['id']);
+
+            // Send Response
+            $this->response->sendStatus(200);
+            $this->response->setContent($result);
+    } 
+    
+    public function obtenerAreasDesactivadas()
     {
 
         // Connect to database
-        $model = $this->model('Subprocesos');
+        $model = $this->model('Areas');
 
-        $data_list = $model->subprocesosDesactivados();
+        $data_list = $model->areas(0);
 
         // Send Response
         $this->response->sendStatus(200);
         $this->response->setContent($data_list);
     }
 
-    public function crearSubproceso() {
-        $model = $this->model('Subprocesos');
+    public function crearArea() {
+        $model = $this->model('Areas');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
         $data = json_decode($json_data, true);
     
-        if ($data !== null && isset($data['subproceso'])) {
-            $subproceso = filter_var($data['subproceso'], FILTER_SANITIZE_STRING);
-            $inserted = $model->insertarSubproceso(['subproceso' => $subproceso]);
+        if ($data !== null && isset($data['nombre_area'])) {
+            $subproceso = filter_var($data['nombre_area'], FILTER_SANITIZE_STRING);
+            $inserted = $model->insertArea(['nombre_area' => $subproceso]);
     
             if ($inserted) {
-                echo json_encode(['message' => 'Subproceso guardado correctamente.']);
+                echo json_encode(['message' => 'Area guardado correctamente.']);
             } else {
-                echo json_encode(['message' => 'Error al guardar subproceso.']);
+                echo json_encode(['message' => 'Error al guardar Area.']);
             }
         } else {
-            echo json_encode(['message' => 'Error: Los datos de subproceso son inválidos o incompletos.']);
+            echo json_encode(['message' => 'Error: Los datos de area son inválidos o incompletos.']);
         }
     }
 
-    public function actualizarSubproceso($param) {
-        $model = $this->model('Subprocesos');
-        $json_data = file_get_contents('php://input');
-        error_log("JSON Data: " . $json_data);
-        $data = json_decode($json_data, true);
     
-        // Verificar si los datos son válidos
-        if ($data !== null && isset($data['subproceso'])) {
-            $nombre_subproceso = filter_var($data['subproceso'], FILTER_SANITIZE_STRING);
-            
-            if (isset($param['id']) && $this->validId($param['id'])) {
-                // Actualizar el área existente
-                $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-                $updated = $model->updateSubproceso(['id' => $id, 'subproceso' => $nombre_subproceso]);
-        
-                if ($updated) {
-                    $this->response->sendStatus(200);
-                    $this->response->setContent([
-                        'message' => 'Subproceso actualizado correctamente.'
-                    ]);
-                } else {
-                    $this->response->sendStatus(500);
-                    $this->response->setContent([
-                        'message' => 'Error: No se pudo actualizar el subproceso.'
-                    ]);
-                }
-            } 
-        } 
-    }
-
-
-    public function eliminarSubproceso($param) {
+    public function eliminarArea($param) {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
-            $model = $this->model('Subprocesos');
+            $model = $this->model('Areas');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-            $deleted = $model->eliminarSubproceso($id);
+            $deleted = $model->eliminarArea($id);
     
             // Preparar la respuesta
             if ($deleted) {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Subproceso eliminado correctamente.'
+                    'message' => 'area eliminado correctamente.'
                 ]);
             } else {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Error: No se pudo eliminar el subproceso.'
+                    'message' => 'Error: No se pudo eliminar el area.'
                 ]);
             }
         } else {
@@ -116,11 +97,11 @@ class ControllersSubprocesos extends Controller
         return filter_var($id, FILTER_VALIDATE_INT) !== false && $id > 0;
     }
 
-    public function desactivarSubproceso($param) {
+    public function desactivarArea($param) {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
-            $model = $this->model('Subprocesos');
+            $model = $this->model('Areas');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
             $updated = $model->actualizarActivo($id, 0);
     
@@ -128,12 +109,41 @@ class ControllersSubprocesos extends Controller
             if ($updated) {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Subproceso actualizado correctamente.'
+                    'message' => 'Area desactivada correctamente.'
                 ]);
             } else {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Error: No se pudo actualizar el subproceso.'
+                    'message' => 'Error: No se pudo desactivar el area.'
+                ]);
+            }
+        } else {
+            // Preparar la respuesta para parámetro inválido
+            $this->response->sendStatus(400);
+            $this->response->setContent([
+                'message' => 'Invalid ID or ID is missing.'
+            ]);
+        }
+    }
+
+    public function activarArea($param) {
+        // Verificar si el parámetro 'id' está presente y es válido
+        if (isset($param['id']) && $this->validId($param['id'])) {
+    
+            $model = $this->model('Areas');
+            $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
+            $updated = $model->actualizarActivo($id, 1);
+    
+            // Preparar la respuesta
+            if ($updated) {
+                $this->response->sendStatus(200);
+                $this->response->setContent([
+                    'message' => 'Area desactivada correctamente.'
+                ]);
+            } else {
+                $this->response->sendStatus(200);
+                $this->response->setContent([
+                    'message' => 'Error: No se pudo desactivar el area.'
                 ]);
             }
         } else {
@@ -145,33 +155,35 @@ class ControllersSubprocesos extends Controller
         }
     }
     
-    public function activarSubproceso($param) {
-        // Verificar si el parámetro 'id' está presente y es válido
-        if (isset($param['id']) && $this->validId($param['id'])) {
+
+    public function actualizarArea($param) {
+        $model = $this->model('Areas');
+        $json_data = file_get_contents('php://input');
+        error_log("JSON Data: " . $json_data);
+        $data = json_decode($json_data, true);
     
-            $model = $this->model('Subprocesos');
-            $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-            $updated = $model->actualizarActivo($id, 1);
-    
-            // Preparar la respuesta
-            if ($updated) {
-                $this->response->sendStatus(200);
-                $this->response->setContent([
-                    'message' => 'Subproceso actualizado correctamente.'
-                ]);
-            } else {
-                $this->response->sendStatus(200);
-                $this->response->setContent([
-                    'message' => 'Error: No se pudo actualizar el subproceso.'
-                ]);
-            }
-        } else {
-            // Preparar la respuesta para parámetro inválido
-            $this->response->sendStatus(400);
-            $this->response->setContent([
-                'message' => 'Invalid ID or ID is missing.'
-            ]);
-        }
+        // Verificar si los datos son válidos
+        if ($data !== null && isset($data['nombre_area'])) {
+            $nombre_area = filter_var($data['nombre_area'], FILTER_SANITIZE_STRING);
+            
+            if (isset($param['id']) && $this->validId($param['id'])) {
+                // Actualizar el área existente
+                $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
+                $updated = $model->updateArea(['id' => $id, 'nombre_area' => $nombre_area]);
+        
+                if ($updated) {
+                    $this->response->sendStatus(200);
+                    $this->response->setContent([
+                        'message' => 'Área actualizada correctamente.'
+                    ]);
+                } else {
+                    $this->response->sendStatus(500);
+                    $this->response->setContent([
+                        'message' => 'Error: No se pudo actualizar el área.'
+                    ]);
+                }
+            } 
+        } 
     }
     
     
