@@ -90,6 +90,26 @@ class ModelsSubprocesos extends Model {
         }
     }
 
+    public function updateSubproceso($subprocesoData) {
+        $id = $subprocesoData['id'];
+        $subproceso = $subprocesoData['subproceso'];
+    
+        try {
+            $sql = "UPDATE " . DB_PREFIX . "subproceso SET subproceso = ? WHERE id_subproceso = ?";
+            $stmt = $this->db->prepare($sql);
+    
+            $stmt->bindParam(1, $subproceso, PDO::PARAM_STR);
+            $stmt->bindParam(2, $id, PDO::PARAM_INT);
+    
+            $stmt->execute();
+    
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log("Error updating area: " . $e->getMessage());
+            return false;
+        }
+    }
+
 
     public function eliminarSubproceso($id) {
         // Escapar el id para evitar inyecciones SQL
