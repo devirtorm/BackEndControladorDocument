@@ -27,7 +27,7 @@ class ControllersPersonas extends Controller
         $data = json_decode($json_data, true);
     
         // Verificar si se recibieron datos válidos
-        if ($data !== null && isset($data['nombres']) && isset($data['primer_apellido']) && isset($data['segundo_apellido']) && isset($data['telefono']) && isset($data['correo']) && isset($data['contrasenia']) && isset($data['rol']) && isset($data['fecha']) && isset($data['hora']) && isset($data['activo'])) {
+        if ($data !== null && isset($data['nombres']) && isset($data['primer_apellido']) && isset($data['segundo_apellido']) && isset($data['telefono']) && isset($data['correo'])) {
             // Insertar la persona en la base de datos
             $inserted = $model->insertPerson($data);
     

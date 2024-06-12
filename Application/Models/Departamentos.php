@@ -2,6 +2,7 @@
 
 use MVC\Model;
 
+
 class ModelsDepartamentos extends Model {
 
     public function departamentos($activo) {
@@ -23,6 +24,12 @@ class ModelsDepartamentos extends Model {
                 // Add the area data to the department data
                 $value['area'] = $area_data['data'];
     
+                // Call the 'getPersonById' function to get the person data
+                $person_data = $this->persona($value['fk_persona']);
+    
+                // Add the person data to the department data
+                $value['persona'] = $person_data['data'];
+    
                 // Add the department data to the result
                 $data['data'][] = $value;
             }
@@ -33,23 +40,51 @@ class ModelsDepartamentos extends Model {
         // Return the data array
         return $data;
     }
+
+    public function persona($id) {
+        // Sanitizar el ID para prevenir SQL Injection
+        $id = (int)$id;
     
-
-    public function area($id) {
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "area WHERE id_area = $id");
-
+        // Construir la consulta SQL
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "persona WHERE id_persona = $id");
+    
         $data = [];
-
+    
+        // Verificar si hay alguna fila en el resultado
         if ($query->num_rows) {
-            foreach($query->rows as $value) {
-                $data['data'][] = $value;
-            }
+            // Obtener la primera fila (ya que se espera solo una persona con un ID específico)
+            $data['data'] = $query->row;
         } else {
+            // Devolver un array vacío si no se encuentra ninguna persona con el ID dado
             $data['data'] = [];
         }
-
+    
+        // Devolver el array de datos
         return $data;
-    }   
+    }
+
+    public function area($id) {
+        // Sanitizar el ID para prevenir SQL Injection
+        $id = (int)$id;
+    
+        // Construir la consulta SQL
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "area WHERE id_area = $id");
+    
+        $data = [];
+    
+        // Verificar si hay alguna fila en el resultado
+        if ($query->num_rows) {
+            // Obtener la primera fila (ya que se espera solo una persona con un ID específico)
+            $data['data'] = $query->row;
+        } else {
+            // Devolver un array vacío si no se encuentra ninguna persona con el ID dado
+            $data['data'] = [];
+        }
+    
+        // Devolver el array de datos
+        return $data;
+    }
+    
     
     public function departamento($id) {
         $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "departamento WHERE id_departamento = $id");
