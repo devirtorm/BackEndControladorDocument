@@ -2,16 +2,16 @@
 
 use MVC\Controller;
 
-class ControllersAreas extends Controller
+class ControllersDepartamentos extends Controller
 {
 
-    public function obtenerAreas()
+    public function obtenerDepartamentos()
     {
 
         // Connect to database
-        $model = $this->model('Areas');
+        $model = $this->model('Departamentos');
 
-        $data_list = $model->areas(1);
+        $data_list = $model->departamentos(1);
 
         // Send Response
         $this->response->sendStatus(200);
@@ -19,68 +19,81 @@ class ControllersAreas extends Controller
     }
 
 
-    public function obtenerArea($param) {
 
-            $model = $this->model('Areas');
-            $result = $model->area($param['id']);
+    public function obtenerDepartamento($param) {
+
+            $model = $this->model('Departamentos');
+            $result = $model->departamentos($param['id']);
 
             // Send Response
             $this->response->sendStatus(200);
             $this->response->setContent($result);
     } 
     
-    public function obtenerAreasDesactivadas()
+    public function obtenerDepartamentosDesactivados()
     {
-
         // Connect to database
-        $model = $this->model('Areas');
+        $model = $this->model('Departamentos');
 
-        $data_list = $model->areas(0);
+        $data_list = $model->departamentos(0);
 
         // Send Response
         $this->response->sendStatus(200);
         $this->response->setContent($data_list);
     }
 
-    public function crearArea() {
-        $model = $this->model('Areas');
+    public function crearDepartamento() {
+        $model = $this->model('Departamentos');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
         $data = json_decode($json_data, true);
     
-        if ($data !== null && isset($data['nombre_area'])) {
-            $subproceso = filter_var($data['nombre_area'], FILTER_SANITIZE_STRING);
-            $inserted = $model->insertArea(['nombre_area' => $subproceso]);
+        if ($data !== null && isset($data['nombre_departamento'], $data['fk_persona'], $data['fk_area'])) {
+            $nombre_departamento = filter_var($data['nombre_departamento'], FILTER_SANITIZE_STRING);
+            $fk_persona = filter_var($data['fk_persona'], FILTER_VALIDATE_INT);
+            $fk_area = filter_var($data['fk_area'], FILTER_VALIDATE_INT);
+    
+            if ($fk_persona === false || $fk_area === false) {
+                echo json_encode(['message' => 'Error: fk_persona, fk_area, and activo must be valid integers.']);
+                return;
+            }
+    
+            $inserted = $model->insertDepartamento([
+                'nombre_departamento' => $nombre_departamento,
+                'fk_persona' => $fk_persona,
+                'fk_area' => $fk_area,
+            ]);
     
             if ($inserted) {
-                echo json_encode(['message' => 'Area guardado correctamente.']);
+                echo json_encode(['message' => 'Departamento guardado correctamente.']);
             } else {
-                echo json_encode(['message' => 'Error al guardar Area.']);
+                echo json_encode(['message' => 'Error al guardar Departamento.']);
             }
         } else {
-            echo json_encode(['message' => 'Error: Los datos de area son inválidos o incompletos.']);
+            echo json_encode(['message' => 'Error: Los datos del departamento son inválidos o incompletos.']);
         }
     }
+    
 
     
-    public function eliminarArea($param) {
+    public function eliminarDepartamentos($param) {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
-            $model = $this->model('Areas');
+            $model = $this->model('Departamentos');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-            $deleted = $model->eliminarArea($id);
+            $deleted = $model->eliminarDepartamento($id);
     
             // Preparar la respuesta
             if ($deleted) {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'area eliminado correctamente.'
+                    'message' => 'departamento eliminado correctamente.'
                 ]);
             } else {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Error: No se pudo eliminar el area.'
+                    'message' => 'Error: No se pudo eliminar este departamento.'
                 ]);
             }
         } else {
@@ -97,11 +110,11 @@ class ControllersAreas extends Controller
         return filter_var($id, FILTER_VALIDATE_INT) !== false && $id > 0;
     }
 
-    public function desactivarArea($param) {
+    public function desactivarDepartamento($param) {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
-            $model = $this->model('Areas');
+            $model = $this->model('Departamentos');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
             $updated = $model->actualizarActivo($id, 0);
     
@@ -109,12 +122,12 @@ class ControllersAreas extends Controller
             if ($updated) {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Area desactivada correctamente.'
+                    'message' => 'Departamento desactivado correctamente.'
                 ]);
             } else {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Error: No se pudo desactivar el area.'
+                    'message' => 'Error: No se pudo desactivar el departamento.'
                 ]);
             }
         } else {
@@ -126,11 +139,11 @@ class ControllersAreas extends Controller
         }
     }
 
-    public function activarArea($param) {
+    public function activarDepartamento($param) {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
-            $model = $this->model('Areas');
+            $model = $this->model('Departamentos');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
             $updated = $model->actualizarActivo($id, 1);
     
@@ -138,12 +151,13 @@ class ControllersAreas extends Controller
             if ($updated) {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Area desactivada correctamente.'
+                    'message' => 'Departamento activado correctamente.'
+
                 ]);
             } else {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Error: No se pudo desactivar el area.'
+                    'message' => 'Error: No se pudo activar el departamento.'
                 ]);
             }
         } else {
@@ -156,30 +170,32 @@ class ControllersAreas extends Controller
     }
     
 
-    public function actualizarArea($param) {
-        $model = $this->model('Areas');
+    public function actualizarDepartamento($param) {
+        $model = $this->model('Departamentos');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
         $data = json_decode($json_data, true);
     
         // Verificar si los datos son válidos
-        if ($data !== null && isset($data['nombre_area'])) {
-            $nombre_area = filter_var($data['nombre_area'], FILTER_SANITIZE_STRING);
+        if ($data !== null && isset($data['nombre_departamento'])) {
+            $nombre_departamento = filter_var($data['nombre_departamento'], FILTER_SANITIZE_STRING);
+            $fk_persona = filter_var($data['fk_persona'], FILTER_SANITIZE_STRING);
+            $fk_area = filter_var($data['fk_area'], FILTER_SANITIZE_STRING);
             
             if (isset($param['id']) && $this->validId($param['id'])) {
                 // Actualizar el área existente
                 $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-                $updated = $model->updateArea(['id' => $id, 'nombre_area' => $nombre_area]);
+                $updated = $model->updateDepartamento(['id' => $id, 'nombre_departamento' => $nombre_departamento, 'fk_persona' => $fk_persona, 'fk_area' => $fk_area]);
         
                 if ($updated) {
                     $this->response->sendStatus(200);
                     $this->response->setContent([
-                        'message' => 'Área actualizada correctamente.'
+                        'message' => 'departamento actualizado correctamente.'
                     ]);
                 } else {
                     $this->response->sendStatus(500);
                     $this->response->setContent([
-                        'message' => 'Error: No se pudo actualizar el área.'
+                        'message' => 'Error: No se pudo actualizar el departamento.'
                     ]);
                 }
             } 

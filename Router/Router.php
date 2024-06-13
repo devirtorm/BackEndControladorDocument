@@ -10,7 +10,7 @@ $router->get('/', function() {
 
 //########################## RUTAS PARA PERSONAS #######################################
 
-$router->post('/add-person', 'Personas@addPerson'); //agrega registro para personas
+$router->post('/personas', 'Personas@addPerson'); //agrega registro para personas
 $router->get('/personas', 'Personas@personas'); // Muestra registros de personas
 
 //########################## RUTAS PARA SUBPROCESOS #######################################
@@ -20,6 +20,21 @@ $router->get('/subprocesos/desactivados', 'Subprocesos@obtenerSubprocesosDesacti
 $router->get('/subprocesos', 'Subprocesos@obtenerSubprocesos'); // Obtiene todos los subprocesos
 $router->delete('/subprocesos/:id', 'Subprocesos@eliminarSubproceso'); // Elimina un subproceso
 $router->put('/subprocesos/:id/desactivar', 'Subprocesos@desactivarSubproceso'); // Desactiva un subproceso
+$router->put('/subprocesos/:id/activar', 'Subprocesos@activarSubproceso'); // Activa un subproceso
+$router->put('/subprocesos/:id', 'Subprocesos@actualizarSubproceso'); // Actualiza datos de un subproceso
+
+
+//########################## RUTAS PARA PROCESOS #######################################
+$router->post('/procesos', 'Procesos@crearProcesos'); // Crea nuevos subprocesos
+$router->get('/procesos/desactivados', 'Procesos@obtenerProcesosDesactivados'); // Muestra subprocesos desactivados
+$router->get('/procesos', 'Procesos@obtenerProcesos'); // Obtiene todos los subprocesos
+$router->get('/proceso/:id', 'Areas@obtenerProceso'); // Muestra los datos de un proceso
+$router->delete('/procesos/:id', 'Procesos@eliminarProceso'); // Elimina un subproceso
+$router->put('/procesos/:id/desactivar', 'Procesos@desactivarProceso'); // Desactiva un subproceso
+$router->put('/procesos/:id/activar', 'Procesos@activarProceso'); // Activa un subproceso
+$router->put('/procesos/:id', 'Procesos@actualizarProceso'); // Actualiza datos de un subproceso
+
+
 
 //########################## RUTAS PARA AREA #######################################
 
@@ -28,8 +43,23 @@ $router->get('/areas', 'Areas@obtenerAreas'); // Muestra los registros de las ar
 $router->get('/area/:id', 'Areas@obtenerArea'); // Muestra los datos de un area
 $router->get('/areas/desactivadas', 'Areas@obtenerAreasDesactivadas'); // Muestra los registros de las areas desactivadas
 $router->put('/areas/:id/desactivar', 'Areas@desactivarArea'); // Desactiva un area en especifico 
+$router->put('/areas/:id/activar', 'Areas@activarArea'); // Activa un area en especifico
 $router->put('/areas/:id', 'Areas@actualizarArea'); // Actualiza datos de un area
 $router->delete('/areas/:id', 'Areas@eliminarArea'); // Elimina un area en especifico
+
+
+
+//########################## RUTAS PARA DEPARTAMENTOS  #######################################
+$router->post('/departamentos', 'Departamentos@crearDepartamento'); // Crea nuevas areas
+$router->get('/departamentos', 'Departamentos@obtenerDepartamentos'); // Muestra los registros de los departamentos
+$router->get('/departamento/:id', 'Departamentos@obtenerDepartamento'); // Muestra los datos de un departamento
+$router->get('/departamentos/desactivados', 'Departamentos@obtenerDepartamentosDesactivados'); // Muestra los registros de las areas
+$router->put('/departamentos/:id/desactivar', 'Departamentos@desactivarDepartamento'); // Desactiva un departamento en especifico 
+$router->put('/departamentos/:id/activar', 'Departamentos@activarDepartamento'); // Activa un departamento en especifico
+$router->put('/departamentos/:id', 'Departamentos@actualizarDepartamento'); // Actualiza datos de un departamento
+$router->delete('/departamentos/:id', 'Departamentos@eliminarDepartamentos'); // Elimina un area en especifico
+
+
 
 //########################## RUTAS PARA DIRECCIONES #######################################
 
@@ -42,6 +72,8 @@ $router->put('/direcciones/:id', 'Direcciones@ActualizarDireccion'); // Actualiz
 $router->put('/direcciones/desactivar/:id', 'Direcciones@DesactivarDireccion'); // Desactiva una direccion
 $router->put('/direcciones/activar/:id', 'Direcciones@ActivarDireccion'); // Activa una direccion
 $router->delete('/direcciones/:id', 'Direcciones@EliminarDireccion'); // Elimina una direccion
+
+
 
 //########################## RUTAS PARA CARRERAS #######################################
 

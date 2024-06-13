@@ -14,24 +14,41 @@ class ModelsPersonas extends Model {
         // Ensure page_data is defined if needed, otherwise remove this line
         // $data['page_data'] = $page_data;
 
-        // Initialize books as an empty array
-        $data['personas'] = [];
-
-        // Conclusion
-        if ($query->num_rows) {
+           // Check if there are any rows
+           if ($query->num_rows) {
             foreach($query->rows as $value) {
-                $data['personas'][] = [
-                    'persona'    => $value,
-                ];
+                $data['data'][] = $value;
             }
         } else {
-            $data['personas'][] = [
-                'persona'    => [],
-            ];
+            $data['data'] = [];
         }
-
+    
+        // Return the data array
         return $data;
     }
+
+    public function persona($id) {
+        // Sanitizar el ID para prevenir SQL Injection
+        $id = (int)$id;
+    
+        // Construir la consulta SQL
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "persona WHERE id_persona = $id");
+    
+        $data = [];
+    
+        // Verificar si hay alguna fila en el resultado
+        if ($query->num_rows) {
+            // Obtener la primera fila (ya que se espera solo una persona con un ID específico)
+            $data['data'] = $query->row;
+        } else {
+            // Devolver un array vacío si no se encuentra ninguna persona con el ID dado
+            $data['data'] = [];
+        }
+    
+        // Devolver el array de datos
+        return $data;
+    }
+    
 
     public function insertPerson($personData) {
         // Extract person data
@@ -40,15 +57,15 @@ class ModelsPersonas extends Model {
         $segundo_apellido = $personData['segundo_apellido'];
         $telefono = $personData['telefono'];
         $correo = $personData['correo'];
-        $contrasenia = $personData['contrasenia'];
-        $rol = $personData['rol'];
-        $fecha = $personData['fecha'];
-        $hora = $personData['hora'];
-        $activo = $personData['activo'];
+        $fecha = date('Y-m-d');
+        $hora = date('H:i:s');
+        $activo = 1;
+        $rol = 2;
+
         
         try {
             // Prepare SQL statement
-            $sql = "INSERT INTO " . DB_PREFIX . "persona (nombres, primer_apellido, segundo_apellido, telefono, correo, contrasenia, rol, fecha, hora, activo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO " . DB_PREFIX . "persona (nombres, primer_apellido, segundo_apellido, telefono, correo, fecha, hora, activo, fk_rol) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
     
             // Bind parameters
@@ -57,11 +74,11 @@ class ModelsPersonas extends Model {
             $stmt->bindParam(3, $segundo_apellido);
             $stmt->bindParam(4, $telefono);
             $stmt->bindParam(5, $correo);
-            $stmt->bindParam(6, $contrasenia);
-            $stmt->bindParam(7, $rol);
-            $stmt->bindParam(8, $fecha);
-            $stmt->bindParam(9, $hora);
-            $stmt->bindParam(10, $activo);
+            $stmt->bindParam(6, $fecha);
+            $stmt->bindParam(7, $hora);
+            $stmt->bindParam(8, $activo);
+            $stmt->bindParam(9, $rol);
+
     
             // Execute the query
             $stmt->execute();

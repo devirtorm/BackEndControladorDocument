@@ -2,16 +2,16 @@
 
 use MVC\Controller;
 
-class ControllersAreas extends Controller
+class ControllersProcesos extends Controller
 {
 
-    public function obtenerAreas()
+    public function obtenerProcesos()
     {
 
         // Connect to database
-        $model = $this->model('Areas');
+        $model = $this->model('Procesos');
 
-        $data_list = $model->areas(1);
+        $data_list = $model->procesos(1);
 
         // Send Response
         $this->response->sendStatus(200);
@@ -19,68 +19,69 @@ class ControllersAreas extends Controller
     }
 
 
-    public function obtenerArea($param) {
+    public function obtenerProceso($param) {
 
-            $model = $this->model('Areas');
-            $result = $model->area($param['id']);
+            $model = $this->model('Procesos');
+            $result = $model->procesos($param['id']);
 
             // Send Response
             $this->response->sendStatus(200);
             $this->response->setContent($result);
     } 
     
-    public function obtenerAreasDesactivadas()
+    public function obtenerProcesosDesactivados()
     {
 
         // Connect to database
-        $model = $this->model('Areas');
+        $model = $this->model('Procesos');
 
-        $data_list = $model->areas(0);
+        $data_list = $model->procesos(0);
 
         // Send Response
         $this->response->sendStatus(200);
         $this->response->setContent($data_list);
     }
 
-    public function crearArea() {
-        $model = $this->model('Areas');
+    public function crearProcesos() {
+        $model = $this->model('Procesos');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
         $data = json_decode($json_data, true);
     
-        if ($data !== null && isset($data['nombre_area'])) {
-            $subproceso = filter_var($data['nombre_area'], FILTER_SANITIZE_STRING);
-            $inserted = $model->insertArea(['nombre_area' => $subproceso]);
+        if ($data !== null && isset($data['proceso']) && isset($data['proposito'])) {
+            $proceso = filter_var($data['proceso'], FILTER_SANITIZE_STRING);
+            $proposito = filter_var($data['proposito'], FILTER_SANITIZE_STRING);
+            $inserted = $model->insertProceso(['proceso' => $proceso, 'proposito' => $proposito]);
     
             if ($inserted) {
-                echo json_encode(['message' => 'Area guardado correctamente.']);
+                echo json_encode(['message' => 'Proceso guardado correctamente.']);
             } else {
-                echo json_encode(['message' => 'Error al guardar Area.']);
+                echo json_encode(['message' => 'Error al guardar Proceso.']);
             }
         } else {
-            echo json_encode(['message' => 'Error: Los datos de area son inválidos o incompletos.']);
+            echo json_encode(['message' => 'Error: Los datos de proceso son inválidos o incompletos.']);
         }
     }
 
     
-    public function eliminarArea($param) {
+    public function eliminarProceso($param) {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
-            $model = $this->model('Areas');
+            $model = $this->model('Procesos');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-            $deleted = $model->eliminarArea($id);
+            $deleted = $model->eliminarProceso($id);
     
             // Preparar la respuesta
             if ($deleted) {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'area eliminado correctamente.'
+                    'message' => 'Proceso eliminado correctamente.'
                 ]);
             } else {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Error: No se pudo eliminar el area.'
+                    'message' => 'Error: No se pudo eliminar el proceso.'
                 ]);
             }
         } else {
@@ -97,11 +98,11 @@ class ControllersAreas extends Controller
         return filter_var($id, FILTER_VALIDATE_INT) !== false && $id > 0;
     }
 
-    public function desactivarArea($param) {
+    public function desactivarProceso($param) {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
-            $model = $this->model('Areas');
+            $model = $this->model('Procesos');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
             $updated = $model->actualizarActivo($id, 0);
     
@@ -109,12 +110,12 @@ class ControllersAreas extends Controller
             if ($updated) {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Area desactivada correctamente.'
+                    'message' => 'Proceso desactivado correctamente.'
                 ]);
             } else {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Error: No se pudo desactivar el area.'
+                    'message' => 'Error: No se pudo desactivar el proceso.'
                 ]);
             }
         } else {
@@ -126,11 +127,11 @@ class ControllersAreas extends Controller
         }
     }
 
-    public function activarArea($param) {
+    public function activarProceso($param) {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
-            $model = $this->model('Areas');
+            $model = $this->model('Procesos');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
             $updated = $model->actualizarActivo($id, 1);
     
@@ -138,12 +139,12 @@ class ControllersAreas extends Controller
             if ($updated) {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Area desactivada correctamente.'
+                    'message' => 'Proceso desactivado correctamente.'
                 ]);
             } else {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Error: No se pudo desactivar el area.'
+                    'message' => 'Error: No se pudo desactivar el proceso.'
                 ]);
             }
         } else {
@@ -156,30 +157,31 @@ class ControllersAreas extends Controller
     }
     
 
-    public function actualizarArea($param) {
-        $model = $this->model('Areas');
+    public function actualizarProceso($param) {
+        $model = $this->model('Procesos');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
         $data = json_decode($json_data, true);
     
         // Verificar si los datos son válidos
-        if ($data !== null && isset($data['nombre_area'])) {
-            $nombre_area = filter_var($data['nombre_area'], FILTER_SANITIZE_STRING);
+        if ($data !== null && isset($data['proceso']) && isset($data['proposito'])) {
+            $proceso = filter_var($data['proceso'], FILTER_SANITIZE_STRING);
+            $proposito = filter_var($data['proposito'], FILTER_SANITIZE_STRING);
             
             if (isset($param['id']) && $this->validId($param['id'])) {
                 // Actualizar el área existente
                 $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-                $updated = $model->updateArea(['id' => $id, 'nombre_area' => $nombre_area]);
+                $updated = $model->updateProceso(['id' => $id, 'proceso' => $proceso, 'proposito' => $proposito]);
         
                 if ($updated) {
                     $this->response->sendStatus(200);
                     $this->response->setContent([
-                        'message' => 'Área actualizada correctamente.'
+                        'message' => 'Departamento actualizada correctamente.'
                     ]);
                 } else {
                     $this->response->sendStatus(500);
                     $this->response->setContent([
-                        'message' => 'Error: No se pudo actualizar el área.'
+                        'message' => 'Error: No se pudo actualizar el departamento.'
                     ]);
                 }
             } 
