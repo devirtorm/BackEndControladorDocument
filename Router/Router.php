@@ -87,7 +87,8 @@ $router->put('/carreras/desactivar/:id', 'Carreras@DesactivarCarrera'); // Desac
 $router->put('/carreras/activar/:id', 'Carreras@ActivarCarrera'); // Activa una carrera
 $router->delete('/carreras/:id', 'Carreras@EliminarCarrera'); // Elimina una carrera
 
-//########################## RUTA DE PRUEBA #######################################
+//########################## RUTA DE PRUEBA #######################################//login
+$router->post('/login', 'Login@loginAction');
 
 $router->get('/xd', 'Prueba@index');
 
@@ -121,3 +122,4 @@ $router->get('/authors/:page', 'Books@authors');
 // search author
 $router->get('/authors/:author', 'Books@searchBooksByAuthors');
 $router->get('/authors/:author/:page', 'Books@searchBooksByAuthors');
+

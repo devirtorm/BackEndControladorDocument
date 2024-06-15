@@ -37,9 +37,10 @@ class ControllersSubprocesos extends Controller
         error_log("JSON Data: " . $json_data);
         $data = json_decode($json_data, true);
     
-        if ($data !== null && isset($data['subproceso'])) {
+        if ($data !== null && isset($data['subproceso']) && isset($data['fk_proceso'])) {
             $subproceso = filter_var($data['subproceso'], FILTER_SANITIZE_STRING);
-            $inserted = $model->insertarSubproceso(['subproceso' => $subproceso]);
+            $proceso = filter_var($data['fk_proceso'], FILTER_VALIDATE_INT);
+            $inserted = $model->insertarSubproceso(['subproceso' => $subproceso, 'fk_proceso' => $proceso]);
     
             if ($inserted) {
                 echo json_encode(['message' => 'Subproceso guardado correctamente.']);
@@ -58,13 +59,14 @@ class ControllersSubprocesos extends Controller
         $data = json_decode($json_data, true);
     
         // Verificar si los datos son válidos
-        if ($data !== null && isset($data['subproceso'])) {
+        if ($data !== null && isset($data['subproceso']) && isset($data['fk_proceso'])) {
             $nombre_subproceso = filter_var($data['subproceso'], FILTER_SANITIZE_STRING);
+            $proceso = filter_var($data['fk_proceso'], FILTER_VALIDATE_INT);
             
             if (isset($param['id']) && $this->validId($param['id'])) {
                 // Actualizar el área existente
                 $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-                $updated = $model->updateSubproceso(['id' => $id, 'subproceso' => $nombre_subproceso]);
+                $updated = $model->updateSubproceso(['id' => $id, 'subproceso' => $nombre_subproceso, 'fk_proceso'=>$proceso]);
         
                 if ($updated) {
                     $this->response->sendStatus(200);
