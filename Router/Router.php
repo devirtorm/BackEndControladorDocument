@@ -23,7 +23,6 @@ $router->put('/subprocesos/:id/desactivar', 'Subprocesos@desactivarSubproceso');
 $router->put('/subprocesos/:id/activar', 'Subprocesos@activarSubproceso'); // Activa un subproceso
 $router->put('/subprocesos/:id', 'Subprocesos@actualizarSubproceso'); // Actualiza datos de un subproceso
 
-
 //########################## RUTAS PARA PROCESOS #######################################
 
 $router->post('/procesos', 'Procesos@crearProcesos'); // Crea nuevos subprocesos
@@ -34,8 +33,6 @@ $router->delete('/procesos/:id', 'Procesos@eliminarProceso'); // Elimina un subp
 $router->put('/procesos/:id/desactivar', 'Procesos@desactivarProceso'); // Desactiva un subproceso
 $router->put('/procesos/:id/activar', 'Procesos@activarProceso'); // Activa un subproceso
 $router->put('/procesos/:id', 'Procesos@actualizarProceso'); // Actualiza datos de un subproceso
-
-
 
 //########################## RUTAS PARA AREA #######################################
 
@@ -48,8 +45,6 @@ $router->put('/areas/:id/activar', 'Areas@activarArea'); // Activa un area en es
 $router->put('/areas/:id', 'Areas@actualizarArea'); // Actualiza datos de un area
 $router->delete('/areas/:id', 'Areas@eliminarArea'); // Elimina un area en especifico
 
-
-
 //########################## RUTAS PARA DEPARTAMENTOS  #######################################
 
 $router->post('/departamentos', 'Departamentos@crearDepartamento'); // Crea nuevas areas
@@ -60,8 +55,6 @@ $router->put('/departamentos/:id/desactivar', 'Departamentos@desactivarDepartame
 $router->put('/departamentos/:id/activar', 'Departamentos@activarDepartamento'); // Activa un departamento en especifico
 $router->put('/departamentos/:id', 'Departamentos@actualizarDepartamento'); // Actualiza datos de un departamento
 $router->delete('/departamentos/:id', 'Departamentos@eliminarDepartamentos'); // Elimina un area en especifico
-
-
 
 //########################## RUTAS PARA DIRECCIONES #######################################
 
@@ -74,8 +67,6 @@ $router->put('/direcciones/:id', 'Direcciones@ActualizarDireccion'); // Actualiz
 $router->put('/direcciones/desactivar/:id', 'Direcciones@DesactivarDireccion'); // Desactiva una direccion
 $router->put('/direcciones/activar/:id', 'Direcciones@ActivarDireccion'); // Activa una direccion
 $router->delete('/direcciones/:id', 'Direcciones@EliminarDireccion'); // Elimina una direccion
-
-
 
 //########################## RUTAS PARA CARRERAS #######################################
 
@@ -100,6 +91,18 @@ $router->put('/cuatrimestres/:id', 'Cuatrimestres@ActualizarCuatrimestre'); // A
 $router->put('/cuatrimestres/desactivar/:id', 'Cuatrimestres@DesactivarCuatrimestre'); // Desactiva una cuatrimestre
 $router->put('/cuatrimestres/activar/:id', 'Cuatrimestres@ActivarCuatrimestre'); // Activa una cuatrimestre
 $router->delete('/cuatrimestres/:id', 'Cuatrimestres@EliminarCuatrimestre'); // Elimina una cuatrimestre
+
+//########################## RUTAS PARA MATERIAS #######################################
+
+$router->get('/materias/activas', 'Materias@ObtenerMateriasActivas'); // Obtiene todos los datos de todas las materias activas
+$router->get('/materias/inactivas', 'Materias@ObtenerMateriasInactivas'); // Obtiene todos los datos de todas las materias inactivas
+$router->get('/materias', 'Materias@ObtenerMaterias'); // Obtiene todos los datos de todas las materias
+$router->get('/materias/:id', 'Materias@ObtenerMateria'); // Obtiene datos de una materia en especifico
+$router->post('/materias', 'Materias@CrearMateria'); // Crea nuevas materias
+$router->put('/materias/:id', 'Materias@ActualizarMateria'); // Actualiza datos de una materia
+$router->put('/materias/desactivar/:id', 'Materias@DesactivarMateria'); // Desactiva una materia
+$router->put('/materias/activar/:id', 'Materias@ActivarMateria'); // Activa una materia
+$router->delete('/materias/:id', 'Materias@EliminarMateria'); // Elimina una materia
 
 //########################## RUTA DE LOGIN #######################################
 
