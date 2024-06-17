@@ -82,8 +82,8 @@ $router->delete('/carreras/:id', 'Carreras@EliminarCarrera'); // Elimina una car
 
 //########################## RUTAS PARA CUATRIMESTRES #######################################
 
-$router->get('/cuatrimestres/activas', 'Cuatrimestres@ObtenerCuatrimestresActivas'); // Obtiene todos los datos de todas las cuatrimestres activas
-$router->get('/cuatrimestres/inactivas', 'Cuatrimestres@ObtenerCuatrimestresInactivas'); // Obtiene todos los datos de todas las cuatrimestres inactivas
+$router->get('/cuatrimestres/activas', 'Cuatrimestres@ObtenerCuatrimestresActivos'); // Obtiene todos los datos de todas las cuatrimestres activas
+$router->get('/cuatrimestres/inactivas', 'Cuatrimestres@ObtenerCuatrimestresInactivos'); // Obtiene todos los datos de todas las cuatrimestres inactivas
 $router->get('/cuatrimestres', 'Cuatrimestres@ObtenerCuatrimestres'); // Obtiene todos los datos de todas las cuatrimestres
 $router->get('/cuatrimestres/:id', 'Cuatrimestres@ObtenerCuatrimestre'); // Obtiene datos de una cuatrimestre en especifico
 $router->post('/cuatrimestres', 'Cuatrimestres@CrearCuatrimestre'); // Crea nuevas cuatrimestres
