@@ -25,6 +25,7 @@ $router->put('/subprocesos/:id', 'Subprocesos@actualizarSubproceso'); // Actuali
 
 
 //########################## RUTAS PARA PROCESOS #######################################
+
 $router->post('/procesos', 'Procesos@crearProcesos'); // Crea nuevos subprocesos
 $router->get('/procesos/desactivados', 'Procesos@obtenerProcesosDesactivados'); // Muestra subprocesos desactivados
 $router->get('/procesos', 'Procesos@obtenerProcesos'); // Obtiene todos los subprocesos
@@ -50,6 +51,7 @@ $router->delete('/areas/:id', 'Areas@eliminarArea'); // Elimina un area en espec
 
 
 //########################## RUTAS PARA DEPARTAMENTOS  #######################################
+
 $router->post('/departamentos', 'Departamentos@crearDepartamento'); // Crea nuevas areas
 $router->get('/departamentos', 'Departamentos@obtenerDepartamentos'); // Muestra los registros de los departamentos
 $router->get('/departamento/:id', 'Departamentos@obtenerDepartamento'); // Muestra los datos de un departamento
@@ -87,13 +89,27 @@ $router->put('/carreras/desactivar/:id', 'Carreras@DesactivarCarrera'); // Desac
 $router->put('/carreras/activar/:id', 'Carreras@ActivarCarrera'); // Activa una carrera
 $router->delete('/carreras/:id', 'Carreras@EliminarCarrera'); // Elimina una carrera
 
-//########################## RUTA DE PRUEBA #######################################//login
+//########################## RUTAS PARA CUATRIMESTRES #######################################
+
+$router->get('/cuatrimestres/activas', 'Cuatrimestres@ObtenerCuatrimestresActivas'); // Obtiene todos los datos de todas las cuatrimestres activas
+$router->get('/cuatrimestres/inactivas', 'Cuatrimestres@ObtenerCuatrimestresInactivas'); // Obtiene todos los datos de todas las cuatrimestres inactivas
+$router->get('/cuatrimestres', 'Cuatrimestres@ObtenerCuatrimestres'); // Obtiene todos los datos de todas las cuatrimestres
+$router->get('/cuatrimestres/:id', 'Cuatrimestres@ObtenerCuatrimestre'); // Obtiene datos de una cuatrimestre en especifico
+$router->post('/cuatrimestres', 'Cuatrimestres@CrearCuatrimestre'); // Crea nuevas cuatrimestres
+$router->put('/cuatrimestres/:id', 'Cuatrimestres@ActualizarCuatrimestre'); // Actualiza datos de una cuatrimestre
+$router->put('/cuatrimestres/desactivar/:id', 'Cuatrimestres@DesactivarCuatrimestre'); // Desactiva una cuatrimestre
+$router->put('/cuatrimestres/activar/:id', 'Cuatrimestres@ActivarCuatrimestre'); // Activa una cuatrimestre
+$router->delete('/cuatrimestres/:id', 'Cuatrimestres@EliminarCuatrimestre'); // Elimina una cuatrimestre
+
+//########################## RUTA DE LOGIN #######################################
+
 $router->post('/login', 'Login@loginAction');
+
+//########################## RUTA DE PRUEBA #######################################
 
 $router->get('/xd', 'Prueba@index');
 
 //########################## RUTAS POR DEFAULT #######################################
-
 $router->post('/add-book', 'Books@addBook');   
 
 // install system
