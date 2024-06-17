@@ -80,20 +80,22 @@ class ModelsDirecciones extends Model {
         
         // Obtener la fecha y hora actuales
         $nombre_direccion = $data['nombre_direccion'];
+        $logo = $data['logo'];
         $fecha = date('Y-m-d');
         $hora = date('H:i:s');
         $activo = 1;
     
         // Preparar y ejecutar la consulta SQL
-        $sql = "INSERT INTO direccion (nombre_direccion, fecha, hora, activo) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO direccion (nombre_direccion, logo, fecha, hora, activo) VALUES (?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(1, $nombre_direccion, PDO::PARAM_STR);
-        $stmt->bindParam(2, $fecha, PDO::PARAM_STR);
-        $stmt->bindParam(3, $hora, PDO::PARAM_STR);
-        $stmt->bindParam(4, $activo, PDO::PARAM_INT);
+        $stmt->bindParam(2, $logo, PDO::PARAM_STR);
+        $stmt->bindParam(3, $fecha, PDO::PARAM_STR);
+        $stmt->bindParam(4, $hora, PDO::PARAM_STR);
+        $stmt->bindParam(5, $activo, PDO::PARAM_INT);
     
         return $stmt->execute();
-    }
+    }    
 
     public function updateDireccion($id, $nombre_direccion) {
         $sql = "UPDATE direccion SET nombre_direccion = ? WHERE id_direccion = ?";

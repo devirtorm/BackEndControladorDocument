@@ -2,12 +2,11 @@
 
 use MVC\Model;
 
-class ModelsSubprocesos extends Model {
+class ModelsProcesos extends Model {
 
-
-    public function subprocesos() {
+    public function procesos($activo) {
         // sql statement
-        $sql = "SELECT * FROM " . DB_PREFIX . "subproceso WHERE activo = 1";
+        $sql = "SELECT * FROM " . DB_PREFIX . "proceso WHERE activo = $activo";
     
         // exec query
         $query = $this->db->query($sql);
@@ -18,13 +17,6 @@ class ModelsSubprocesos extends Model {
         // Check if there are any rows
         if ($query->num_rows) {
             foreach($query->rows as $value) {
-                // Call the 'area' function to get the area data
-                $area_data = $this->proceso($value['fk_proceso']);
-    
-                // Add the area data to the department data
-                $value['proceso'] = $area_data['data'];
-    
-                // Add the department data to the result
                 $data['data'][] = $value;
             }
         } else {
@@ -34,66 +26,27 @@ class ModelsSubprocesos extends Model {
         // Return the data array
         return $data;
     }
-
-  
     public function proceso($id) {
-        // Sanitizar el ID para prevenir SQL Injection
-        $id = (int)$id;
-    
-        // Construir la consulta SQL
         $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "proceso WHERE id_proceso = $id");
-    
-        $data = [];
-    
-        // Verificar si hay alguna fila en el resultado
-        if ($query->num_rows) {
-            // Obtener la primera fila (ya que se espera solo una persona con un ID específico)
-            $data['data'] = $query->row;
-        } else {
-            // Devolver un array vacío si no se encuentra ninguna persona con el ID dado
-            $data['data'] = [];
-        }
-    
-        // Devolver el array de datos
-        return $data;
-    }
 
-    public function subprocesosDesactivados() {
-        // sql statement
-        $sql = "SELECT * FROM " . DB_PREFIX . "subproceso WHERE activo = 0";
-    
-        // exec query
-        $query = $this->db->query($sql);
-    
-        // Initialize data as an empty array
         $data = [];
-    
-        // Check if there are any rows
+
         if ($query->num_rows) {
             foreach($query->rows as $value) {
-                // Call the 'area' function to get the area data
-                $area_data = $this->proceso($value['fk_proceso']);
-    
-                // Add the area data to the department data
-                $value['proceso'] = $area_data['data'];
-    
-                // Add the department data to the result
                 $data['data'][] = $value;
             }
         } else {
             $data['data'] = [];
         }
-    
-        // Return the data array
-        return $data;
-    }
 
+        return $data;
+    }   
     
     
-    public function insertarSubproceso($subprocesoData) {
+    public function insertProceso($procesoData) {
         // Extract person data
-        $subproceso = $subprocesoData['subproceso'];
-        $proceso = $subprocesoData['fk_proceso'];
+        $proceso = $procesoData['proceso'];
+        $proposito = $procesoData['proposito'];
     
         try {
             // Get current date and time
@@ -104,12 +57,12 @@ class ModelsSubprocesos extends Model {
 
             
             // Prepare SQL statement
-            $sql = "INSERT INTO " . DB_PREFIX . "subproceso (subproceso, fk_proceso, fecha, hora, activo) VALUES (?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO " . DB_PREFIX . "proceso (proceso, proposito, fecha, hora, activo) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
     
             // Bind parameters
-            $stmt->bindParam(1, $subproceso, PDO::PARAM_STR);
-            $stmt->bindParam(2, $proceso, PDO::PARAM_STR);
+            $stmt->bindParam(1, $proceso, PDO::PARAM_STR);
+            $stmt->bindParam(2, $proposito, PDO::PARAM_STR);
             $stmt->bindParam(3, $fecha, PDO::PARAM_STR);
             $stmt->bindParam(4, $hora, PDO::PARAM_STR);
             $stmt->bindParam(5, $activo, PDO::PARAM_STR);
@@ -131,35 +84,36 @@ class ModelsSubprocesos extends Model {
         }
     }
 
-    public function updateSubproceso($subprocesoData) {
-        $id = $subprocesoData['id'];
-        $subproceso = $subprocesoData['subproceso'];
-        $proceso = $subprocesoData['fk_proceso'];
+
+    public function updateProceso($procesoData) {
+        $id = $procesoData['id'];
+        $proceso = $procesoData['proceso'];
+        $proposito = $procesoData['proposito'];
     
         try {
-            $sql = "UPDATE " . DB_PREFIX . "subproceso SET subproceso = ?, fk_proceso = ? WHERE id_subproceso = ?";
+            $sql = "UPDATE " . DB_PREFIX . "proceso SET proceso = ?, proposito = ? WHERE id_proceso = ?";
             $stmt = $this->db->prepare($sql);
     
-            $stmt->bindParam(1, $subproceso, PDO::PARAM_STR);
-            $stmt->bindParam(2, $proceso, PDO::PARAM_INT);
+            $stmt->bindParam(1, $proceso, PDO::PARAM_STR);
+            $stmt->bindParam(2, $proposito, PDO::PARAM_STR);
             $stmt->bindParam(3, $id, PDO::PARAM_INT);
     
             $stmt->execute();
     
             return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
-            error_log("Error updating area: " . $e->getMessage());
+            error_log("Error updating proceso: " . $e->getMessage());
             return false;
         }
     }
 
 
-    public function eliminarSubproceso($id) {
+    public function eliminarProceso($id) {
         // Escapar el id para evitar inyecciones SQL
         $id = (int)$id;
     
         // sql statement
-        $sql = "DELETE FROM " . DB_PREFIX . "subproceso WHERE id_subproceso = " . $id;
+        $sql = "DELETE FROM " . DB_PREFIX . "proceso WHERE id_proceso = " . $id;
     
         // Preparar y ejecutar la consulta
         $stmt = $this->db->prepare($sql);
@@ -176,7 +130,7 @@ class ModelsSubprocesos extends Model {
         $activo = (int)$activo;
     
         // sql statement
-        $sql = "UPDATE " . DB_PREFIX . "subproceso SET activo = :activo WHERE id_subproceso = :id";
+        $sql = "UPDATE " . DB_PREFIX . "proceso SET activo = :activo WHERE id_proceso = :id";
     
         // Preparar y ejecutar la consulta
         $stmt = $this->db->prepare($sql);

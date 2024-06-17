@@ -10,7 +10,7 @@ $router->get('/', function() {
 
 //########################## RUTAS PARA PERSONAS #######################################
 
-$router->post('/add-person', 'Personas@addPerson'); //agrega registro para personas
+$router->post('/personas', 'Personas@addPerson'); //agrega registro para personas
 $router->get('/personas', 'Personas@personas'); // Muestra registros de personas
 
 //########################## RUTAS PARA SUBPROCESOS #######################################
@@ -22,6 +22,18 @@ $router->delete('/subprocesos/:id', 'Subprocesos@eliminarSubproceso'); // Elimin
 $router->put('/subprocesos/:id/desactivar', 'Subprocesos@desactivarSubproceso'); // Desactiva un subproceso
 $router->put('/subprocesos/:id/activar', 'Subprocesos@activarSubproceso'); // Activa un subproceso
 $router->put('/subprocesos/:id', 'Subprocesos@actualizarSubproceso'); // Actualiza datos de un subproceso
+
+
+//########################## RUTAS PARA PROCESOS #######################################
+$router->post('/procesos', 'Procesos@crearProcesos'); // Crea nuevos subprocesos
+$router->get('/procesos/desactivados', 'Procesos@obtenerProcesosDesactivados'); // Muestra subprocesos desactivados
+$router->get('/procesos', 'Procesos@obtenerProcesos'); // Obtiene todos los subprocesos
+$router->get('/proceso/:id', 'Areas@obtenerProceso'); // Muestra los datos de un proceso
+$router->delete('/procesos/:id', 'Procesos@eliminarProceso'); // Elimina un subproceso
+$router->put('/procesos/:id/desactivar', 'Procesos@desactivarProceso'); // Desactiva un subproceso
+$router->put('/procesos/:id/activar', 'Procesos@activarProceso'); // Activa un subproceso
+$router->put('/procesos/:id', 'Procesos@actualizarProceso'); // Actualiza datos de un subproceso
+
 
 
 //########################## RUTAS PARA AREA #######################################
