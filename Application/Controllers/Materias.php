@@ -57,19 +57,56 @@ class ControllersMaterias extends Controller
     public function CrearMateria()
     {
         $model = $this->model('Materias');
-        $json_data = file_get_contents('php://input');
-        $data = json_decode($json_data, true);
+        $nombre_materia = isset($_POST['nombre_materia']) ? filter_var($_POST['nombre_materia'], FILTER_SANITIZE_STRING) : null;
+        $archivo_materia = isset($_FILES['archivo_materia']) ? $_FILES['archivo_materia'] : null;
+        $fk_cuatrimestre = isset($_POST['fk_cuatrimestre']) ? filter_var($_POST['fk_cuatrimestre'], FILTER_VALIDATE_INT) : null;
 
-        if ($data !== null && isset($data['nombre_materia']) && isset($data['archivo_materia']) && isset($data['fk_cuatrimestre'])) {
-            $nombre_materia = filter_var($data['nombre_materia'], FILTER_SANITIZE_STRING);
-            $archivo_materia = filter_var($data['archivo_materia'], FILTER_SANITIZE_STRING);
-            $fk_cuatrimestre = filter_var($data['fk_cuatrimestre'], FILTER_VALIDATE_INT);
-            $inserted = $model->createMateria(['nombre_materia' => $nombre_materia, 'archivo_materia' => $archivo_materia, 'fk_cuatrimestre' => $fk_cuatrimestre]);
+        // Debug: Imprimir los datos recibidos
+        error_log("Nombre de la materia: " . $nombre_materia);
+        error_log("Archivo de la materia: " . print_r($archivo_materia, true));
+        error_log("FK Cuatrimestre: " . $fk_cuatrimestre);
 
-            if ($inserted) {
-                echo json_encode(['message' => 'Materia creada correctamente.']);
+        if ($nombre_materia && $archivo_materia && $fk_cuatrimestre !== null) {
+            $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\document\\";
+            $target_file = $target_dir . basename($archivo_materia["name"]);
+            $uploadOk = 1;
+            $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+            if (!in_array($fileType, ['pdf', 'doc', 'docx'])) {
+                echo json_encode(['message' => 'Solo se permiten archivos PDF, DOC y DOCX.']);
+                $uploadOk = 0;
+            }
+
+            if (file_exists($target_file)) {
+                echo json_encode(['message' => 'Lo siento, el archivo ya existe.']);
+                $uploadOk = 0;
+            }
+
+            if ($archivo_materia["size"] > 5000000) {
+                echo json_encode(['message' => 'El archivo es demasiado grande.']);
+                $uploadOk = 0;
+            }
+
+            if ($uploadOk == 0) {
+                echo json_encode(['message' => 'Lo siento, tu archivo no fue subido.']);
             } else {
-                echo json_encode(['message' => 'Error al crear materia.']);
+                if (move_uploaded_file($archivo_materia["tmp_name"], $target_file)) {
+                    $archivo_materia_url = "http://localhost/controlador_archivos/backend/document/" . basename($archivo_materia["name"]);
+
+                    $inserted = $model->createMateria([
+                        'nombre_materia' => $nombre_materia,
+                        'archivo_materia' => $archivo_materia_url,
+                        'fk_cuatrimestre' => $fk_cuatrimestre
+                    ]);
+
+                    if ($inserted) {
+                        echo json_encode(['message' => 'Materia creada correctamente.', 'archivo_materia_url' => $archivo_materia_url]);
+                    } else {
+                        echo json_encode(['message' => 'Error al crear materia.']);
+                    }
+                } else {
+                    echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.']);
+                }
             }
         } else {
             echo json_encode(['message' => 'Error: Los datos de materia son inválidos o incompletos.']);
