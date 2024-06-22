@@ -56,6 +56,18 @@ $router->put('/tipos-documentos/:id/activar', 'TiposDocumentos@activarTipoDocume
 $router->put('/tipos-documentos/:id', 'TiposDocumentos@actualizarTipoDocumento'); 
 $router->delete('/tipos-documentos/:id', 'TiposDocumentos@eliminarTipoDocumento');
 
+
+//########################## RUTAS PARA DOCUMENTOS #######################################
+
+$router->post('/documentos', 'Documentos@crearDocumento'); 
+$router->get('/documentos', 'Documentos@obtenerDocumentos'); 
+//$router->get('/area/:id', 'Areas@obtenerArea'); // Muestra los datos de un area
+$router->get('/documentos/desactivados', 'Documentos@obtenerDocumentosDesactivados');
+$router->put('/documentos/:id/desactivar', 'Documentos@desactivarDocumento'); 
+$router->put('/documentos/:id/activar', 'Documentos@activarDocumento'); 
+$router->post('/documentos/:id', 'Documentos@actualizarDocumento'); 
+$router->delete('/documentos/:id', 'Documentos@eliminarDocumento');
+
 //########################## RUTAS PARA CATEGORIA #######################################
 
 $router->post('/categorias', 'Categorias@crearCategoria'); 
