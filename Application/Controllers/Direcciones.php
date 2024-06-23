@@ -128,38 +128,97 @@ class ControllersDirecciones extends Controller
         }
     }    
 
-    public function ActualizarDireccion() { //funciona
-        // Obtener el último segmento de la URL que corresponde al ID
-        $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
-        $id = end($segments);
-    
-        // Convertir $id a entero
-        $id = intval($id);
-    
-        // Verificar si se proporcionó un ID válido
-        if ($id === 0) {
-            echo json_encode(['message' => 'Error: ID inválido.']);
-            return;
-        }
-    
+    public function ActualizarDireccion($param) {
+        error_log("Llamada a ActualizarDireccion con parámetros: " . json_encode($param));
+        
         $model = $this->model('Direcciones');
-        $json_data = file_get_contents('php://input');
-        $data = json_decode($json_data, true);
+        $logo = isset($_FILES['logo']) ? $_FILES['logo'] : null;
+        $logo_url = null;
     
-        if ($data !== null && isset($data['nombre_direccion'])) {
-            $nombre_direccion = filter_var($data['nombre_direccion'], FILTER_SANITIZE_STRING);
+        if (method_exists($this, 'validId')) {
+            if (isset($param['id']) && $this->validId($param['id'])) {
+                $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
+                error_log("ID validado: $id");
     
-            $updated = $model->updateDireccion($id, $nombre_direccion);
+                if (isset($_POST['nombre_direccion'])) {
+                    $nombre_direccion = filter_var($_POST['nombre_direccion'], FILTER_SANITIZE_STRING);
+                    error_log("Nombre de dirección recibido: $nombre_direccion");
     
-            if ($updated) {
-                echo json_encode(['message' => 'Nombre de dirección actualizado correctamente.']);
+                    if ($logo) {
+                        $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\images\\";
+                        $target_file = $target_dir . basename($logo["name"]);
+                        $uploadOk = 1;
+                        $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    
+                        // Check if file already exists
+                        // if (file_exists($target_file)) {
+                        //     echo json_encode(['message' => 'Lo siento, el archivo ya existe.']);
+                        //     $uploadOk = 0;
+                        //     error_log("El archivo ya existe: $target_file");
+                        // }
+    
+                        // Check file size (5MB max)
+                        if ($logo["size"] > 5000000) {
+                            echo json_encode(['message' => 'Lo siento, tu archivo es demasiado grande.']);
+                            $uploadOk = 0;
+                            error_log("Archivo demasiado grande: " . $logo["size"]);
+                        }
+    
+                        // Allow certain file formats
+                        if (!in_array($fileType, ['jpg', 'jpeg', 'png', 'gif'])) {
+                            echo json_encode(['message' => 'Lo siento, solo se permiten archivos JPG, JPEG, PNG y GIF.']);
+                            $uploadOk = 0;
+                            error_log("Tipo de archivo no permitido: $fileType");
+                        }
+    
+                        if ($uploadOk == 0) {
+                            echo json_encode(['message' => 'Lo siento, tu archivo no fue subido.']);
+                            error_log("Error en la carga del archivo.");
+                            return;
+                        } else {
+                            if (move_uploaded_file($logo["tmp_name"], $target_file)) {
+                                $logo_url = "http://localhost/controlador_archivos/backend/images/" . basename($logo["name"]);
+                                error_log("Archivo subido exitosamente: $logo_url");
+                            } else {
+                                echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.']);
+                                error_log("Error moviendo el archivo subido.");
+                                return;
+                            }
+                        }
+                    }
+    
+                    $data = [
+                        'id' => $id,
+                        'nombre_direccion' => $nombre_direccion,
+                        'logo_url' => $logo_url
+                    ];
+    
+                    $updated = $model->updateDireccion($data);
+                    error_log("Resultado de la actualización: " . ($updated ? "Éxito" : "Fallo"));
+    
+                    if ($updated) {
+                        echo json_encode(['message' => 'Dirección actualizada correctamente.', 'logo_url' => $logo_url]);
+                    } else {
+                        echo json_encode(['message' => 'Error: No se pudo actualizar la dirección.']);
+                    }
+                } else {
+                    echo json_encode(['message' => 'Error: Los datos de la dirección son inválidos o incompletos.']);
+                    error_log("Datos de la dirección inválidos o incompletos.");
+                }
             } else {
-                echo json_encode(['message' => 'Error al actualizar nombre de dirección.']);
+                echo json_encode(['message' => 'Error: ID de dirección inválido.']);
+                error_log("ID de dirección inválido: " . $param['id']);
             }
         } else {
-            echo json_encode(['message' => 'Error: Los datos de dirección son inválidos o incompletos.']);
+            echo json_encode(['message' => 'Error: Método validId no existe.']);
+            error_log("Método validId no existe.");
         }
     }
+    
+    // Método validId para validar el ID
+    private function validId($id) {
+        return is_numeric($id) && $id > 0;
+    }    
 
     public function DesactivarDireccion() {
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));

@@ -97,14 +97,47 @@ class ModelsDirecciones extends Model {
         return $stmt->execute();
     }    
 
-    public function updateDireccion($id, $nombre_direccion) {
-        $sql = "UPDATE direccion SET nombre_direccion = ? WHERE id_direccion = ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(1, $nombre_direccion, PDO::PARAM_STR);
-        $stmt->bindParam(2, $id, PDO::PARAM_INT);
+    public function updateDireccion($data) {
+        $id = $data['id'];
+        $nombre_direccion = $data['nombre_direccion'];
+        $logo_url = isset($data['logo_url']) ? $data['logo_url'] : null;
+        
+        try {
+            $fecha = date('Y-m-d');
+            $hora = date('H:i:s');
     
-        return $stmt->execute();
-    }
+            $sql = "UPDATE direccion SET 
+                        nombre_direccion = ?, 
+                        fecha = ?, 
+                        hora = ?";
+    
+            if ($logo_url) {
+                $sql .= ", logo = ?";
+            }
+    
+            $sql .= " WHERE id_direccion = ?";
+    
+            $stmt = $this->db->prepare($sql);
+    
+            $stmt->bindParam(1, $nombre_direccion, PDO::PARAM_STR);
+            $stmt->bindParam(2, $fecha, PDO::PARAM_STR);
+            $stmt->bindParam(3, $hora, PDO::PARAM_STR);
+    
+            if ($logo_url) {
+                $stmt->bindParam(4, $logo_url, PDO::PARAM_STR);
+                $stmt->bindParam(5, $id, PDO::PARAM_INT);
+            } else {
+                $stmt->bindParam(4, $id, PDO::PARAM_INT);
+            }
+    
+            $stmt->execute();
+    
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            error_log("Error updating direccion: " . $e->getMessage());
+            return false;
+        }
+    }    
 
     public function updateActivo($id, $activo) {
         $sql = "UPDATE direccion SET activo = ? WHERE id_direccion = ?";
