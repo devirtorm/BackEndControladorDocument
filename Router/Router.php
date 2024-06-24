@@ -45,6 +45,42 @@ $router->put('/areas/:id/activar', 'Areas@activarArea'); // Activa un area en es
 $router->put('/areas/:id', 'Areas@actualizarArea'); // Actualiza datos de un area
 $router->delete('/areas/:id', 'Areas@eliminarArea'); // Elimina un area en especifico
 
+//########################## RUTAS PARA TIPOS DE DOCUMENTOS #######################################
+
+$router->post('/tipos-documentos', 'TiposDocumentos@crearTipoDocumento'); 
+$router->get('/tipos-documentos', 'TiposDocumentos@obtenerTiposDocumentos'); 
+//$router->get('/area/:id', 'Areas@obtenerArea'); // Muestra los datos de un area
+$router->get('/tipos-documentos/desactivados', 'TiposDocumentos@obtenerTiposDocumentosDesactivados');
+$router->put('/tipos-documentos/:id/desactivar', 'TiposDocumentos@desactivarTipoDocumento'); 
+$router->put('/tipos-documentos/:id/activar', 'TiposDocumentos@activarTipoDocumento'); 
+$router->put('/tipos-documentos/:id', 'TiposDocumentos@actualizarTipoDocumento'); 
+$router->delete('/tipos-documentos/:id', 'TiposDocumentos@eliminarTipoDocumento');
+
+
+//########################## RUTAS PARA DOCUMENTOS #######################################
+
+$router->post('/documentos', 'Documentos@crearDocumento'); 
+$router->get('/documentos', 'Documentos@obtenerDocumentos'); 
+//$router->get('/area/:id', 'Areas@obtenerArea'); // Muestra los datos de un area
+$router->get('/documentos/desactivados', 'Documentos@obtenerDocumentosDesactivados');
+$router->put('/documentos/:id/desactivar', 'Documentos@desactivarDocumento'); 
+$router->put('/documentos/:id/activar', 'Documentos@activarDocumento'); 
+$router->post('/documentos/:id', 'Documentos@actualizarDocumento'); 
+$router->delete('/documentos/:id', 'Documentos@eliminarDocumento');
+
+//########################## RUTAS PARA CATEGORIA #######################################
+
+$router->post('/categorias', 'Categorias@crearCategoria'); 
+$router->get('/categorias', 'Categorias@obtenerCategorias'); 
+$router->get('/categoria/:id', 'Categorias@obtenerCategoria'); 
+$router->get('/categorias/desactivadas', 'Categorias@obtenerCategoriasDesactivadas'); 
+$router->put('/categorias/:id/desactivar', 'Categorias@desactivarCategoria'); 
+$router->put('/categorias/:id/activar', 'Categorias@activarCategoria'); 
+$router->put('/categorias/:id', 'Categorias@actualizarCategoria');  
+$router->delete('/categorias/:id', 'Categorias@eliminarCategoria'); 
+
+
+
 //########################## RUTAS PARA DEPARTAMENTOS  #######################################
 
 $router->post('/departamentos', 'Departamentos@crearDepartamento'); // Crea nuevas areas
