@@ -31,12 +31,12 @@ class ControllersDocumentos extends Controller
         $this->response->setContent($result);
     }
 
-    public function obtenerDocumentosDesactivadas()
+    public function obtenerDocumentosDesactivados()
     {
         // Connect to database
         $model = $this->model('Documentos');
 
-        $data_list = $model->categorias(0);
+        $data_list = $model->documentos(0);
 
         // Send Response
         $this->response->sendStatus(200);
@@ -123,7 +123,7 @@ class ControllersDocumentos extends Controller
         if (isset($param['id']) && $this->validId($param['id'])) {
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
     
-            if (isset($_POST['titulo'], $_POST['fk_categoria'], $_POST['fk_departamento'], $_POST['fk_tipo_documento'], $_POST['fk_subproceso'])) {
+            if (isset($_POST['titulo'])) {
                 $titulo = filter_var($_POST['titulo'], FILTER_SANITIZE_STRING);
                 $fk_departamento = filter_var($_POST['fk_departamento'], FILTER_SANITIZE_NUMBER_INT);
                 $fk_categoria = filter_var($_POST['fk_categoria'], FILTER_SANITIZE_NUMBER_INT);
@@ -196,14 +196,14 @@ class ControllersDocumentos extends Controller
 
 
 
-    public function eliminarCategoria($param)
+    public function eliminarDocumento($param)
     {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
 
-            $model = $this->model('Categorias');
+            $model = $this->model('Documentos');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-            $deleted = $model->eliminarCategoria($id);
+            $deleted = $model->eliminarDocumento($id);
 
             // Preparar la respuesta
             if ($deleted) {
@@ -232,12 +232,12 @@ class ControllersDocumentos extends Controller
         return filter_var($id, FILTER_VALIDATE_INT) !== false && $id > 0;
     }
 
-    public function desactivarCategoria($param)
+    public function desactivarDocumento($param)
     {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
 
-            $model = $this->model('Categorias');
+            $model = $this->model('Documentos');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
             $updated = $model->actualizarActivo($id, 0);
 
@@ -245,12 +245,12 @@ class ControllersDocumentos extends Controller
             if ($updated) {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Categoria desactivada correctamente.'
+                    'message' => 'Documento desactivada correctamente.'
                 ]);
             } else {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Error: No se pudo desactivar la categoria.'
+                    'message' => 'Error: No se pudo desactivar este documento.'
                 ]);
             }
         } else {
@@ -262,12 +262,12 @@ class ControllersDocumentos extends Controller
         }
     }
 
-    public function activarCategoria($param)
+    public function activarDocumento($param)
     {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
 
-            $model = $this->model('Categorias');
+            $model = $this->model('Documentos');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
             $updated = $model->actualizarActivo($id, 1);
 
@@ -275,13 +275,13 @@ class ControllersDocumentos extends Controller
             if ($updated) {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Departamento activado correctamente.'
+                    'message' => 'Documento activado correctamente.'
 
                 ]);
             } else {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Error: No se pudo activar el departamento.'
+                    'message' => 'Error: No se pudo activar el documento.'
                 ]);
             }
         } else {
