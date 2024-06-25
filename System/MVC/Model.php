@@ -34,6 +34,6 @@ class Model {
             DATABASE['Port']    
         );
 
-        $this->pagination = $GLOBALS['pagination'];
+  
     }
 }
