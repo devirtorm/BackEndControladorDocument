@@ -9,9 +9,36 @@ $router->get('/', function() {
 });
 
 //########################## RUTAS PARA PERSONAS #######################################
+// Rutas para el manejo de admin
+$router->post('/admin', 'Admin@crearAdmin');
+$router->get('/admin/desactivados', 'Admin@adminDesactivados');
+$router->get('/admin', 'Admin@admin');
+$router->get('/admin/:id', 'Admin@obtenerPersona');
+$router->delete('/admin/:id', 'Admin@eliminarPersona');
+$router->put('/admin/:id/desactivar', 'Admin@desactivarPersona');
+$router->put('/admin/:id/activar', 'Admin@activarAdmin');
+$router->put('/admin/:id', 'Admin@actualizarPersona');
 
-$router->post('/personas', 'Personas@addPerson'); //agrega registro para personas
-$router->get('/personas', 'Personas@personas'); // Muestra registros de personas
+// Rutas para el manejo de personas
+$router->post('/personas', 'Personas@crearPersona');
+$router->get('/personas/desactivadas', 'Personas@obtenerPersonasDesactivadas');
+$router->get('/personas', 'Personas@personas');
+$router->get('/personas/:id', 'Personas@obtenerPersona');
+$router->delete('/personas/:id', 'Personas@eliminarPersona');
+$router->put('/personas/:id/desactivar', 'Personas@desactivarPersona');
+$router->put('/personas/:id/activar', 'Personas@activarPersona');
+$router->put('/personas/:id', 'Personas@actualizarPersona');
+
+//########################## RUTAS PARA ROLES #######################################
+$router->post('/rol', 'Roles@crearRol'); // Crea nuevos roles
+$router->get('/rol/desactivados', 'Roles@obtenerRolesDesactivados'); // Muestra roles desactivados
+$router->get('/rol', 'Roles@obtenerRoles'); // Obtiene todos los roles
+$router->get('/rol/:id', 'Roles@obtenerRol'); // Muestra los datos de un rol
+$router->delete('/rol/:id', 'Roles@eliminarRol'); // Elimina un rol
+$router->put('/rol/:id/desactivar', 'Roles@desactivarRol'); // Desactiva un rol
+$router->put('/rol/:id/activar', 'Roles@activarRol'); // Activa un rol
+$router->put('/rol/:id', 'Roles@actualizarRol'); // Actualiza datos de un rol
+
 
 //########################## RUTAS PARA SUBPROCESOS #######################################
 

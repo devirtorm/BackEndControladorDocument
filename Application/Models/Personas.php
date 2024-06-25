@@ -5,7 +5,13 @@ use MVC\Model;
 class ModelsPersonas extends Model {
     public function getAllPersons() {
         // sql statement
-        $sql = "SELECT * FROM " . DB_PREFIX . "persona";
+        $sql = "
+    SELECT p.*, r.nombre_rol
+    FROM " . DB_PREFIX . "persona p
+    INNER JOIN " . DB_PREFIX . "rol r ON p.fk_rol = r.id_rol
+    WHERE p.activo = '1'
+";
+
 
         // exec query
         $query = $this->db->query($sql);
@@ -50,7 +56,7 @@ class ModelsPersonas extends Model {
     }
     
 
-    public function insertPerson($personData) {
+    public function insertarPersona($personData) {
         // Extract person data
         $nombres = $personData['nombres'];
         $primer_apellido = $personData['primer_apellido'];
@@ -96,5 +102,68 @@ class ModelsPersonas extends Model {
             return false;
         }
     }
+    public function  personasDesactivadas() {
+        // sql statement
+        $sql = "
+    SELECT p.*, r.nombre_rol
+    FROM " . DB_PREFIX . "persona p
+    INNER JOIN " . DB_PREFIX . "rol r ON p.fk_rol = r.id_rol
+    WHERE p.activo = '0'
+";
+
+
+        // exec query
+        $query = $this->db->query($sql);
+
+        $data = [];
+        // Ensure page_data is defined if needed, otherwise remove this line
+        // $data['page_data'] = $page_data;
+
+           // Check if there are any rows
+           if ($query->num_rows) {
+            foreach($query->rows as $value) {
+                $data['data'][] = $value;
+            }
+        } else {
+            $data['data'] = [];
+        }
+    
+        // Return the data array
+        return $data;
+    }
+
+    public function actualizarActivo($id, $activo) {
+        // Escapar el id y el valor de activo para evitar inyecciones SQL
+        $id = (int)$id;
+        $activo = (int)$activo;
+    
+        // sql statement
+        $sql = "UPDATE " . DB_PREFIX . "persona SET activo = :activo WHERE id_persona = :id";
+    
+        // Preparar y ejecutar la consulta
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':activo', $activo, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        // Verificar si la fila fue afectada (actualizada)
+        return $stmt->rowCount() > 0;
+    }
+    public function eliminarPersona($id) {
+        // Escapar el id para evitar inyecciones SQL
+        $id = (int)$id;
+    
+        // sql statement
+        $sql = "DELETE FROM " . DB_PREFIX . "persona WHERE id_persona = " . $id;
+    
+        // Preparar y ejecutar la consulta
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+    
+        // Verificar si la fila fue afectada (eliminada)
+        return $stmt->rowCount() > 0;
+    }
+    
+   
     
 }
