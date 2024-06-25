@@ -99,7 +99,7 @@ $router->get('/materias/inactivas', 'Materias@ObtenerMateriasInactivas'); // Obt
 $router->get('/materias', 'Materias@ObtenerMaterias'); // Obtiene todos los datos de todas las materias
 $router->get('/materias/:id', 'Materias@ObtenerMateria'); // Obtiene datos de una materia en especifico
 $router->post('/materias', 'Materias@CrearMateria'); // Crea nuevas materias
-$router->put('/materias/:id', 'Materias@ActualizarMateria'); // Actualiza datos de una materia
+$router->post('/materias/:id', 'Materias@ActualizarMateria'); // Actualiza datos de una materia
 $router->put('/materias/desactivar/:id', 'Materias@DesactivarMateria'); // Desactiva una materia
 $router->put('/materias/activar/:id', 'Materias@ActivarMateria'); // Activa una materia
 $router->delete('/materias/:id', 'Materias@EliminarMateria'); // Elimina una materia

@@ -77,11 +77,6 @@ class ControllersMaterias extends Controller
                 $uploadOk = 0;
             }
 
-            if (file_exists($target_file)) {
-                echo json_encode(['message' => 'Lo siento, el archivo ya existe.']);
-                $uploadOk = 0;
-            }
-
             if ($archivo_materia["size"] > 5000000) {
                 echo json_encode(['message' => 'El archivo es demasiado grande.']);
                 $uploadOk = 0;
@@ -113,30 +108,65 @@ class ControllersMaterias extends Controller
         }
     }
 
-    public function ActualizarMateria()
-    {
+    public function ActualizarMateria() {
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);
-
-        if ($id === 0) {
+    
+        if (!$this->validId($id)) {
             echo json_encode(['message' => 'Error: ID inválido.']);
             return;
         }
-
+    
         $model = $this->model('Materias');
-        $json_data = file_get_contents('php://input');
-        $data = json_decode($json_data, true);
-
-        if ($data !== null && isset($data['nombre_materia']) && isset($data['archivo_materia']) && isset($data['fk_cuatrimestre'])) {
-            $nombre_materia = filter_var($data['nombre_materia'], FILTER_SANITIZE_STRING);
-            $archivo_materia = filter_var($data['archivo_materia'], FILTER_SANITIZE_STRING);
-            $fk_cuatrimestre = intval($data['fk_cuatrimestre']);
-
-            $updated = $model->updateMateria($id, $nombre_materia, $archivo_materia, $fk_cuatrimestre);
-
+        $nombre_materia = isset($_POST['nombre_materia']) ? filter_var($_POST['nombre_materia'], FILTER_SANITIZE_STRING) : null;
+        $fk_cuatrimestre = isset($_POST['fk_cuatrimestre']) ? intval($_POST['fk_cuatrimestre']) : null;
+        $archivo_materia = isset($_FILES['archivo_materia']) ? $_FILES['archivo_materia'] : null;
+        $archivo_url = null;
+    
+        if ($nombre_materia && $fk_cuatrimestre) {
+            if ($archivo_materia) {
+                $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\document\\";
+                $target_file = $target_dir . basename($archivo_materia["name"]);
+                $uploadOk = 1;
+                $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    
+                // Check file size (5MB max)
+                if ($archivo_materia["size"] > 5000000) {
+                    echo json_encode(['message' => 'Lo siento, tu archivo es demasiado grande.']);
+                    $uploadOk = 0;
+                }
+    
+                // Allow certain file formats
+                if ($fileType != "pdf") {
+                    echo json_encode(['message' => 'Lo siento, solo se permiten archivos PDF.']);
+                    $uploadOk = 0;
+                }
+    
+                if ($uploadOk == 0) {
+                    echo json_encode(['message' => 'Lo siento, tu archivo no fue subido.']);
+                    return;
+                } else {
+                    if (move_uploaded_file($archivo_materia["tmp_name"], $target_file)) {
+                        $archivo_url = "http://localhost/controlador_archivos/backend/document/" . basename($archivo_materia["name"]);
+                    } else {
+                        echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.']);
+                        return;
+                    }
+                }
+            }
+    
+            $data = [
+                'id' => $id,
+                'nombre_materia' => $nombre_materia,
+                'archivo_url' => $archivo_url,
+                'fk_cuatrimestre' => $fk_cuatrimestre
+            ];
+    
+            $updated = $model->updateMateria($data);
+    
             if ($updated) {
-                echo json_encode(['message' => 'Materia actualizada correctamente.']);
+                echo json_encode(['message' => 'Materia actualizada correctamente.', 'archivo_url' => $archivo_url]);
             } else {
                 echo json_encode(['message' => 'Error al actualizar materia.']);
             }
@@ -144,6 +174,11 @@ class ControllersMaterias extends Controller
             echo json_encode(['message' => 'Error: Los datos de materia son inválidos o incompletos.']);
         }
     }
+    
+    // Método validId para validar el ID
+    private function validId($id) {
+        return is_numeric($id) && $id > 0;
+    }    
 
     public function DesactivarMateria()
     {
