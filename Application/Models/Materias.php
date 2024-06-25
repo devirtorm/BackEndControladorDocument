@@ -110,17 +110,45 @@ class ModelsMaterias extends Model
         return $stmt->execute();
     }
 
-    public function updateMateria($id, $nombre_materia, $archivo_materia, $fk_cuatrimestre)
-    {
-        $sql = "UPDATE materia SET nombre_materia = ?, archivo_materia = ?, fk_cuatrimestre = ? WHERE id_materia = ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(1, $nombre_materia, PDO::PARAM_STR);
-        $stmt->bindParam(2, $archivo_materia, PDO::PARAM_STR);
-        $stmt->bindParam(3, $fk_cuatrimestre, PDO::PARAM_INT);
-        $stmt->bindParam(4, $id, PDO::PARAM_INT);
-
-        return $stmt->execute();
-    }
+    public function updateMateria($data) {
+        $id = $data['id'];
+        $nombre_materia = $data['nombre_materia'];
+        $archivo_url = isset($data['archivo_url']) ? $data['archivo_url'] : null;
+        $fk_cuatrimestre = $data['fk_cuatrimestre'];
+        
+        try {
+            $sql = "UPDATE materia SET 
+                        nombre_materia = ?, 
+                        fk_cuatrimestre = ?";
+    
+            if ($archivo_url) {
+                $sql .= ", archivo_materia = ?";
+            }
+            
+            $sql .= " WHERE id_materia = ?";
+            
+            $stmt = $this->db->prepare($sql);
+            
+            $stmt->bindParam(1, $nombre_materia, PDO::PARAM_STR);
+            $stmt->bindParam(2, $fk_cuatrimestre, PDO::PARAM_INT);
+            
+            if ($archivo_url) {
+                $stmt->bindParam(3, $archivo_url, PDO::PARAM_STR);
+                $stmt->bindParam(4, $id, PDO::PARAM_INT);
+            } else {
+                $stmt->bindParam(3, $id, PDO::PARAM_INT);
+            }
+            
+            $stmt->execute();
+            
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            $errorMessage = "Error updating materia: " . $e->getMessage();
+            error_log($errorMessage);
+            echo json_encode(['message' => $errorMessage]);
+            return false;
+        }
+    }    
 
     public function updateActivo($id, $activo)
     {
