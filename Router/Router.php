@@ -142,3 +142,9 @@ $router->get('/authors/:page', 'Books@authors');
 $router->get('/authors/:author', 'Books@searchBooksByAuthors');
 $router->get('/authors/:author/:page', 'Books@searchBooksByAuthors');
 
+
+
+
+/* GRÁFICAS */
+$router->get('/graficas/documenttipo', 'Graficas@GraficaCantDocumentTipo'); 
+
