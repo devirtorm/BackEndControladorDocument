@@ -87,16 +87,6 @@ class ControllersDirecciones extends Controller
                 $uploadOk = 0;
             }
     
-            if (file_exists($target_file)) {
-                echo json_encode(['message' => 'Lo siento, el archivo ya existe.']);
-                $uploadOk = 0;
-            }
-    
-            if ($logo["size"] > 500000) {
-                echo json_encode(['message' => 'Lo siento, tu archivo es demasiado grande.']);
-                $uploadOk = 0;
-            }
-    
             if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
                 echo json_encode(['message' => 'Lo siento, solo se permiten archivos JPG, JPEG, PNG y GIF.']);
                 $uploadOk = 0;
@@ -149,20 +139,6 @@ class ControllersDirecciones extends Controller
                         $target_file = $target_dir . basename($logo["name"]);
                         $uploadOk = 1;
                         $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-    
-                        // Check if file already exists
-                        // if (file_exists($target_file)) {
-                        //     echo json_encode(['message' => 'Lo siento, el archivo ya existe.']);
-                        //     $uploadOk = 0;
-                        //     error_log("El archivo ya existe: $target_file");
-                        // }
-    
-                        // Check file size (5MB max)
-                        if ($logo["size"] > 5000000) {
-                            echo json_encode(['message' => 'Lo siento, tu archivo es demasiado grande.']);
-                            $uploadOk = 0;
-                            error_log("Archivo demasiado grande: " . $logo["size"]);
-                        }
     
                         // Allow certain file formats
                         if (!in_array($fileType, ['jpg', 'jpeg', 'png', 'gif'])) {

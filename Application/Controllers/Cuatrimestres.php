@@ -60,10 +60,9 @@ class ControllersCuatrimestres extends Controller
         $json_data = file_get_contents('php://input');
         $data = json_decode($json_data, true);
 
-        if ($data !== null && isset($data['nombre_cuatrimestre']) && isset($data['fk_carrera'])) {
+        if ($data !== null && isset($data['nombre_cuatrimestre'])) {
             $nombre_cuatrimestre = filter_var($data['nombre_cuatrimestre'], FILTER_SANITIZE_STRING);
-            $fk_carrera = filter_var($data['fk_carrera'], FILTER_VALIDATE_INT);
-            $inserted = $model->createCuatrimestre(['nombre_cuatrimestre' => $nombre_cuatrimestre, 'fk_carrera' => $fk_carrera]);
+            $inserted = $model->createCuatrimestre(['nombre_cuatrimestre' => $nombre_cuatrimestre]);
 
             if ($inserted) {
                 echo json_encode(['message' => 'Cuatrimestre creado correctamente.']);
@@ -90,11 +89,10 @@ class ControllersCuatrimestres extends Controller
         $json_data = file_get_contents('php://input');
         $data = json_decode($json_data, true);
 
-        if ($data !== null && isset($data['nombre_cuatrimestre']) && isset($data['fk_carrera'])) {
+        if ($data !== null && isset($data['nombre_cuatrimestre'])) {
             $nombre_cuatrimestre = filter_var($data['nombre_cuatrimestre'], FILTER_SANITIZE_STRING);
-            $fk_carrera = intval($data['fk_carrera']);
 
-            $updated = $model->updateCuatrimestre($id, $nombre_cuatrimestre, $fk_carrera);
+            $updated = $model->updateCuatrimestre($id, $nombre_cuatrimestre);
 
             if ($updated) {
                 echo json_encode(['message' => 'Cuatrimestre actualizado correctamente.']);
