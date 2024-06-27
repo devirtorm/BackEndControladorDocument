@@ -143,8 +143,11 @@ $router->get('/authors/:author', 'Books@searchBooksByAuthors');
 $router->get('/authors/:author/:page', 'Books@searchBooksByAuthors');
 
 
-
-
 /* GRÁFICAS */
 $router->get('/graficas/documenttipo', 'Graficas@GraficaCantDocumentTipo'); 
+$router->get('/graficas/documentostotales', 'Graficas@TotalDocumentos'); 
+$router->get('/graficas/cantidaddepartamentos', 'Graficas@TotalDepartamentos'); 
+
+$router->get('/graficas/areastotales', 'Graficas@TotalAreas'); 
+$router->get('/graficas/departamentodoc', 'Graficas@GraficaCantDocumentDepartamento'); 
 
