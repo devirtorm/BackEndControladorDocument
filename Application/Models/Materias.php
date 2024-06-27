@@ -6,9 +6,10 @@ class ModelsMaterias extends Model
 {
     public function Materias()
     {
-        $sql = "SELECT m.*, c.nombre_cuatrimestre 
+        $sql = "SELECT m.*, cu.nombre_cuatrimestre, ca.nombre_carrera 
                 FROM materia m
-                LEFT JOIN cuatrimestre c ON m.fk_cuatrimestre = c.id_cuatrimestre";
+                LEFT JOIN carrera ca ON m.fk_carrera = ca.id_carrera
+                LEFT JOIN cuatrimestre cu ON m.fk_cuatrimestre = cu.id_cuatrimestre";
         $query = $this->db->query($sql);
         $data = [];
 
@@ -25,9 +26,10 @@ class ModelsMaterias extends Model
 
     public function MateriasActivas()
     {
-        $sql = "SELECT m.*, c.nombre_cuatrimestre 
+        $sql = "SELECT m.*, cu.nombre_cuatrimestre, ca.nombre_carrera 
                 FROM materia m
-                LEFT JOIN cuatrimestre c ON m.fk_cuatrimestre = c.id_cuatrimestre
+                LEFT JOIN carrera ca ON m.fk_carrera = ca.id_carrera
+                LEFT JOIN cuatrimestre cu ON m.fk_cuatrimestre = cu.id_cuatrimestre
                 WHERE m.activo = 1";
         $query = $this->db->query($sql);
         $data = [];
@@ -45,9 +47,10 @@ class ModelsMaterias extends Model
 
     public function MateriasInactivas()
     {
-        $sql = "SELECT m.*, c.nombre_cuatrimestre 
+        $sql = "SELECT m.*, cu.nombre_cuatrimestre, ca.nombre_carrera 
                 FROM materia m
-                LEFT JOIN cuatrimestre c ON m.fk_cuatrimestre = c.id_cuatrimestre
+                LEFT JOIN carrera ca ON m.fk_carrera = ca.id_carrera
+                LEFT JOIN cuatrimestre cu ON m.fk_cuatrimestre = cu.id_cuatrimestre
                 WHERE m.activo = 0";
         $query = $this->db->query($sql);
         $data = [];
@@ -66,9 +69,10 @@ class ModelsMaterias extends Model
     public function Materia($id)
     {
         try {
-            $sql = "SELECT m.*, c.nombre_cuatrimestre 
+            $sql = "SELECT m.*, cu.nombre_cuatrimestre, ca.nombre_carrera 
                     FROM materia m
-                    LEFT JOIN cuatrimestre c ON m.fk_cuatrimestre = c.id_cuatrimestre
+                    LEFT JOIN carrera ca ON m.fk_carrera = ca.id_carrera
+                    LEFT JOIN cuatrimestre cu ON m.fk_cuatrimestre = cu.id_cuatrimestre
                     WHERE m.id_materia = ?";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$id]);
@@ -93,19 +97,21 @@ class ModelsMaterias extends Model
 
         $nombre_materia = $data['nombre_materia'];
         $archivo_materia = $data['archivo_materia'];
+        $fk_carrera = $data['fk_carrera'];
         $fk_cuatrimestre = $data['fk_cuatrimestre'];
         $fecha = date('Y-m-d');
         $hora = date('H:i:s');
         $activo = 1;
 
-        $sql = "INSERT INTO materia (nombre_materia, archivo_materia, fk_cuatrimestre, fecha, hora, activo) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO materia (nombre_materia, archivo_materia, fk_carrera, fk_cuatrimestre, fecha, hora, activo) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(1, $nombre_materia, PDO::PARAM_STR);
         $stmt->bindParam(2, $archivo_materia, PDO::PARAM_STR);
-        $stmt->bindParam(3, $fk_cuatrimestre, PDO::PARAM_INT);
-        $stmt->bindParam(4, $fecha, PDO::PARAM_STR);
-        $stmt->bindParam(5, $hora, PDO::PARAM_STR);
-        $stmt->bindParam(6, $activo, PDO::PARAM_INT);
+        $stmt->bindParam(3, $fk_carrera, PDO::PARAM_INT);
+        $stmt->bindParam(4, $fk_cuatrimestre, PDO::PARAM_INT);
+        $stmt->bindParam(5, $fecha, PDO::PARAM_STR);
+        $stmt->bindParam(6, $hora, PDO::PARAM_STR);
+        $stmt->bindParam(7, $activo, PDO::PARAM_INT);
 
         return $stmt->execute();
     }
@@ -114,11 +120,13 @@ class ModelsMaterias extends Model
         $id = $data['id'];
         $nombre_materia = $data['nombre_materia'];
         $archivo_url = isset($data['archivo_url']) ? $data['archivo_url'] : null;
+        $fk_carrera = $data['fk_carrera'];
         $fk_cuatrimestre = $data['fk_cuatrimestre'];
         
         try {
             $sql = "UPDATE materia SET 
                         nombre_materia = ?, 
+                        fk_carrera = ?,
                         fk_cuatrimestre = ?";
     
             if ($archivo_url) {
@@ -130,13 +138,14 @@ class ModelsMaterias extends Model
             $stmt = $this->db->prepare($sql);
             
             $stmt->bindParam(1, $nombre_materia, PDO::PARAM_STR);
-            $stmt->bindParam(2, $fk_cuatrimestre, PDO::PARAM_INT);
+            $stmt->bindParam(2, $fk_carrera, PDO::PARAM_INT);
+            $stmt->bindParam(3, $fk_cuatrimestre, PDO::PARAM_INT);
             
             if ($archivo_url) {
-                $stmt->bindParam(3, $archivo_url, PDO::PARAM_STR);
-                $stmt->bindParam(4, $id, PDO::PARAM_INT);
+                $stmt->bindParam(4, $archivo_url, PDO::PARAM_STR);
+                $stmt->bindParam(5, $id, PDO::PARAM_INT);
             } else {
-                $stmt->bindParam(3, $id, PDO::PARAM_INT);
+                $stmt->bindParam(4, $id, PDO::PARAM_INT);
             }
             
             $stmt->execute();

@@ -59,26 +59,23 @@ class ControllersMaterias extends Controller
         $model = $this->model('Materias');
         $nombre_materia = isset($_POST['nombre_materia']) ? filter_var($_POST['nombre_materia'], FILTER_SANITIZE_STRING) : null;
         $archivo_materia = isset($_FILES['archivo_materia']) ? $_FILES['archivo_materia'] : null;
+        $fk_carrera = isset($_POST['fk_carrera']) ? filter_var($_POST['fk_carrera'], FILTER_VALIDATE_INT) : null;
         $fk_cuatrimestre = isset($_POST['fk_cuatrimestre']) ? filter_var($_POST['fk_cuatrimestre'], FILTER_VALIDATE_INT) : null;
 
         // Debug: Imprimir los datos recibidos
         error_log("Nombre de la materia: " . $nombre_materia);
         error_log("Archivo de la materia: " . print_r($archivo_materia, true));
+        error_log("FK Carrera: " . $fk_carrera);
         error_log("FK Cuatrimestre: " . $fk_cuatrimestre);
 
-        if ($nombre_materia && $archivo_materia && $fk_cuatrimestre !== null) {
+        if ($nombre_materia && $archivo_materia && $fk_carrera && $fk_cuatrimestre !== null) {
             $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\document\\";
             $target_file = $target_dir . basename($archivo_materia["name"]);
             $uploadOk = 1;
             $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-            if (!in_array($fileType, ['pdf', 'doc', 'docx'])) {
-                echo json_encode(['message' => 'Solo se permiten archivos PDF, DOC y DOCX.']);
-                $uploadOk = 0;
-            }
-
-            if ($archivo_materia["size"] > 5000000) {
-                echo json_encode(['message' => 'El archivo es demasiado grande.']);
+            if (!in_array($fileType, ['pdf', 'doc', 'docx', 'xlsx'])) {
+                echo json_encode(['message' => 'Solo se permiten archivos PDF, DOC , DOCX y XLSX.']);
                 $uploadOk = 0;
             }
 
@@ -91,6 +88,7 @@ class ControllersMaterias extends Controller
                     $inserted = $model->createMateria([
                         'nombre_materia' => $nombre_materia,
                         'archivo_materia' => $archivo_materia_url,
+                        'fk_carrera' => $fk_carrera,
                         'fk_cuatrimestre' => $fk_cuatrimestre
                     ]);
 
@@ -120,26 +118,24 @@ class ControllersMaterias extends Controller
     
         $model = $this->model('Materias');
         $nombre_materia = isset($_POST['nombre_materia']) ? filter_var($_POST['nombre_materia'], FILTER_SANITIZE_STRING) : null;
+        $fk_carrera = isset($_POST['fk_carrera']) ? intval($_POST['fk_carrera']) : null;
         $fk_cuatrimestre = isset($_POST['fk_cuatrimestre']) ? intval($_POST['fk_cuatrimestre']) : null;
         $archivo_materia = isset($_FILES['archivo_materia']) ? $_FILES['archivo_materia'] : null;
         $archivo_url = null;
     
-        if ($nombre_materia && $fk_cuatrimestre) {
+        if ($nombre_materia && $fk_carrera && $fk_cuatrimestre) {
             if ($archivo_materia) {
                 $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\document\\";
                 $target_file = $target_dir . basename($archivo_materia["name"]);
                 $uploadOk = 1;
                 $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
     
-                // Check file size (5MB max)
-                if ($archivo_materia["size"] > 5000000) {
-                    echo json_encode(['message' => 'Lo siento, tu archivo es demasiado grande.']);
-                    $uploadOk = 0;
-                }
-    
-                // Allow certain file formats
-                if ($fileType != "pdf") {
-                    echo json_encode(['message' => 'Lo siento, solo se permiten archivos PDF.']);
+                // Define los tipos de archivos permitidos
+                $allowedFileTypes = ['pdf', 'doc', 'docx', 'xlsx'];
+
+                // Verifica si el tipo de archivo es permitido
+                if (!in_array($fileType, $allowedFileTypes)) {
+                    echo json_encode(['message' => 'Lo siento, solo se permiten archivos PDF, DOC, DOCX, y XLSX.']);
                     $uploadOk = 0;
                 }
     
@@ -160,6 +156,7 @@ class ControllersMaterias extends Controller
                 'id' => $id,
                 'nombre_materia' => $nombre_materia,
                 'archivo_url' => $archivo_url,
+                'fk_carrera' => $fk_carrera,
                 'fk_cuatrimestre' => $fk_cuatrimestre
             ];
     
