@@ -57,12 +57,12 @@ class ControllersGraficas extends Controller
         }
     }
 
-    public function TotalAreas()
+    public function documentosSinRevisar()
     {
         try {
             // Conectar con el modelo
             $model = $this->model('Graficas');
-            $data_list = $model->cantAreasCard();
+            $data_list = $model->documentosPorRevisar();
 
             // Enviar respuesta
             $this->response->sendStatus(200);
@@ -75,12 +75,12 @@ class ControllersGraficas extends Controller
     }
 
 
-    public function TotalDepartamentos()
+    public function DocumentosSinAutorizar()
     {
         try {
             // Conectar con el modelo
             $model = $this->model('Graficas');
-            $data_list = $model->cantDepartamentosCard();
+            $data_list = $model->documentosPorAutorizar();
 
             // Enviar respuesta
             $this->response->sendStatus(200);
