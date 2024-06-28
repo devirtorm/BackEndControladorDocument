@@ -6,9 +6,8 @@ class ModelsCuatrimestres extends Model
 {
     public function Cuatrimestres()
     {
-        $sql = "SELECT c.*, ca.nombre_carrera 
-                FROM cuatrimestre c
-                LEFT JOIN carrera ca ON c.fk_carrera = ca.id_carrera";
+        $sql = "SELECT *
+                FROM cuatrimestre";
         $query = $this->db->query($sql);
         $data = [];
 
@@ -25,10 +24,9 @@ class ModelsCuatrimestres extends Model
 
     public function CuatrimestresActivos()
     {
-        $sql = "SELECT c.*, ca.nombre_carrera 
-                FROM cuatrimestre c
-                LEFT JOIN carrera ca ON c.fk_carrera = ca.id_carrera
-                WHERE c.activo = 1";
+        $sql = "SELECT *
+                FROM cuatrimestre
+                WHERE activo = 1";
         $query = $this->db->query($sql);
         $data = [];
 
@@ -45,10 +43,9 @@ class ModelsCuatrimestres extends Model
 
     public function CuatrimestresInactivos()
     {
-        $sql = "SELECT c.*, ca.nombre_carrera 
-                FROM cuatrimestre c
-                LEFT JOIN carrera ca ON c.fk_carrera = ca.id_carrera
-                WHERE c.activo = 0";
+        $sql = "SELECT *
+                FROM cuatrimestre
+                WHERE activo = 0";
         $query = $this->db->query($sql);
         $data = [];
 
@@ -66,10 +63,9 @@ class ModelsCuatrimestres extends Model
     public function Cuatrimestre($id)
     {
         try {
-            $sql = "SELECT c.*, ca.nombre_carrera 
-                    FROM cuatrimestre c
-                    LEFT JOIN carrera ca ON c.fk_carrera = ca.id_carrera
-                    WHERE c.id_cuatrimestre = ?";
+            $sql = "SELECT * 
+                    FROM cuatrimestre
+                    WHERE id_cuatrimestre = ?";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$id]);
 
@@ -92,29 +88,26 @@ class ModelsCuatrimestres extends Model
         date_default_timezone_set('America/Mazatlan');
 
         $nombre_cuatrimestre = $data['nombre_cuatrimestre'];
-        $fk_carrera = $data['fk_carrera'];
         $fecha = date('Y-m-d');
         $hora = date('H:i:s');
         $activo = 1;
 
-        $sql = "INSERT INTO cuatrimestre (nombre_cuatrimestre, fk_carrera, fecha, hora, activo) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO cuatrimestre (nombre_cuatrimestre, fecha, hora, activo) VALUES (?, ?, ?, ?)";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(1, $nombre_cuatrimestre, PDO::PARAM_STR);
-        $stmt->bindParam(2, $fk_carrera, PDO::PARAM_INT);
-        $stmt->bindParam(3, $fecha, PDO::PARAM_STR);
-        $stmt->bindParam(4, $hora, PDO::PARAM_STR);
-        $stmt->bindParam(5, $activo, PDO::PARAM_INT);
+        $stmt->bindParam(2, $fecha, PDO::PARAM_STR);
+        $stmt->bindParam(3, $hora, PDO::PARAM_STR);
+        $stmt->bindParam(4, $activo, PDO::PARAM_INT);
 
         return $stmt->execute();
     }
 
-    public function updateCuatrimestre($id, $nombre_cuatrimestre, $fk_carrera)
+    public function updateCuatrimestre($id, $nombre_cuatrimestre)
     {
-        $sql = "UPDATE cuatrimestre SET nombre_cuatrimestre = ?, fk_carrera = ? WHERE id_cuatrimestre = ?";
+        $sql = "UPDATE cuatrimestre SET nombre_cuatrimestre = ? WHERE id_cuatrimestre = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(1, $nombre_cuatrimestre, PDO::PARAM_STR);
-        $stmt->bindParam(2, $fk_carrera, PDO::PARAM_INT);
-        $stmt->bindParam(3, $id, PDO::PARAM_INT);
+        $stmt->bindParam(2, $id, PDO::PARAM_INT);
 
         return $stmt->execute();
     }
