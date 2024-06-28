@@ -18,21 +18,9 @@ class ControllersDocumentos extends Controller
         $this->response->setContent($data_list);
     }
 
-
-
-    public function obtenerDocumento($param)
-    {
-
-        $model = $this->model('Documentos');
-        $result = $model->documentos($param['id']);
-
-        // Send Response
-        $this->response->sendStatus(200);
-        $this->response->setContent($result);
-    }
-
     public function obtenerDocumentosDesactivados()
     {
+
         // Connect to database
         $model = $this->model('Documentos');
 
@@ -44,76 +32,97 @@ class ControllersDocumentos extends Controller
     }
 
 
-    public function crearDocumento()
+
+    public function obtenerDocumento($param)
     {
 
         $model = $this->model('Documentos');
+        $result = $model->documento($param['id']);
+
+        // Send Response
+        $this->response->sendStatus(200);
+        $this->response->setContent($result);
+    }
+
+
+    public function crearDocumento()
+    {
+        $model = $this->model('Documentos');
         $archivo = isset($_FILES['archivo']) ? $_FILES['archivo'] : null;
         $archivo_url = null;
-
-        if (isset($_POST['titulo'], $_POST['fk_departamento'], $_POST['fk_categoria'], $_POST['fk_tipo_documento'], $_POST['fk_subproceso'])) {
+    
+        if (
+            isset($_POST['titulo'], $_POST['fk_departamento'], $_POST['fk_categoria'], $_POST['fk_tipo_documento'],
+            $_POST['fk_subproceso'], $_POST['num_revision'], $_POST['fecha_emision'])
+        ) {
             $titulo = filter_var($_POST['titulo'], FILTER_SANITIZE_STRING);
             $fk_departamento = filter_var($_POST['fk_departamento'], FILTER_SANITIZE_NUMBER_INT);
             $fk_categoria = filter_var($_POST['fk_categoria'], FILTER_SANITIZE_NUMBER_INT);
             $fk_tipo_documento = filter_var($_POST['fk_tipo_documento'], FILTER_SANITIZE_NUMBER_INT);
             $fk_subproceso = filter_var($_POST['fk_subproceso'], FILTER_SANITIZE_NUMBER_INT);
-
+            $fecha_emision = filter_var($_POST['fecha_emision'], FILTER_SANITIZE_STRING);
+            $num_revision = filter_var($_POST['num_revision'], FILTER_SANITIZE_NUMBER_INT);
+    
             if ($archivo) {
                 $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\documents\\";
+                $original_name = pathinfo($archivo["name"], PATHINFO_FILENAME);
+                $file_extension = strtolower(pathinfo($archivo["name"], PATHINFO_EXTENSION));
                 $target_file = $target_dir . basename($archivo["name"]);
                 $uploadOk = 1;
-                $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-                // Check if file already exists
+    
+                // Check if file already exists, generate unique filename if needed
                 if (file_exists($target_file)) {
-                    echo json_encode(['message' => 'Lo siento, el archivo ya existe.']);
-                    $uploadOk = 0;
+                    $increment = 1;
+                    do {
+                        $new_filename = "{$original_name}{$increment}.{$file_extension}";
+                        $target_file = $target_dir . $new_filename;
+                        $increment++;
+                    } while (file_exists($target_file));
                 }
-
+    
                 // Check file size (5MB max)
                 if ($archivo["size"] > 5000000) {
                     echo json_encode(['message' => 'Lo siento, tu archivo es demasiado grande.']);
-                    $uploadOk = 0;
-                }
-
-                // Allow certain file formats
-                if ($fileType != "pdf" && $fileType != "doc" && $fileType != "docx" && $fileType != "txt") {
-                    echo json_encode(['message' => 'Lo siento, solo se permiten archivos PDF, DOC, DOCX y TXT.']);
-                    $uploadOk = 0;
-                }
-
-                if ($uploadOk == 0) {
-                    echo json_encode(['message' => 'Lo siento, tu archivo no fue subido.']);
                     return;
+                }
+    
+                // Allow certain file formats
+                $allowed_extensions = ['pdf', 'doc', 'docx', 'xlsx'];
+                if (!in_array($file_extension, $allowed_extensions)) {
+                    echo json_encode(['message' => 'Lo siento, solo se permiten archivos PDF, DOC, DOCX y XLSX.']);
+                    return;
+                }
+    
+                // Upload file
+                if (move_uploaded_file($archivo["tmp_name"], $target_file)) {
+                    $archivo_url = "http://localhost/controlador_archivos/backend/documents/" . basename($target_file);
                 } else {
-                    if (move_uploaded_file($archivo["tmp_name"], $target_file)) {
-                        // URL accesible desde el navegador (almacenada en la base de datos)
-                        $archivo_url = "http://localhost/controlador_archivos/backend/documents/" . basename($archivo["name"]);
-                    } else {
-                        echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.']);
-                        return;
-                    }
+                    echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.']);
+                    return;
                 }
             }
-
+    
             $inserted = $model->insertDocumento([
                 'titulo' => $titulo,
                 'fk_departamento' => $fk_departamento,
                 'fk_categoria' => $fk_categoria,
                 'fk_tipo_documento' => $fk_tipo_documento,
                 'fk_subproceso' => $fk_subproceso,
-                'archivo_url' => $archivo_url // Guardar la URL del archivo en la base de datos
+                'archivo_url' => $archivo_url,
+                'fecha_emision' => $fecha_emision,
+                'num_revision' => $num_revision,
             ]);
-
+    
             if ($inserted) {
                 echo json_encode(['message' => 'Documento guardado correctamente.', 'archivo_url' => $archivo_url]);
             } else {
-                echo json_encode(['message' => 'Error al guardar documento.']);
+                echo json_encode(['message' => 'Error al guardar documento.', 'error' => $inserted]);
             }
         } else {
-            echo json_encode(['message' => 'Error: Los datos de categoria son inválidos o incompletos.']);
+            echo json_encode(['message' => 'Error: Los datos de documento son inválidos o incompletos.']);
         }
     }
+    
 
     public function actualizarDocumento($param) {
         $model = $this->model('Documentos');
@@ -129,41 +138,45 @@ class ControllersDocumentos extends Controller
                 $fk_categoria = filter_var($_POST['fk_categoria'], FILTER_SANITIZE_NUMBER_INT);
                 $fk_tipo_documento = filter_var($_POST['fk_tipo_documento'], FILTER_SANITIZE_NUMBER_INT);
                 $fk_subproceso = filter_var($_POST['fk_subproceso'], FILTER_SANITIZE_NUMBER_INT);
+                $fecha_emision = filter_var($_POST['fecha_emision'], FILTER_SANITIZE_STRING);
+                $num_revision = filter_var($_POST['num_revision'], FILTER_SANITIZE_NUMBER_INT);
     
                 if ($archivo) {
                     $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\documents\\";
+                    $original_name = pathinfo($archivo["name"], PATHINFO_FILENAME);
+                    $file_extension = strtolower(pathinfo($archivo["name"], PATHINFO_EXTENSION));
                     $target_file = $target_dir . basename($archivo["name"]);
                     $uploadOk = 1;
-                    $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
     
-                    // Check if file already exists
+                    // Check if file already exists, generate unique filename if needed
                     if (file_exists($target_file)) {
-                        echo json_encode(['message' => 'Lo siento, el archivo ya existe.']);
-                        $uploadOk = 0;
+                        $increment = 1;
+                        do {
+                            $new_filename = "{$original_name}{$increment}.{$file_extension}";
+                            $target_file = $target_dir . $new_filename;
+                            $increment++;
+                        } while (file_exists($target_file));
                     }
     
                     // Check file size (5MB max)
                     if ($archivo["size"] > 5000000) {
                         echo json_encode(['message' => 'Lo siento, tu archivo es demasiado grande.']);
-                        $uploadOk = 0;
+                        return;
                     }
     
                     // Allow certain file formats
-                    if (!in_array($fileType, ['pdf', 'doc', 'docx', 'txt'])) {
-                        echo json_encode(['message' => 'Lo siento, solo se permiten archivos PDF, DOC, DOCX y TXT.']);
-                        $uploadOk = 0;
+                    $allowed_extensions = ['pdf', 'doc', 'docx', 'xlsx'];
+                    if (!in_array($file_extension, $allowed_extensions)) {
+                        echo json_encode(['message' => 'Lo siento, solo se permiten archivos PDF, DOC, DOCX y XLSX.']);
+                        return;
                     }
     
-                    if ($uploadOk == 0) {
-                        echo json_encode(['message' => 'Lo siento, tu archivo no fue subido.']);
-                        return;
+                    // Upload file
+                    if (move_uploaded_file($archivo["tmp_name"], $target_file)) {
+                        $archivo_url = "http://localhost/controlador_archivos/backend/documents/" . basename($target_file);
                     } else {
-                        if (move_uploaded_file($archivo["tmp_name"], $target_file)) {
-                            $archivo_url = "http://localhost/controlador_archivos/backend/documents/" . basename($archivo["name"]);
-                        } else {
-                            echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.']);
-                            return;
-                        }
+                        echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.']);
+                        return;
                     }
                 }
     
@@ -174,7 +187,9 @@ class ControllersDocumentos extends Controller
                     'fk_categoria' => $fk_categoria,
                     'fk_tipo_documento' => $fk_tipo_documento,
                     'fk_subproceso' => $fk_subproceso,
-                    'archivo_url' => $archivo_url
+                    'archivo_url' => $archivo_url,
+                    'fecha_emision' => $fecha_emision,
+                    'num_revision' => $num_revision,
                 ];
     
                 $updated = $model->updateDocumento($data);
@@ -182,7 +197,7 @@ class ControllersDocumentos extends Controller
                 if ($updated) {
                     echo json_encode(['message' => 'Documento actualizado correctamente.', 'archivo_url' => $archivo_url]);
                 } else {
-                    echo json_encode(['message' => 'Error: No se pudo actualizar el documento.']);
+                    echo json_encode(['message' => 'Error: No se pudo actualizar el documento.', 'error' => $updated]);
                 }
             } else {
                 echo json_encode(['message' => 'Error: Los datos del documento son inválidos o incompletos.']);
@@ -191,6 +206,8 @@ class ControllersDocumentos extends Controller
             echo json_encode(['message' => 'Error: ID de documento inválido.']);
         }
     }
+    
+    
     
 
 

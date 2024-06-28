@@ -61,8 +61,8 @@ $router->delete('/tipos-documentos/:id', 'TiposDocumentos@eliminarTipoDocumento'
 
 $router->post('/documentos', 'Documentos@crearDocumento'); 
 $router->get('/documentos', 'Documentos@obtenerDocumentos'); 
-//$router->get('/area/:id', 'Areas@obtenerArea'); // Muestra los datos de un area
-$router->get('/documentos/desactivados', 'Documentos@obtenerDocumentosDesactivados');
+$router->get('/documentos/:id', 'Documentos@obtenerDocumento'); // Muestra los datos de un area
+$router->get('/documentos-desactivados', 'Documentos@obtenerDocumentosDesactivados');
 $router->put('/documentos/:id/desactivar', 'Documentos@desactivarDocumento'); 
 $router->put('/documentos/:id/activar', 'Documentos@activarDocumento'); 
 $router->post('/documentos/:id', 'Documentos@actualizarDocumento'); 
