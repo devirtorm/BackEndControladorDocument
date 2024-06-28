@@ -88,7 +88,8 @@ class ModelsCarreras extends Model
             $sql = "SELECT c.*, d.nombre_direccion 
                     FROM carrera c
                     LEFT JOIN direccion d ON c.fk_direccion = d.id_direccion
-                    WHERE c.fk_direccion = ?";
+                    WHERE c.fk_direccion = ?
+                    AND c.activo = 1";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$fk_direccion]);
 
