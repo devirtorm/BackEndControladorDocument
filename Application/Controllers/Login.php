@@ -23,7 +23,11 @@ class ControllersLogin extends Controller
             $this->response->sendStatus(200);
             $this->response->setContent(json_encode([
                 'email' => $user['correo'],
-                'id_persona' => $user['id_persona']
+                'id_usuario' => $user['id_usuario'],
+                'contrasenia' => $user['contrasenia'],
+                'fk_departamento' => $user['fk_departamento'],
+                'nombre_departamento' => $user['nombre_departamento']
+
             ]));
             } else {
                 $this->response->sendStatus(401);

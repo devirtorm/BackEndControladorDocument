@@ -6,10 +6,11 @@ class ModelsLogin extends Model
 {
     public function getUserByEmail($email)
     {
-        $sql = "SELECT p.id_persona, p.correo, a.contrasenia
-                FROM persona p
-                INNER JOIN administrador a ON p.id_persona = a.fk_persona
-                WHERE p.correo = ?";
+        $sql = "SELECT u.id_usuario, u.correo, u.contrasenia, u.fk_departamento, d.nombre_departamento
+FROM usuario u
+JOIN departamento d ON u.fk_departamento = d.id_departamento
+WHERE u.correo = ?;
+";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(1, $email, PDO::PARAM_STR);
         $stmt->execute();

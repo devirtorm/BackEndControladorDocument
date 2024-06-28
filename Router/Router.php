@@ -8,16 +8,16 @@ $router->get('/', function() {
     </div>';
 });
 
-//########################## RUTAS PARA PERSONAS #######################################
-// Rutas para el manejo de admin
-$router->post('/admin', 'Admin@crearAdmin');
-$router->get('/admin/desactivados', 'Admin@adminDesactivados');
-$router->get('/admin', 'Admin@admin');
-$router->get('/admin/:id', 'Admin@obtenerPersona');
-$router->delete('/admin/:id', 'Admin@eliminarPersona');
-$router->put('/admin/:id/desactivar', 'Admin@desactivarPersona');
-$router->put('/admin/:id/activar', 'Admin@activarAdmin');
-$router->put('/admin/:id', 'Admin@actualizarPersona');
+//########################## RUTAS PARA USUARIOS #######################################
+// Rutas para el manejo de usuarios
+$router->post('/usuarios', 'Usuario@crearUsuario');
+$router->get('/usuarios/desactivados', 'Usuario@usuariosDesactivados');
+$router->get('/usuarios', 'Usuario@usuario');
+$router->get('/usuarios/:id', 'Usuario@obtenerUsuario');
+$router->delete('/usuarios:id', 'Usuario@eliminarUsuario');
+$router->put('/usuarios/:id/desactivar', 'Usuario@desactivarUsuario');
+$router->put('/usuarios/:id/activar', 'Usuario@activarUsuario');
+$router->put('/usuarios/:id', 'Usuario@actualizarPersona');
 
 // Rutas para el manejo de personas
 $router->post('/personas', 'Personas@crearPersona');
