@@ -130,12 +130,11 @@ ORDER BY
     
 
     /* Función para obtener los datos de la card de homeAdmin */
-    public function cantAreasCard()
+    public function documentosPorRevisar()
     {
         try {
             // sql statement
-            $sql = "SELECT " . DB_PREFIX . " COUNT(*) 
-                  AS total_areas FROM area;";
+            $sql = "SELECT " . DB_PREFIX . "  COUNT(*) AS por_revisar FROM documento where revisado=0";
 
             // exec query
             $query = $this->db->query($sql);
@@ -163,12 +162,11 @@ ORDER BY
 
 
     /* Función para obtener los datos de la card de homeAdmin */
-    public function cantDepartamentosCard()
+    public function documentosPorAutorizar()
     {
         try {
             // sql statement
-            $sql = "SELECT " . DB_PREFIX . " COUNT(*) 
-                  AS total_departamentos FROM departamento;";
+            $sql = "SELECT " . DB_PREFIX . "COUNT(*) AS por_autorizar FROM documento where autorizado=0;";
 
             // exec query
             $query = $this->db->query($sql);
