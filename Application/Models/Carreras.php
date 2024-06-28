@@ -82,6 +82,28 @@ class ModelsCarreras extends Model
         }
     }
 
+    public function CarrerasPorDireccion($fk_direccion)
+    {
+        try {
+            $sql = "SELECT c.*, d.nombre_direccion 
+                    FROM carrera c
+                    LEFT JOIN direccion d ON c.fk_direccion = d.id_direccion
+                    WHERE c.fk_direccion = ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$fk_direccion]);
+
+            if ($stmt->rowCount() > 0) {
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                return [];
+            }
+        } catch (PDOException $e) {
+            echo "Error al ejecutar la consulta: " . $e->getMessage();
+            return [];
+        }
+    }
+
+
     public function createCarrera($data)
     {
         date_default_timezone_set('America/Mazatlan');
