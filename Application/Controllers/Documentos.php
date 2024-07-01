@@ -31,18 +31,31 @@ class ControllersDocumentos extends Controller
         $this->response->setContent($data_list);
     }
 
+    public function obtenerDocumentoByProceso($param)
+    {
+
+        $model = $this->model('Documentos');
+        $result = $model->getDocumentoByProcesoId($param['id']);
+
+        // Send Response
+        $this->response->sendStatus(200);
+        $this->response->setContent($result);
+    }
+
 
 
     public function obtenerDocumento($param)
     {
 
-        $model = $this->model('Documentos');
+        $model = $this->model('Subprocesos');
         $result = $model->documento($param['id']);
 
         // Send Response
         $this->response->sendStatus(200);
         $this->response->setContent($result);
     }
+
+    
 
 
     public function crearDocumento()
@@ -52,23 +65,32 @@ class ControllersDocumentos extends Controller
         $archivo_url = null;
     
         if (
-            isset($_POST['titulo'], $_POST['fk_departamento'], $_POST['fk_categoria'], $_POST['fk_tipo_documento'],
-            $_POST['fk_subproceso'], $_POST['num_revision'], $_POST['fecha_emision'])
+            isset($_POST['titulo'], $_POST['fk_departamento'], $_POST['fk_categoria'], $_POST['fk_tipo_documento'], $_POST['fk_proceso'],
+            $_POST['num_revision'], $_POST['fecha_emision'], $_POST['nombre_macro_proceso'], $_POST['nombre_proceso'], $_POST['nombre_departamento'])
         ) {
             $titulo = filter_var($_POST['titulo'], FILTER_SANITIZE_STRING);
             $fk_departamento = filter_var($_POST['fk_departamento'], FILTER_SANITIZE_NUMBER_INT);
             $fk_categoria = filter_var($_POST['fk_categoria'], FILTER_SANITIZE_NUMBER_INT);
             $fk_tipo_documento = filter_var($_POST['fk_tipo_documento'], FILTER_SANITIZE_NUMBER_INT);
-            $fk_subproceso = filter_var($_POST['fk_subproceso'], FILTER_SANITIZE_NUMBER_INT);
+            $fk_subproceso = isset($_POST['fk_subproceso']) ? filter_var($_POST['fk_subproceso'], FILTER_SANITIZE_NUMBER_INT) : null;
             $fecha_emision = filter_var($_POST['fecha_emision'], FILTER_SANITIZE_STRING);
             $num_revision = filter_var($_POST['num_revision'], FILTER_SANITIZE_NUMBER_INT);
+            $fk_proceso = filter_var($_POST['fk_proceso'], FILTER_SANITIZE_NUMBER_INT);
+            $nombre_macro_proceso = filter_var($_POST['nombre_macro_proceso'], FILTER_SANITIZE_STRING);
+            $nombre_proceso = filter_var($_POST['nombre_proceso'], FILTER_SANITIZE_STRING);
+            $nombre_departamento = filter_var($_POST['nombre_departamento'], FILTER_SANITIZE_STRING);
     
             if ($archivo) {
-                $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\documents\\";
+                $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\documents\\$nombre_macro_proceso\\$nombre_proceso\\$nombre_departamento\\";
                 $original_name = pathinfo($archivo["name"], PATHINFO_FILENAME);
                 $file_extension = strtolower(pathinfo($archivo["name"], PATHINFO_EXTENSION));
                 $target_file = $target_dir . basename($archivo["name"]);
                 $uploadOk = 1;
+    
+                // Create directory if it doesn't exist
+                if (!file_exists($target_dir)) {
+                    mkdir($target_dir, 0777, true);
+                }
     
                 // Check if file already exists, generate unique filename if needed
                 if (file_exists($target_file)) {
@@ -95,7 +117,7 @@ class ControllersDocumentos extends Controller
     
                 // Upload file
                 if (move_uploaded_file($archivo["tmp_name"], $target_file)) {
-                    $archivo_url = "http://localhost/controlador_archivos/backend/documents/" . basename($target_file);
+                    $archivo_url = "http://localhost/controlador_archivos/backend/documents/$nombre_macro_proceso/$nombre_proceso/$nombre_departamento/" . basename($target_file);
                 } else {
                     echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.']);
                     return;
@@ -111,9 +133,10 @@ class ControllersDocumentos extends Controller
                 'archivo_url' => $archivo_url,
                 'fecha_emision' => $fecha_emision,
                 'num_revision' => $num_revision,
+                'fk_proceso' => $fk_proceso
             ]);
     
-            if ($inserted) {
+            if ($inserted === true) {
                 echo json_encode(['message' => 'Documento guardado correctamente.', 'archivo_url' => $archivo_url]);
             } else {
                 echo json_encode(['message' => 'Error al guardar documento.', 'error' => $inserted]);
@@ -122,6 +145,9 @@ class ControllersDocumentos extends Controller
             echo json_encode(['message' => 'Error: Los datos de documento son inválidos o incompletos.']);
         }
     }
+    
+    
+    
     
 
     public function actualizarDocumento($param) {
@@ -137,9 +163,10 @@ class ControllersDocumentos extends Controller
                 $fk_departamento = filter_var($_POST['fk_departamento'], FILTER_SANITIZE_NUMBER_INT);
                 $fk_categoria = filter_var($_POST['fk_categoria'], FILTER_SANITIZE_NUMBER_INT);
                 $fk_tipo_documento = filter_var($_POST['fk_tipo_documento'], FILTER_SANITIZE_NUMBER_INT);
-                $fk_subproceso = filter_var($_POST['fk_subproceso'], FILTER_SANITIZE_NUMBER_INT);
+                $fk_subproceso = isset($_POST['fk_subproceso']) ? filter_var($_POST['fk_subproceso'], FILTER_SANITIZE_NUMBER_INT) : null;
                 $fecha_emision = filter_var($_POST['fecha_emision'], FILTER_SANITIZE_STRING);
                 $num_revision = filter_var($_POST['num_revision'], FILTER_SANITIZE_NUMBER_INT);
+                $fk_proceso = filter_var($_POST['fk_proceso'], FILTER_SANITIZE_NUMBER_INT);
     
                 if ($archivo) {
                     $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\documents\\";
@@ -190,6 +217,7 @@ class ControllersDocumentos extends Controller
                     'archivo_url' => $archivo_url,
                     'fecha_emision' => $fecha_emision,
                     'num_revision' => $num_revision,
+                    'fk_proceso' => $fk_proceso,
                 ];
     
                 $updated = $model->updateDocumento($data);
@@ -206,6 +234,7 @@ class ControllersDocumentos extends Controller
             echo json_encode(['message' => 'Error: ID de documento inválido.']);
         }
     }
+    
     
     
     

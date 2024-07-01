@@ -26,6 +26,29 @@ class ModelsProcesos extends Model {
         // Return the data array
         return $data;
     }
+
+    public function getProcesosBymacroprocesoId($id) {
+        // Sanitizar el ID para prevenir SQL Injection
+        $id = (int)$id;
+    
+        // Construir la consulta SQL
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "proceso WHERE fk_macroproceso = $id AND activo = 1");
+    
+        $data = [];
+    
+        // Verificar si hay alguna fila en el resultado
+        if ($query->num_rows) {
+            // Obtener la primera fila (ya que se espera solo una persona con un ID específico)
+            $data['data'] = $query->row;
+        } else {
+            // Devolver un array vacío si no se encuentra ninguna persona con el ID dado
+            $data['data'] = [];
+        }
+    
+        // Devolver el array de datos
+        return $data;
+    }
+
     public function proceso($id) {
         $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "proceso WHERE id_proceso = $id");
 

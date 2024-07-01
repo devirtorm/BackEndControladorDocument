@@ -18,6 +18,20 @@ class ControllersProcesos extends Controller
         $this->response->setContent($data_list);
     }
 
+    
+    public function ObtenerProcesoByMacroId($param)
+    {
+
+        // Connect to database
+        $model = $this->model('Procesos');
+
+        $data_list = $model->getProcesosBymacroprocesoId($param['id']);
+
+        // Send Response
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
+
 
     public function obtenerProceso($param) {
 
@@ -62,6 +76,8 @@ class ControllersProcesos extends Controller
             echo json_encode(['message' => 'Error: Los datos de proceso son inválidos o incompletos.']);
         }
     }
+
+    
 
     
     public function eliminarProceso($param) {
