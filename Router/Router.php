@@ -22,6 +22,8 @@ $router->delete('/subprocesos/:id', 'Subprocesos@eliminarSubproceso'); // Elimin
 $router->put('/subprocesos/:id/desactivar', 'Subprocesos@desactivarSubproceso'); // Desactiva un subproceso
 $router->put('/subprocesos/:id/activar', 'Subprocesos@activarSubproceso'); // Activa un subproceso
 $router->put('/subprocesos/:id', 'Subprocesos@actualizarSubproceso'); // Actualiza datos de un subproceso
+$router->get('/subprocesos/:id', 'Subprocesos@ObtenerSubproceso'); // Elimina una materia
+
 
 //########################## RUTAS PARA PROCESOS #######################################
 
@@ -33,6 +35,9 @@ $router->delete('/procesos/:id', 'Procesos@eliminarProceso'); // Elimina un subp
 $router->put('/procesos/:id/desactivar', 'Procesos@desactivarProceso'); // Desactiva un subproceso
 $router->put('/procesos/:id/activar', 'Procesos@activarProceso'); // Activa un subproceso
 $router->put('/procesos/:id', 'Procesos@actualizarProceso'); // Actualiza datos de un subproceso
+$router->get('/procesos-macroprocesos/:id', 'Procesos@ObtenerProcesoByMacroId'); // recibe el id perteneciente a macroproceso para buscar
+
+
 
 //########################## RUTAS PARA AREA #######################################
 
@@ -67,6 +72,8 @@ $router->put('/documentos/:id/desactivar', 'Documentos@desactivarDocumento');
 $router->put('/documentos/:id/activar', 'Documentos@activarDocumento'); 
 $router->post('/documentos/:id', 'Documentos@actualizarDocumento'); 
 $router->delete('/documentos/:id', 'Documentos@eliminarDocumento');
+$router->get('/documentos-procesos/:id', 'Documentos@obtenerDocumentoByProceso');
+
 
 //########################## RUTAS PARA CATEGORIA #######################################
 
@@ -139,6 +146,10 @@ $router->post('/materias/:id', 'Materias@ActualizarMateria'); // Actualiza datos
 $router->put('/materias/desactivar/:id', 'Materias@DesactivarMateria'); // Desactiva una materia
 $router->put('/materias/activar/:id', 'Materias@ActivarMateria'); // Activa una materia
 $router->delete('/materias/:id', 'Materias@EliminarMateria'); // Elimina una materia
+
+//########################## RUTAS PARA MACROPROCESOS #######################################
+$router->get('/macroprocesos', 'Macroprocesos@obtenerMacroprocesos'); // Obtiene todos los datos de los macroprocesos activos
+
 
 //########################## RUTA DE LOGIN #######################################
 

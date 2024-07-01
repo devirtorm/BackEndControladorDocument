@@ -57,6 +57,7 @@ class ModelsSubprocesos extends Model {
         // Devolver el array de datos
         return $data;
     }
+    
 
     public function subprocesosDesactivados() {
         // sql statement
