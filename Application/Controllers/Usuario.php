@@ -1,9 +1,39 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 
 use MVC\Controller;
-
+require 'vendor/autoload.php';
 class ControllersUsuario extends Controller
 {
+    function enviarCorreo($destinatario, $asunto, $cuerpo) {
+        $mail = new PHPMailer(true);
+    
+        try {
+            // Configuración del servidor SMTP
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'correo'; // Tu correo de Gmail
+            $mail->Password = 'contra'; // Tu contraseña de Gmail
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+    
+            // Configuración del correo
+            $mail->setFrom('archivoscontrolador@gmail.com', 'UTDELACOSTA');
+            $mail->addAddress($destinatario);
+    
+            $mail->isHTML(true);
+            $mail->Subject = $asunto;
+            $mail->Body = $cuerpo;
+    
+            $mail->send();
+           
+        } catch (Exception $e) {
+            echo "No se pudo enviar el correo. Error: {$mail->ErrorInfo}";
+        }
+    }
 
     public function usuario()
     {
@@ -95,6 +125,55 @@ class ControllersUsuario extends Controller
         }
     }
     
+
+    public function solicitarRecuperacion()
+    {
+        $json_data = file_get_contents('php://input');
+        $data = json_decode($json_data, true);
+
+        if ($data !== null && isset($data['email'])) {
+            $email = filter_var($data['email'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+            $model = $this->model('Usuario');
+            $user = $model->buscarUsuarioPorCorreo($email);
+
+            if ($user) {
+                $token = bin2hex(random_bytes(20));
+                date_default_timezone_set('America/Mexico_City');
+
+                $expiracion = date('Y-m-d H:i:s', strtotime('+5 minutes'));
+                $model->guardarToken($user['id_usuario'], $token, $expiracion);
+
+                // Enviar el correo utilizando $this->enviarCorreo
+                $destinatario = $user['correo'];
+                $asunto = 'Recuperación de contraseña';
+                $cuerpo = "Para recuperar tu contraseña, utiliza el siguiente token: $token";
+
+               
+           
+            
+                    // Envía el correo
+                    $this->enviarCorreo($destinatario, $asunto, $cuerpo);
+    
+                    // Envío exitoso
+                    
+                    $this->response->sendStatus(200);
+                    $this->response->setContent(json_encode([
+                        'message' => 'Correo enviado correctamente.'
+        
+                    ]));
+                   
+               
+            }} else {
+                $this->response->sendStatus(401);
+                $this->response->setContent(json_encode(['message' => 'Credenciales inválidas']));
+            }
+        }
+    
+
+
+
+
     // Método auxiliar para validar el ID
     private function validId($id) {
         return filter_var($id, FILTER_VALIDATE_INT) !== false && $id > 0;

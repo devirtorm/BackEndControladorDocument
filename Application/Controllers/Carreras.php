@@ -54,6 +54,29 @@ class ControllersCarreras extends Controller
         }
     }
 
+    public function ObtenerCarrerasPorDireccion($fk_direccion)
+    {
+        $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
+        $fk_direccion = end($segments);
+        $fk_direccion = intval($fk_direccion);
+
+        if ($fk_direccion === 0) {
+            echo json_encode(['message' => 'Error: ID de dirección inválido.']);
+            return;
+        }
+
+        $model = $this->model('Carreras');
+        $carreras = $model->CarrerasPorDireccion($fk_direccion);
+
+        if (!empty($carreras)) {
+            $this->response->sendStatus(200);
+            $this->response->setContent($carreras);
+        } else {
+            $this->response->sendStatus(404);
+            $this->response->setContent(['error' => 'No se encontraron carreras para esta dirección']);
+        }
+    }
+
     public function CrearCarrera()
     {
         $model = $this->model('Carreras');

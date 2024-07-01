@@ -8,6 +8,12 @@ $router->get('/', function() {
     </div>';
 });
 
+//recuperacion
+$router->post('/recuperar-contrasena', 'Usuario@solicitarRecuperacion');
+$router->post('/verificar-token', 'Usuario@verificarToken');
+$router->post('/cambiar-contrasena', 'Usuario@cambiarContrasena');
+
+
 //########################## RUTAS PARA USUARIOS #######################################
 // Rutas para el manejo de usuarios
 $router->post('/usuarios', 'Usuario@crearUsuario');
@@ -50,8 +56,8 @@ $router->put('/subprocesos/:id/desactivar', 'Subprocesos@desactivarSubproceso');
 $router->put('/subprocesos/:id/activar', 'Subprocesos@activarSubproceso'); // Activa un subproceso
 $router->put('/subprocesos/:id', 'Subprocesos@actualizarSubproceso'); // Actualiza datos de un subproceso
 
-
 //########################## RUTAS PARA PROCESOS #######################################
+
 $router->post('/procesos', 'Procesos@crearProcesos'); // Crea nuevos subprocesos
 $router->get('/procesos/desactivados', 'Procesos@obtenerProcesosDesactivados'); // Muestra subprocesos desactivados
 $router->get('/procesos', 'Procesos@obtenerProcesos'); // Obtiene todos los subprocesos
@@ -60,8 +66,6 @@ $router->delete('/procesos/:id', 'Procesos@eliminarProceso'); // Elimina un subp
 $router->put('/procesos/:id/desactivar', 'Procesos@desactivarProceso'); // Desactiva un subproceso
 $router->put('/procesos/:id/activar', 'Procesos@activarProceso'); // Activa un subproceso
 $router->put('/procesos/:id', 'Procesos@actualizarProceso'); // Actualiza datos de un subproceso
-
-
 
 //########################## RUTAS PARA AREA #######################################
 
@@ -74,9 +78,44 @@ $router->put('/areas/:id/activar', 'Areas@activarArea'); // Activa un area en es
 $router->put('/areas/:id', 'Areas@actualizarArea'); // Actualiza datos de un area
 $router->delete('/areas/:id', 'Areas@eliminarArea'); // Elimina un area en especifico
 
+//########################## RUTAS PARA TIPOS DE DOCUMENTOS #######################################
+
+$router->post('/tipos-documentos', 'TiposDocumentos@crearTipoDocumento'); 
+$router->get('/tipos-documentos', 'TiposDocumentos@obtenerTiposDocumentos'); 
+//$router->get('/area/:id', 'Areas@obtenerArea'); // Muestra los datos de un area
+$router->get('/tipos-documentos/desactivados', 'TiposDocumentos@obtenerTiposDocumentosDesactivados');
+$router->put('/tipos-documentos/:id/desactivar', 'TiposDocumentos@desactivarTipoDocumento'); 
+$router->put('/tipos-documentos/:id/activar', 'TiposDocumentos@activarTipoDocumento'); 
+$router->put('/tipos-documentos/:id', 'TiposDocumentos@actualizarTipoDocumento'); 
+$router->delete('/tipos-documentos/:id', 'TiposDocumentos@eliminarTipoDocumento');
+
+
+//########################## RUTAS PARA DOCUMENTOS #######################################
+
+$router->post('/documentos', 'Documentos@crearDocumento'); 
+$router->get('/documentos', 'Documentos@obtenerDocumentos'); 
+$router->get('/documentos/:id', 'Documentos@obtenerDocumento'); // Muestra los datos de un area
+$router->get('/documentos-desactivados', 'Documentos@obtenerDocumentosDesactivados');
+$router->put('/documentos/:id/desactivar', 'Documentos@desactivarDocumento'); 
+$router->put('/documentos/:id/activar', 'Documentos@activarDocumento'); 
+$router->post('/documentos/:id', 'Documentos@actualizarDocumento'); 
+$router->delete('/documentos/:id', 'Documentos@eliminarDocumento');
+
+//########################## RUTAS PARA CATEGORIA #######################################
+
+$router->post('/categorias', 'Categorias@crearCategoria'); 
+$router->get('/categorias', 'Categorias@obtenerCategorias'); 
+$router->get('/categoria/:id', 'Categorias@obtenerCategoria'); 
+$router->get('/categorias/desactivadas', 'Categorias@obtenerCategoriasDesactivadas'); 
+$router->put('/categorias/:id/desactivar', 'Categorias@desactivarCategoria'); 
+$router->put('/categorias/:id/activar', 'Categorias@activarCategoria'); 
+$router->put('/categorias/:id', 'Categorias@actualizarCategoria');  
+$router->delete('/categorias/:id', 'Categorias@eliminarCategoria'); 
+
 
 
 //########################## RUTAS PARA DEPARTAMENTOS  #######################################
+
 $router->post('/departamentos', 'Departamentos@crearDepartamento'); // Crea nuevas areas
 $router->get('/departamentos', 'Departamentos@obtenerDepartamentos'); // Muestra los registros de los departamentos
 $router->get('/departamento/:id', 'Departamentos@obtenerDepartamento'); // Muestra los datos de un departamento
@@ -86,8 +125,6 @@ $router->put('/departamentos/:id/activar', 'Departamentos@activarDepartamento');
 $router->put('/departamentos/:id', 'Departamentos@actualizarDepartamento'); // Actualiza datos de un departamento
 $router->delete('/departamentos/:id', 'Departamentos@eliminarDepartamentos'); // Elimina un area en especifico
 
-
-
 //########################## RUTAS PARA DIRECCIONES #######################################
 
 $router->get('/direcciones/activas', 'Direcciones@ObtenerDireccionesActivas'); // Obtiene todos los datos de todas las direcciones activas
@@ -95,12 +132,10 @@ $router->get('/direcciones/inactivas', 'Direcciones@ObtenerDireccionesInactivas'
 $router->get('/direcciones', 'Direcciones@ObtenerDirecciones'); // Obtiene todos los datos de todas las direcciones
 $router->get('/direcciones/:id', 'Direcciones@ObtenerDireccion'); // Obtiene datos de una direccion en especifico
 $router->post('/direcciones', 'Direcciones@CrearDireccion'); // Crea nuevas direcciones
-$router->put('/direcciones/:id', 'Direcciones@ActualizarDireccion'); // Actualiza datos de una direccion
+$router->post('/direcciones/:id', 'Direcciones@ActualizarDireccion'); // Actualiza datos de una direccion
 $router->put('/direcciones/desactivar/:id', 'Direcciones@DesactivarDireccion'); // Desactiva una direccion
 $router->put('/direcciones/activar/:id', 'Direcciones@ActivarDireccion'); // Activa una direccion
 $router->delete('/direcciones/:id', 'Direcciones@EliminarDireccion'); // Elimina una direccion
-
-
 
 //########################## RUTAS PARA CARRERAS #######################################
 
@@ -114,13 +149,39 @@ $router->put('/carreras/desactivar/:id', 'Carreras@DesactivarCarrera'); // Desac
 $router->put('/carreras/activar/:id', 'Carreras@ActivarCarrera'); // Activa una carrera
 $router->delete('/carreras/:id', 'Carreras@EliminarCarrera'); // Elimina una carrera
 
-//########################## RUTA DE PRUEBA #######################################//login
+//########################## RUTAS PARA CUATRIMESTRES #######################################
+
+$router->get('/cuatrimestres/activas', 'Cuatrimestres@ObtenerCuatrimestresActivos'); // Obtiene todos los datos de todas las cuatrimestres activas
+$router->get('/cuatrimestres/inactivas', 'Cuatrimestres@ObtenerCuatrimestresInactivos'); // Obtiene todos los datos de todas las cuatrimestres inactivas
+$router->get('/cuatrimestres', 'Cuatrimestres@ObtenerCuatrimestres'); // Obtiene todos los datos de todas las cuatrimestres
+$router->get('/cuatrimestres/:id', 'Cuatrimestres@ObtenerCuatrimestre'); // Obtiene datos de una cuatrimestre en especifico
+$router->post('/cuatrimestres', 'Cuatrimestres@CrearCuatrimestre'); // Crea nuevas cuatrimestres
+$router->put('/cuatrimestres/:id', 'Cuatrimestres@ActualizarCuatrimestre'); // Actualiza datos de una cuatrimestre
+$router->put('/cuatrimestres/desactivar/:id', 'Cuatrimestres@DesactivarCuatrimestre'); // Desactiva una cuatrimestre
+$router->put('/cuatrimestres/activar/:id', 'Cuatrimestres@ActivarCuatrimestre'); // Activa una cuatrimestre
+$router->delete('/cuatrimestres/:id', 'Cuatrimestres@EliminarCuatrimestre'); // Elimina una cuatrimestre
+
+//########################## RUTAS PARA MATERIAS #######################################
+
+$router->get('/materias/activas', 'Materias@ObtenerMateriasActivas'); // Obtiene todos los datos de todas las materias activas
+$router->get('/materias/inactivas', 'Materias@ObtenerMateriasInactivas'); // Obtiene todos los datos de todas las materias inactivas
+$router->get('/materias', 'Materias@ObtenerMaterias'); // Obtiene todos los datos de todas las materias
+$router->get('/materias/:id', 'Materias@ObtenerMateria'); // Obtiene datos de una materia en especifico
+$router->post('/materias', 'Materias@CrearMateria'); // Crea nuevas materias
+$router->post('/materias/:id', 'Materias@ActualizarMateria'); // Actualiza datos de una materia
+$router->put('/materias/desactivar/:id', 'Materias@DesactivarMateria'); // Desactiva una materia
+$router->put('/materias/activar/:id', 'Materias@ActivarMateria'); // Activa una materia
+$router->delete('/materias/:id', 'Materias@EliminarMateria'); // Elimina una materia
+
+//########################## RUTA DE LOGIN #######################################
+
 $router->post('/login', 'Login@loginAction');
+
+//########################## RUTA DE PRUEBA #######################################
 
 $router->get('/xd', 'Prueba@index');
 
 //########################## RUTAS POR DEFAULT #######################################
-
 $router->post('/add-book', 'Books@addBook');   
 
 // install system
@@ -149,4 +210,13 @@ $router->get('/authors/:page', 'Books@authors');
 // search author
 $router->get('/authors/:author', 'Books@searchBooksByAuthors');
 $router->get('/authors/:author/:page', 'Books@searchBooksByAuthors');
+
+
+/* GRÁFICAS */
+$router->get('/graficas/documenttipo', 'Graficas@GraficaCantDocumentTipo'); 
+$router->get('/graficas/documentostotales', 'Graficas@TotalDocumentos'); 
+$router->get('/graficas/sinautorizar', 'Graficas@DocumentosSinAutorizar'); 
+
+$router->get('/graficas/sinrevisar', 'Graficas@documentosSinRevisar'); 
+$router->get('/graficas/departamentodoc', 'Graficas@GraficaCantDocumentDepartamento'); 
 
