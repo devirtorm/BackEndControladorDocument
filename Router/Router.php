@@ -10,8 +10,7 @@ $router->get('/', function() {
 
 //recuperacion
 $router->post('/recuperar-contrasena', 'Usuario@solicitarRecuperacion');
-$router->post('/verificar-token', 'Usuario@verificarToken');
-$router->post('/cambiar-contrasena', 'Usuario@cambiarContrasena');
+$router->post('/reset-pass', 'Usuario@cambiarContrasena');
 
 
 //########################## RUTAS PARA USUARIOS #######################################
