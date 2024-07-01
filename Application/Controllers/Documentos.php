@@ -311,5 +311,30 @@ class ControllersDocumentos extends Controller
     }
 
 
+    public function obtener()
+    {
+        // Connect to database
+        $model = $this->model('Documentos');
+
+        $data_list = $model->documentProcesosEspecificos();
+
+        // Send Response
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
+
+    public function buscar()
+    {
+        // Connect to database
+        $model = $this->model('Documentos');
+
+        $data_list = $model->documentosBuscador();
+
+        // Send Response
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
+
+
 
 }

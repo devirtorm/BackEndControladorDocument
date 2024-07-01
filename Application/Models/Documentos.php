@@ -345,4 +345,80 @@ class ModelsDocumentos extends Model
         // Verificar si la fila fue afectada (actualizada)
         return $stmt->rowCount() > 0;
     }
+
+
+/* Consulta para poder obtener la id del archivo que necesitamos descargar desde el nabvar "procesos específicos" */
+public function documentProcesosEspecificos()
+{
+    try {
+        // SQL statement
+        $sql = "SELECT * FROM " . DB_PREFIX . "documento WHERE titulo = 'Proceso especifico'";
+
+        // Execute query
+        $query = $this->db->query($sql);
+
+        // Initialize data as an associative array
+        $data = ['data' => []];
+
+        // Check if there are any rows returned
+        if ($query->num_rows > 0) {
+            foreach ($query->rows as $row) {
+                $data['data'][] = $row;
+            }
+        }
+
+        // Return the data array
+        return $data;
+
+    } catch (\Exception $e) {
+        throw new \Exception('Error ejecutando la consulta: ' . $e->getMessage());
+    }
+}
+
+
+public function documentosBuscador()
+{
+    try {
+        // SQL statement
+        $sql = "SELECT  " . DB_PREFIX . "documento.titulo,
+    documento.url,
+    proceso.proceso,
+    macroproceso.macroproceso AS macroproceso_nombre,
+    subproceso.subproceso,
+    departamento.nombre_departamento,
+    categoria.nombre_categoria,
+    tipo_documento.tipo_documento,
+    documento.num_revision
+FROM documento
+JOIN proceso ON documento.fk_proceso = proceso.id_proceso
+JOIN macroproceso ON proceso.fk_macroproceso = macroproceso.id_macroproceso
+LEFT JOIN subproceso ON documento.fk_subproceso = subproceso.id_subproceso
+JOIN departamento ON documento.fk_departamento = departamento.id_departamento
+JOIN categoria ON documento.fk_categoria = categoria.id_categoria
+JOIN tipo_documento ON documento.fk_tipo_documento = tipo_documento.id_tipo
+WHERE 
+    documento.activo = 1";
+
+        // Execute query
+        $query = $this->db->query($sql);
+
+        // Initialize data as an associative array
+        $data = ['data' => []];
+
+        // Check if there are any rows returned
+        if ($query->num_rows > 0) {
+            foreach ($query->rows as $row) {
+                $data['data'][] = $row;
+            }
+        }
+
+        // Return the data array
+        return $data;
+
+    } catch (\Exception $e) {
+        throw new \Exception('Error ejecutando la consulta: ' . $e->getMessage());
+    }
+}
+
+
 }
