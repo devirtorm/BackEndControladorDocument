@@ -94,6 +94,7 @@ $router->delete('/tipos-documentos/:id', 'TiposDocumentos@eliminarTipoDocumento'
 
 $router->post('/documentos', 'Documentos@crearDocumento'); 
 $router->get('/documentos', 'Documentos@obtenerDocumentos'); 
+$router->get('/especifico', 'Documentos@obtener'); 
 $router->get('/documentos/:id', 'Documentos@obtenerDocumento'); // Muestra los datos de un area
 $router->get('/documentos-desactivados', 'Documentos@obtenerDocumentosDesactivados');
 $router->put('/documentos/:id/desactivar', 'Documentos@desactivarDocumento'); 
@@ -216,7 +217,9 @@ $router->get('/authors/:author/:page', 'Books@searchBooksByAuthors');
 $router->get('/graficas/documenttipo', 'Graficas@GraficaCantDocumentTipo'); 
 $router->get('/graficas/documentostotales', 'Graficas@TotalDocumentos'); 
 $router->get('/graficas/sinautorizar', 'Graficas@DocumentosSinAutorizar'); 
-
 $router->get('/graficas/sinrevisar', 'Graficas@documentosSinRevisar'); 
 $router->get('/graficas/departamentodoc', 'Graficas@GraficaCantDocumentDepartamento'); 
 
+
+/* BUSCADOR */
+$router->get('/buscar', 'Documentos@buscar'); 
