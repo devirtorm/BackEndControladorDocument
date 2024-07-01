@@ -74,7 +74,7 @@ class ControllersDirecciones extends Controller
     
         if ($nombre_direccion && $logo) {
             // Ruta donde se almacenará físicamente la imagen
-            $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\images\\";
+            $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\images\\";
             $target_file = $target_dir . basename($logo["name"]);
             $uploadOk = 1;
             $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
@@ -97,7 +97,7 @@ class ControllersDirecciones extends Controller
             } else {
                 if (move_uploaded_file($logo["tmp_name"], $target_file)) {
                     // URL accesible desde el navegador (almacenada en la base de datos)
-                    $logo_url = "http://localhost/controlador_archivos/backend/images/" . basename($logo["name"]);
+                    $logo_url = "http://localhost/controlador_archivos/backend/asset/images/" . basename($logo["name"]);
     
                     $inserted = $model->createDireccion([
                         'nombre_direccion' => $nombre_direccion,
@@ -135,7 +135,7 @@ class ControllersDirecciones extends Controller
                     error_log("Nombre de dirección recibido: $nombre_direccion");
     
                     if ($logo) {
-                        $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\images\\";
+                        $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\images\\";
                         $target_file = $target_dir . basename($logo["name"]);
                         $uploadOk = 1;
                         $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
@@ -153,7 +153,7 @@ class ControllersDirecciones extends Controller
                             return;
                         } else {
                             if (move_uploaded_file($logo["tmp_name"], $target_file)) {
-                                $logo_url = "http://localhost/controlador_archivos/backend/images/" . basename($logo["name"]);
+                                $logo_url = "http://localhost/controlador_archivos/backend/asset/images/" . basename($logo["name"]);
                                 error_log("Archivo subido exitosamente: $logo_url");
                             } else {
                                 echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.']);
