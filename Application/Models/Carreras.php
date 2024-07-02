@@ -82,7 +82,7 @@ class ModelsCarreras extends Model
         }
     }
 
-    public function CarrerasPorDireccion($fk_direccion)
+    public function CarrerasPorDireccion($fk)
     {
         try {
             $sql = "SELECT c.*, d.nombre_direccion 
@@ -91,7 +91,7 @@ class ModelsCarreras extends Model
                     WHERE c.fk_direccion = ?
                     AND c.activo = 1";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute([$fk_direccion]);
+            $stmt->execute([$fk]);
 
             if ($stmt->rowCount() > 0) {
                 return $stmt->fetchAll(PDO::FETCH_ASSOC);
