@@ -101,7 +101,7 @@ $router->post('/documentos', 'Documentos@crearDocumento');
 $router->get('/documentos/:id', 'Documentos@obtenerDocumentos'); 
 $router->get('/especifico', 'Documentos@obtener'); 
 $router->get('/documentos/:id', 'Documentos@obtenerDocumento'); // Muestra los datos de un area
-$router->get('/documentos-desactivados', 'Documentos@obtenerDocumentosDesactivados');
+$router->get('/documentos-desactivados/:id', 'Documentos@obtenerDocumentosDesactivados');
 $router->put('/documentos/:id/desactivar', 'Documentos@desactivarDocumento'); 
 $router->put('/documentos/:id/activar', 'Documentos@activarDocumento'); 
 $router->post('/documentos/:id', 'Documentos@actualizarDocumento'); 

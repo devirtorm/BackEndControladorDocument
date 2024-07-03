@@ -18,13 +18,13 @@ class ControllersDocumentos extends Controller
         $this->response->setContent($data_list);
     }
 
-    public function obtenerDocumentosDesactivados()
+    public function obtenerDocumentosDesactivados($param)
     {
 
         // Connect to database
         $model = $this->model('Documentos');
 
-        $data_list = $model->documentos(0);
+        $data_list = $model->documentos(0,$param['id']);
 
         // Send Response
         $this->response->sendStatus(200);
