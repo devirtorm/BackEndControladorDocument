@@ -49,6 +49,74 @@ class ModelsProcesos extends Model {
         return $data;
     }
 
+    public function getProcesosByDepartamento($id) {
+        // Sanitizar el ID para prevenir SQL Injection
+        $id = (int)$id;
+        
+        // Construir la consulta SQL
+        $sql = "SELECT dp.fk_departamento,
+                       dp.fk_proceso,
+                       d.nombre_departamento,
+                       p.proceso,
+					   mp.macroproceso
+                FROM departamentoProceso dp
+                INNER JOIN departamento d ON dp.fk_departamento = d.id_departamento
+                INNER JOIN proceso p ON dp.fk_proceso = p.id_proceso
+				INNER JOIN macroproceso mp on p.fk_macroproceso=mp.id_macroproceso
+                WHERE d.activo = 1 AND dp.fk_departamento = $id";
+    
+        // Ejecutar la consulta
+        $query = $this->db->query($sql);
+    
+        // Inicializar data como un array vacío
+        $data = [];
+    
+        // Verificar si hay filas
+        if ($query->num_rows) {
+            foreach ($query->rows as $value) {
+                $data['data'][] = $value;
+            }
+        } else {
+            $data['data'] = [];
+        }
+    
+        // Devolver el array de datos
+        return $data;
+    }
+
+
+/* obtener el subproceso dependiendo del proceso que seleccione en el select del front */
+    public function getSubprocesosByProceso($id) {
+        // Sanitizar el ID para prevenir SQL Injection
+        $id = (int)$id;
+        
+        // Construir la consulta SQL
+        $sql = "select*from subproceso
+	where activo =1 and fk_proceso=$id
+";
+    
+        // Ejecutar la consulta
+        $query = $this->db->query($sql);
+    
+        // Inicializar data como un array vacío
+        $data = [];
+    
+        // Verificar si hay filas
+        if ($query->num_rows) {
+            foreach ($query->rows as $value) {
+                $data['data'][] = $value;
+            }
+        } else {
+            $data['data'] = [];
+        }
+    
+        // Devolver el array de datos
+        return $data;
+    }
+    
+    
+
+
     public function proceso($id) {
         $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "proceso WHERE id_proceso = $id");
 

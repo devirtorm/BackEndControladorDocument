@@ -26,10 +26,10 @@ class ModelsDocumentos extends Model
         return $data;
     }
 
-    public function documentos($activo)
+    public function documentos($activo,$id)
     {
         // sql statement
-        $sql = "SELECT * FROM " . DB_PREFIX . "documento WHERE activo = $activo";
+        $sql = "SELECT * FROM " . DB_PREFIX . "documento WHERE activo = $activo and fk_departamento=$id";
 
         // exec query
         $query = $this->db->query($sql);

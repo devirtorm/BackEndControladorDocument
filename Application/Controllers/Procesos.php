@@ -31,6 +31,32 @@ class ControllersProcesos extends Controller
         $this->response->sendStatus(200);
         $this->response->setContent($data_list);
     }
+    public function ObtenerProcesoByDepartamentoId($param)
+    {
+        // Connect to database
+        $model = $this->model('Procesos');
+
+        $data_list = $model->getProcesosByDepartamento($param['id']);
+
+        // Send Response
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
+
+
+/* obtener el subproceso dependiendo del proceso que seleccione en el select del front */
+    public function ObtenerSubProcesoByProcesoId($param)
+    {
+        // Connect to database
+        $model = $this->model('Procesos');
+
+        $data_list = $model->getSubprocesosByProceso($param['id']);
+
+        // Send Response
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
+
 
 
     public function obtenerProceso($param) {

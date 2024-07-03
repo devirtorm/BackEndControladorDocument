@@ -68,7 +68,8 @@ $router->put('/procesos/:id/desactivar', 'Procesos@desactivarProceso'); // Desac
 $router->put('/procesos/:id/activar', 'Procesos@activarProceso'); // Activa un subproceso
 $router->put('/procesos/:id', 'Procesos@actualizarProceso'); // Actualiza datos de un subproceso
 $router->get('/procesos-macroprocesos/:id', 'Procesos@ObtenerProcesoByMacroId'); // recibe el id perteneciente a macroproceso para buscar
-
+$router->get('/procesos-departamento/:id', 'Procesos@ObtenerProcesoByDepartamentoId'); // recibe el id del departamento para obtener los procesos del usuario logueado
+$router->get('/subproceso-proceso/:id', 'Procesos@ObtenerSubProcesoByProcesoId'); // recibe el id del departamento para obtener los procesos del usuario logueado
 
 
 //########################## RUTAS PARA AREA #######################################
@@ -97,7 +98,7 @@ $router->delete('/tipos-documentos/:id', 'TiposDocumentos@eliminarTipoDocumento'
 //########################## RUTAS PARA DOCUMENTOS #######################################
 
 $router->post('/documentos', 'Documentos@crearDocumento'); 
-$router->get('/documentos', 'Documentos@obtenerDocumentos'); 
+$router->get('/documentos/:id', 'Documentos@obtenerDocumentos'); 
 $router->get('/especifico', 'Documentos@obtener'); 
 $router->get('/documentos/:id', 'Documentos@obtenerDocumento'); // Muestra los datos de un area
 $router->get('/documentos-desactivados', 'Documentos@obtenerDocumentosDesactivados');
