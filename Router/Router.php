@@ -124,14 +124,24 @@ $router->delete('/categorias/:id', 'Categorias@eliminarCategoria');
 
 //########################## RUTAS PARA DEPARTAMENTOS  #######################################
 
-$router->post('/departamentos', 'Departamentos@crearDepartamento'); // Crea nuevas areas
+$router->post('/departamentos', 'Departamentos@crearDepartamento'); // Crea nuevos departamentos
 $router->get('/departamentos', 'Departamentos@obtenerDepartamentos'); // Muestra los registros de los departamentos
 $router->get('/departamento/:id', 'Departamentos@obtenerDepartamento'); // Muestra los datos de un departamento
-$router->get('/departamentos/desactivados', 'Departamentos@obtenerDepartamentosDesactivados'); // Muestra los registros de las areas
+$router->get('/departamentos/desactivados', 'Departamentos@obtenerDepartamentosDesactivados'); // Muestra los registros desactivados de los departamentos
 $router->put('/departamentos/:id/desactivar', 'Departamentos@desactivarDepartamento'); // Desactiva un departamento en especifico 
 $router->put('/departamentos/:id/activar', 'Departamentos@activarDepartamento'); // Activa un departamento en especifico
 $router->put('/departamentos/:id', 'Departamentos@actualizarDepartamento'); // Actualiza datos de un departamento
 $router->delete('/departamentos/:id', 'Departamentos@eliminarDepartamentos'); // Elimina un area en especifico
+//########################## RUTAS PARA DEPARTAMENTOS PROCESOS  #######################################
+
+$router->post('/departamentoproceso', 'DepartamentoProceso@crearDepartamentoProceso'); // Crea nuevas areas
+$router->get('/departamentoproceso', 'DepartamentoProceso@departamentoproceso'); // Muestra los registros de los departamentos proceso
+$router->get('/departamentoproceso/:id', 'Departamentos@obtenerDepartamento'); // Muestra los datos de un departamento
+$router->get('/departamentoproceso/desactivados', 'DepartamentoProceso@depaproceso'); // Muestra los registros de las areas
+$router->put('/departamentoproceso/:id/desactivar', 'DepartamentoProceso@desactivarDepartamentoProceso'); // Desactiva un departamento en especifico 
+$router->put('/departamentoproceso/:id/activar', 'Departamentos@activarDepartamento'); // Activa un departamento en especifico
+$router->put('/departamentoproceso/:id', 'Departamentos@actualizarDepartamento'); // Actualiza datos de un departamento
+$router->delete('/departamentoproceso/:id', 'Departamentos@eliminarDepartamentos'); // Elimina un area en especifico
 
 //########################## RUTAS PARA DIRECCIONES #######################################
 

@@ -79,10 +79,10 @@ class ControllersUsuario extends Controller
         $data = json_decode($json_data, true);
     
         if ($data !== null && isset($data['correo']) && isset($data['contrasenia']) && isset($data['fk_departamento']) && isset($data['fk_rol'])) {
-            $correo = filter_var($data['correo'], FILTER_SANITIZE_STRING);
-            $contrasenia = filter_var($data['contrasenia'], FILTER_SANITIZE_STRING);
-            $fk_departamento = filter_var($data['fk_departamento'], FILTER_SANITIZE_STRING);
-            $fk_rol = filter_var($data['fk_rol'], FILTER_SANITIZE_STRING);
+            $correo = filter_var($data['correo'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $contrasenia = filter_var($data['contrasenia'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $fk_departamento = filter_var($data['fk_departamento'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $fk_rol = filter_var($data['fk_rol'], FILTER_SANITIZE_SPECIAL_CHARS);
             $inserted = $model->insertUsuario(['correo' => $correo, 'contrasenia' => $contrasenia, 'fk_departamento' => $fk_departamento, 'fk_rol' => $fk_rol]);
     
             if ($inserted) {
@@ -93,6 +93,69 @@ class ControllersUsuario extends Controller
         } else {
             echo json_encode(['message' => 'Error: Los datos de proceso son inválidos o incompletos.']);
         }
+    }
+    public function cambiarContrasena() {
+        $model = $this->model('Usuario');
+        $json_data = file_get_contents('php://input');
+        error_log("JSON Data: " . $json_data);
+        $data = json_decode($json_data, true);
+        
+        if ($data !== null && isset($data['token']) && isset($data['contrasenia']) && isset($data['passconfi'])) {
+            $token = filter_var($data['token'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $contrasenia = filter_var($data['contrasenia'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $passconfi = filter_var($data['passconfi'], FILTER_SANITIZE_SPECIAL_CHARS);
+            
+            $usuario = $model->obtenerUsuarioPorToken($token);
+            
+            if ($usuario) {
+                if ($contrasenia === $passconfi) {
+                    if ($model->actualizarContraseña($usuario['id_usuario'], $contrasenia)) {
+                        echo json_encode(['message' => 'Contraseña actualizada correctamente.']);
+                    } else {
+                        echo json_encode(['message' => 'Error al actualizar la contraseña.']);
+                    }
+                } else {
+                    echo json_encode(['message' => 'Las contraseñas no coinciden.']);
+                }
+            } 
+        } else {
+            echo json_encode(['message' => 'Error: Los datos de proceso son inválidos o incompletos.']);
+        }
+    }
+
+    public function obtenerUsuarioPorToken($token) {
+        $this->limpiarTokensExpirados();
+        $sql = "SELECT u.* FROM " . DB_PREFIX . "usuario u 
+                INNER JOIN " . DB_PREFIX . "token_recuperacion t ON u.id = t.id_usuario 
+                WHERE t.token = ? AND t.expiracion > NOW()";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(1, $token, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function actualizarContraseña($userId, $nuevaContrasenia) {
+        // Hashear la contraseña antes de guardarla
+        $hashedPassword = password_hash($nuevaContrasenia, PASSWORD_DEFAULT);
+
+        $sql = "UPDATE " . DB_PREFIX . "usuario SET password = ? WHERE id = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(1, $hashedPassword, PDO::PARAM_STR);
+        $stmt->bindParam(2, $userId, PDO::PARAM_INT);
+
+        if ($stmt->execute()) {
+            // Si la actualización fue exitosa, eliminar el token
+            $this->eliminarToken($userId);
+            return true;
+        }
+        return false;
+    }
+
+    private function eliminarToken($userId) {
+        $sql = "DELETE FROM " . DB_PREFIX . "token_recuperacion WHERE id_usuario = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(1, $userId, PDO::PARAM_INT);
+        return $stmt->execute();
     }
 
     
@@ -269,6 +332,7 @@ class ControllersUsuario extends Controller
         } 
     }
     
+
     
     
 

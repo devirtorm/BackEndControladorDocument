@@ -1,17 +1,21 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 
 use MVC\Controller;
-
-class ControllersDepartamentos extends Controller
+require 'vendor/autoload.php';
+class ControllersDepartamentoProceso extends Controller
 {
+   
 
-    public function obtenerDepartamentos()
+    public function departamentoproceso()
     {
 
         // Connect to database
-        $model = $this->model('Departamentos');
+        $model = $this->model('DepartamentoProceso');
 
-        $data_list = $model->departamentos(1);
+        $data_list = $model->departamentoproceso(1);
 
         // Send Response
         $this->response->sendStatus(200);
@@ -19,74 +23,71 @@ class ControllersDepartamentos extends Controller
     }
 
 
+    public function obtenerUsuario($param) {
 
-    public function obtenerDepartamento($param) {
-
-            $model = $this->model('Departamentos');
-            $result = $model->departamentos($param['id']);
+            $model = $this->model('Usuario');
+            $result = $model->usuario($param['id']);
 
             // Send Response
             $this->response->sendStatus(200);
             $this->response->setContent($result);
     } 
     
-    public function obtenerDepartamentosDesactivados()
+    public function usuariosDesactivados()
     {
-        // Connect to database
-        $model = $this->model('Departamentos');
 
-        $data_list = $model->departamentos(0);
+        // Connect to database
+        $model = $this->model('Usuario');
+
+        $data_list = $model->usuario(0);
 
         // Send Response
         $this->response->sendStatus(200);
         $this->response->setContent($data_list);
     }
 
-    public function crearDepartamento() {
-        $model = $this->model('Departamentos');
+    public function crearDepartamentoProceso() {
+        $model = $this->model('DepartamentoProceso');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
         $data = json_decode($json_data, true);
-        
-        if ($data !== null && isset($data['nombre_departamento'], $data['fk_area'])) {
-            $nombre_departamento = filter_var($data['nombre_departamento'], FILTER_SANITIZE_SPECIAL_CHARS);
-            $fk_area = filter_var($data['fk_area'], FILTER_SANITIZE_SPECIAL_CHARS);
+    
+        if ($data !== null && isset($data['fk_departamento']) && isset($data['fk_proceso'])) {
+            $fk_departamento = filter_var($data['fk_departamento'], FILTER_SANITIZE_SPECIAL_CHARS);
+           $fk_proceso = filter_var($data['fk_proceso'], FILTER_SANITIZE_SPECIAL_CHARS);
             
-            $inserted = $model->insertDepartamento([
-                'nombre_departamento' => $nombre_departamento, 
-                'fk_area' => $fk_area
-            ]);
-            
+       
+            $inserted = $model->insertDepartamento(['fk_departamento' => $fk_departamento, 'fk_proceso' => $fk_proceso]);
+    
             if ($inserted) {
-                echo json_encode(['message' => 'Departamento guardado correctamente.']);
+                echo json_encode(['message' => 'Departamento proceso guardado correctamente.']);
             } else {
-                echo json_encode(['message' => 'Error al guardar Departamento.']);
+                echo json_encode(['message' => 'Error al guardar Departamento proceso']);
             }
         } else {
-            echo json_encode(['message' => 'Error: Los datos del departamento son inválidos o incompletos.']);
+            echo json_encode(['message' => 'Error: Los datos de proceso son inválidos o incompletos.']);
         }
     }
-    
 
     
-    public function eliminarDepartamentos($param) {
+    public function eliminarProceso($param) {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
-            $model = $this->model('Departamentos');
+            $model = $this->model('Procesos');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-            $deleted = $model->eliminarDepartamento($id);
+            $deleted = $model->eliminarProceso($id);
     
             // Preparar la respuesta
             if ($deleted) {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'departamento eliminado correctamente.'
+                    'message' => 'Proceso eliminado correctamente.'
                 ]);
             } else {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Error: No se pudo eliminar este departamento.'
+                    'message' => 'Error: No se pudo eliminar el proceso.'
                 ]);
             }
         } else {
@@ -98,16 +99,29 @@ class ControllersDepartamentos extends Controller
         }
     }
     
+
+    
+
+
+
+
     // Método auxiliar para validar el ID
     private function validId($id) {
         return filter_var($id, FILTER_VALIDATE_INT) !== false && $id > 0;
     }
+    public function depaproceso()
+    {
+        $model = $this->model('DepartamentoProceso');
+        $data_list = $model->departamentoprocesos(0);
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
 
-    public function desactivarDepartamento($param) {
+    public function desactivarDepartamentoProceso($param) {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
-            $model = $this->model('Departamentos');
+            $model = $this->model('DepartamentoProceso');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
             $updated = $model->actualizarActivo($id, 0);
     
@@ -115,12 +129,12 @@ class ControllersDepartamentos extends Controller
             if ($updated) {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Departamento desactivado correctamente.'
+                    'message' => 'Usuario desactivado correctamente.'
                 ]);
             } else {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Error: No se pudo desactivar el departamento.'
+                    'message' => 'Error: No se pudo desactivar el usuario.'
                 ]);
             }
         } else {
@@ -132,11 +146,11 @@ class ControllersDepartamentos extends Controller
         }
     }
 
-    public function activarDepartamento($param) {
+    public function activarUsuario($param) {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
-            $model = $this->model('Departamentos');
+            $model = $this->model('Usuario');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
             $updated = $model->actualizarActivo($id, 1);
     
@@ -144,13 +158,12 @@ class ControllersDepartamentos extends Controller
             if ($updated) {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Departamento activado correctamente.'
-
+                    'message' => 'Proceso desactivado correctamente.'
                 ]);
             } else {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Error: No se pudo activar el departamento.'
+                    'message' => 'Error: No se pudo desactivar el proceso.'
                 ]);
             }
         } else {
@@ -162,30 +175,27 @@ class ControllersDepartamentos extends Controller
         }
     }
     
-    public function actualizarDepartamento($param) {
-        $model = $this->model('Departamentos');
+
+    public function actualizarProceso($param) {
+        $model = $this->model('Procesos');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
         $data = json_decode($json_data, true);
-        
+    
         // Verificar si los datos son válidos
-        if ($data !== null && isset($data['nombre_departamento']) && isset($data['fk_area'])) {
-            $nombre_departamento = filter_var($data['nombre_departamento'], FILTER_SANITIZE_SPECIAL_CHARS);
-            $fk_area = filter_var($data['fk_area'], FILTER_SANITIZE_NUMBER_INT);
+        if ($data !== null && isset($data['proceso']) && isset($data['proposito'])) {
+            $proceso = filter_var($data['proceso'], FILTER_SANITIZE_STRING);
+            $proposito = filter_var($data['proposito'], FILTER_SANITIZE_STRING);
             
             if (isset($param['id']) && $this->validId($param['id'])) {
-                // Actualizar el departamento existente
+                // Actualizar el área existente
                 $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-                $updated = $model->updateDepartamento([
-                    'id' => $id, 
-                    'nombre_departamento' => $nombre_departamento,
-                    'fk_area' => $fk_area
-                ]);
-                
+                $updated = $model->updateProceso(['id' => $id, 'proceso' => $proceso, 'proposito' => $proposito]);
+        
                 if ($updated) {
                     $this->response->sendStatus(200);
                     $this->response->setContent([
-                        'message' => 'Departamento actualizado correctamente.'
+                        'message' => 'Departamento actualizada correctamente.'
                     ]);
                 } else {
                     $this->response->sendStatus(500);
@@ -193,18 +203,8 @@ class ControllersDepartamentos extends Controller
                         'message' => 'Error: No se pudo actualizar el departamento.'
                     ]);
                 }
-            } else {
-                $this->response->sendStatus(400);
-                $this->response->setContent([
-                    'message' => 'Error: ID de departamento inválido.'
-                ]);
-            }
-        } else {
-            $this->response->sendStatus(400);
-            $this->response->setContent([
-                'message' => 'Error: Datos incompletos o inválidos.'
-            ]);
-        }
+            } 
+        } 
     }
     
     

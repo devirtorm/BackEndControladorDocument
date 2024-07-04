@@ -2,23 +2,25 @@
 
 use MVC\Model;
 
-class ModelsUsuario extends Model {
+class ModelsDepartamentoProceso  extends Model {
 
-    public function usuario($activo) {
+    public function departamentoproceso($activo) {
         // sql statement
         $sql = "SELECT 
-    u.*,
-    r.nombre_rol,
-    d.nombre_departamento
-FROM 
-    usuario u
-JOIN 
-    rol r ON u.fk_rol = r.id_rol
-JOIN 
-    departamento d ON u.fk_departamento = d.id_departamento
-WHERE 
-    u.activo = $activo
-";
+        dp.id_departamentoProceso,
+        d.nombre_departamento,
+        p.proceso,
+        dp.fecha,
+        dp.hora,
+        dp.activo
+    FROM 
+        " . DB_PREFIX . "departamentoProceso dp
+    JOIN 
+        " . DB_PREFIX . "departamento d ON dp.fk_departamento = d.id_departamento
+    JOIN 
+        " . DB_PREFIX . "proceso p ON dp.fk_proceso = p.id_proceso
+    WHERE 
+        dp.activo = 1";
     
         // exec query
         $query = $this->db->query($sql);
@@ -38,6 +40,39 @@ WHERE
         // Return the data array
         return $data;
     }
+    public function departamentoprocesos($activo) {
+        $sql = "SELECT 
+        dp.id_departamentoProceso,
+        d.nombre_departamento,
+        p.proceso,
+        dp.fecha,
+        dp.hora,
+        dp.activo
+    FROM 
+        " . DB_PREFIX . "departamentoProceso dp
+    JOIN 
+        " . DB_PREFIX . "departamento d ON dp.fk_departamento = d.id_departamento
+    JOIN 
+        " . DB_PREFIX . "proceso p ON dp.fk_proceso = p.id_proceso
+    WHERE 
+        dp.activo = $activo";
+    
+        // exec query
+        $query = $this->db->query($sql);
+    
+        // Initialize data as an empty array
+        $data = [];
+    
+        $data = [];
+        if ($stmt->rowCount() > 0) {
+            $data['data'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $data['data'] = [];
+        }
+    
+        return $data;
+    }
+    
     public function proceso($id) {
         $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "proceso WHERE id_proceso = $id");
 
@@ -53,35 +88,14 @@ WHERE
 
         return $data;
     }   
-    public function buscarUsuarioPorCorreo($correo) {
-        $sql = "SELECT * FROM " . DB_PREFIX . "usuario WHERE correo = ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(1, $correo, PDO::PARAM_STR);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-    public function limpiarTokensExpirados() {
-        $sql = "DELETE FROM " . DB_PREFIX . "token_recuperacion WHERE expiracion < NOW()";
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute();
-    }
 
-    public function guardarToken($idUsuario, $token, $expiracion) {
-        $this->limpiarTokensExpirados();
-        $sql = "INSERT INTO " . DB_PREFIX . "token_recuperacion (id_usuario, token, expiracion) VALUES (?, ?, ?)";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(1, $idUsuario, PDO::PARAM_INT);
-        $stmt->bindParam(2, $token, PDO::PARAM_STR);
-        $stmt->bindParam(3, $expiracion, PDO::PARAM_STR);
-        return $stmt->execute();
-    }
+
     
-    public function insertUsuario($usuarioData) {
+    public function insertDepartamento($usuarioData) {
         // Extract person data
-        $correo = $usuarioData['correo'];
-        $contrasenia = $usuarioData['contrasenia'];
         $fk_departamento = $usuarioData['fk_departamento'];
-        $fk_rol = $usuarioData['fk_rol'];
+        $fk_proceso = $usuarioData['fk_proceso'];
+    
     
         try {
             // Get current date and time
@@ -92,18 +106,17 @@ WHERE
 
             
             // Prepare SQL statement
-            $sql = "INSERT INTO " . DB_PREFIX . "usuario(correo, contrasenia, fecha, hora, activo,fk_departamento,fk_rol) VALUES (?, ?, ?, ?, ?,?,?)";
+            $sql = "INSERT INTO " . DB_PREFIX . "departamentoProceso(fk_departamento, fk_proceso, fecha, hora, activo) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
     
             // Bind parameters
-            $stmt->bindParam(1, $correo, PDO::PARAM_STR);
-            $stmt->bindParam(2, $contrasenia, PDO::PARAM_STR);
+            $stmt->bindParam(1, $fk_departamento, PDO::PARAM_STR);
+            $stmt->bindParam(2, $fk_proceso, PDO::PARAM_STR);
           
             $stmt->bindParam(3, $fecha, PDO::PARAM_STR);
             $stmt->bindParam(4, $hora, PDO::PARAM_STR);
             $stmt->bindParam(5, $activo, PDO::PARAM_STR);
-            $stmt->bindParam(6, $fk_departamento, PDO::PARAM_STR);
-            $stmt->bindParam(7, $fk_rol, PDO::PARAM_STR);
+        
     
             // Execute the query
             $stmt->execute();
@@ -149,7 +162,6 @@ WHERE
     public function eliminarProceso($id) {
         // Escapar el id para evitar inyecciones SQL
         $id = (int)$id;
-        
     
         // sql statement
         $sql = "DELETE FROM " . DB_PREFIX . "proceso WHERE id_proceso = " . $id;
@@ -181,32 +193,7 @@ WHERE
         return $stmt->rowCount() > 0;
     }
     
-    public function obtenerUsuarioPorToken($token) {
-        $this->limpiarTokensExpirados();
-        $sql = "SELECT u.* FROM " . DB_PREFIX . "usuario u
-                INNER JOIN " . DB_PREFIX . "token_recuperacion t ON u.id_usuario = t.id_usuario
-                WHERE t.token = ? AND t.expiracion > NOW()";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(1, $token, PDO::PARAM_STR);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
     
-    public function actualizarContraseña($userId, $nuevaContrasenia) {
-        $sql = "UPDATE " . DB_PREFIX . "usuario SET contrasenia = ? WHERE id_usuario = ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(1, $nuevaContrasenia, PDO::PARAM_STR);
-        $stmt->bindParam(2, $userId, PDO::PARAM_INT);
     
-        if ($stmt->execute()) {
-            // Si la actualización fue exitosa, eliminar el token
-           
-            return true;
-        }
-        return false;
-    }
-
- 
+    
 }
-    
-    

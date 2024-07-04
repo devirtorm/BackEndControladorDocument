@@ -7,7 +7,10 @@ class ModelsDepartamentos extends Model {
 
     public function departamentos($activo) {
         // sql statement
-        $sql = "SELECT * FROM " . DB_PREFIX . "departamento WHERE activo = $activo";
+        $sql = "SELECT d.*, a.nombre_area
+FROM " . DB_PREFIX . "departamento d
+JOIN area a ON d.fk_area = a.id_area
+WHERE d.activo = $activo";
     
         // exec query
         $query = $this->db->query($sql);
@@ -15,30 +18,21 @@ class ModelsDepartamentos extends Model {
         // Initialize data as an empty array
         $data = [];
     
-        // Check if there are any rows
+    
+        // consultar si hay alguna fila
         if ($query->num_rows) {
             foreach($query->rows as $value) {
-                // Call the 'area' function to get the area data
-                $area_data = $this->area($value['fk_area']);
-    
-                // Add the area data to the department data
-                $value['area'] = $area_data['data'];
-    
-                // Call the 'getPersonById' function to get the person data
-                $person_data = $this->persona($value['fk_persona']);
-    
-                // Add the person data to the department data
-                $value['persona'] = $person_data['data'];
-    
-                // Add the department data to the result
+                // agregar datos de categorias al resultado
                 $data['data'][] = $value;
             }
         } else {
             $data['data'] = [];
         }
     
-        // Return the data array
+        // Retorna los datos del array
         return $data;
+    
+      
     }
 
     public function persona($id) {
@@ -103,72 +97,64 @@ class ModelsDepartamentos extends Model {
     }   
     
     
-    public function insertDepartamento($areaData) {
-        // Extract person data
-        $nombre_departamento = $areaData['nombre_departamento'];
-        $fk_area = $areaData['fk_area'];
-        $fk_persona = $areaData['fk_persona'];
-
-
+    public function insertDepartamento($departamentoData) {
+        // Extract department data
+        $nombre_departamento = $departamentoData['nombre_departamento'];
+        $fk_area = $departamentoData['fk_area'];
     
         try {
             // Get current date and time
             $fecha = date('Y-m-d');
             $hora = date('H:i:s');
             $activo = 1;
-
-
-            
+    
             // Prepare SQL statement
-            $sql = "INSERT INTO " . DB_PREFIX . "departamento (nombre_departamento, fk_persona, fk_area, fecha, hora, activo) VALUES (?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO " . DB_PREFIX . "departamento (nombre_departamento, fk_area, fecha, hora, activo) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
     
             // Bind parameters
-            $stmt->bindParam(1, $nombre_departamento, PDO::PARAM_STR);
-            $stmt->bindParam(2, $fk_persona, PDO::PARAM_STR);
-            $stmt->bindParam(3, $fk_area, PDO::PARAM_STR);
-            $stmt->bindParam(4, $fecha, PDO::PARAM_STR);
-            $stmt->bindParam(5, $hora, PDO::PARAM_STR);
-            $stmt->bindParam(6, $activo, PDO::PARAM_STR);
+            $stmt->bindParam(1, $nombre_departamento, PDO::PARAM_STR); 
+            $stmt->bindParam(2, $fk_area, PDO::PARAM_STR);
+            $stmt->bindParam(3, $fecha, PDO::PARAM_STR);
+            $stmt->bindParam(4, $hora, PDO::PARAM_STR);
+            $stmt->bindParam(5, $activo, PDO::PARAM_INT);
     
             // Execute the query
             $stmt->execute();
     
             // Check if the query was successful
             if ($stmt->rowCount() > 0) {
-                // Person inserted successfully
+                // Department inserted successfully
                 return true;
             } else {
-                // Failed to insert person
+                // Failed to insert department
                 return false;
             }
         } catch (PDOException $e) {
             // Handle any potential errors here
+            error_log("Error en insertDepartamento: " . $e->getMessage());
             return false;
         }
     }
 
-
     public function updateDepartamento($departamentoData) {
         $id = $departamentoData['id'];
         $nombre_departamento = $departamentoData['nombre_departamento'];
-        $fk_persona = $departamentoData['fk_persona'];
         $fk_area = $departamentoData['fk_area'];
     
         try {
-            $sql = "UPDATE " . DB_PREFIX . "departamento SET nombre_departamento = ?, fk_persona = ?, fk_area = ? WHERE id_departamento = ?";
+            $sql = "UPDATE " . DB_PREFIX . "departamento SET nombre_departamento = ?, fk_area = ? WHERE id_departamento = ?";
             $stmt = $this->db->prepare($sql);
     
             $stmt->bindParam(1, $nombre_departamento, PDO::PARAM_STR);
-            $stmt->bindParam(2, $fk_persona, PDO::PARAM_STR);
-            $stmt->bindParam(3, $fk_area, PDO::PARAM_STR);
-            $stmt->bindParam(4, $id, PDO::PARAM_INT);
+            $stmt->bindParam(2, $fk_area, PDO::PARAM_INT);
+            $stmt->bindParam(3, $id, PDO::PARAM_INT);
     
             $stmt->execute();
     
             return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
-            error_log("error al actualizar area: " . $e->getMessage());
+            error_log("Error al actualizar departamento: " . $e->getMessage());
             return false;
         }
     }
@@ -196,7 +182,7 @@ class ModelsDepartamentos extends Model {
         $activo = (int)$activo;
     
         // sql statement
-        $sql = "UPDATE " . DB_PREFIX . "departamento SET activo = :activo WHERE id_departamento = :id";
+        $sql = "UPDATE " . DB_PREFIX . "departamentoProceso SET activo = :activo WHERE id_departamentopr = :id";
     
         // Preparar y ejecutar la consulta
         $stmt = $this->db->prepare($sql);
