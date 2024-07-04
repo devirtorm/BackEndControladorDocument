@@ -69,7 +69,7 @@ class ControllersMaterias extends Controller
         error_log("FK Cuatrimestre: " . $fk_cuatrimestre);
 
         if ($nombre_materia && $archivo_materia && $fk_carrera && $fk_cuatrimestre !== null) {
-            $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\document\\";
+            $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\document\\";
             $target_file = $target_dir . basename($archivo_materia["name"]);
             $uploadOk = 1;
             $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
@@ -83,7 +83,7 @@ class ControllersMaterias extends Controller
                 echo json_encode(['message' => 'Lo siento, tu archivo no fue subido.']);
             } else {
                 if (move_uploaded_file($archivo_materia["tmp_name"], $target_file)) {
-                    $archivo_materia_url = "http://localhost/controlador_archivos/backend/document/" . basename($archivo_materia["name"]);
+                    $archivo_materia_url = "http://localhost/controlador_archivos/backend/asset/document/" . basename($archivo_materia["name"]);
 
                     $inserted = $model->createMateria([
                         'nombre_materia' => $nombre_materia,
@@ -125,7 +125,7 @@ class ControllersMaterias extends Controller
     
         if ($nombre_materia && $fk_carrera && $fk_cuatrimestre) {
             if ($archivo_materia) {
-                $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\document\\";
+                $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\document\\";
                 $target_file = $target_dir . basename($archivo_materia["name"]);
                 $uploadOk = 1;
                 $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
@@ -144,7 +144,7 @@ class ControllersMaterias extends Controller
                     return;
                 } else {
                     if (move_uploaded_file($archivo_materia["tmp_name"], $target_file)) {
-                        $archivo_url = "http://localhost/controlador_archivos/backend/document/" . basename($archivo_materia["name"]);
+                        $archivo_url = "http://localhost/controlador_archivos/backend/asset/document/" . basename($archivo_materia["name"]);
                     } else {
                         echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.']);
                         return;

@@ -21,7 +21,7 @@ class ControllersLogin extends Controller
               
             // Devolver el correo electrónico y el ID de la persona en la respuesta JSON
             $this->response->sendStatus(200);
-            $this->response->setContent(json_encode([
+            $this->response->setContent(([
                 'email' => $user['correo'],
                 'id_usuario' => $user['id_usuario'],
                 'contrasenia' => $user['contrasenia'],
