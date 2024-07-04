@@ -17,6 +17,19 @@ class ControllersDocumentos extends Controller
         $this->response->sendStatus(200);
         $this->response->setContent($data_list);
     }
+    public function obtenerDocumentosByid($param)
+    {
+
+        // Connect to database
+        $model = $this->model('Documentos');
+
+        $data_list = $model->documentoDetalle(1,$param['id']);
+
+        // Send Response
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
+
 
     public function obtenerDocumentosDesactivados($param)
     {
@@ -255,7 +268,7 @@ class ControllersDocumentos extends Controller
     
         $required_fields = [
             'titulo', 'fk_departamento', 'nombre_macro_proceso', 'nombre_proceso', 
-            'nombre_departamento', 'fk_subproceso', 'fk_proceso', 'fk_categoria', 
+            'nombre_departamento', 'fk_proceso', 'fk_categoria', 
             'fk_tipo_documento', 'num_revision', 'fecha_emision'
         ];
     
@@ -271,7 +284,7 @@ class ControllersDocumentos extends Controller
         $fk_departamento = filter_var($_POST['fk_departamento'], FILTER_SANITIZE_NUMBER_INT);
         $fk_categoria = filter_var($_POST['fk_categoria'], FILTER_SANITIZE_NUMBER_INT);
         $fk_tipo_documento = filter_var($_POST['fk_tipo_documento'], FILTER_SANITIZE_NUMBER_INT);
-        $fk_subproceso = filter_var($_POST['fk_subproceso'], FILTER_SANITIZE_NUMBER_INT);
+        $fk_subproceso = isset($_POST['fk_subproceso']) && $_POST['fk_subproceso'] !== '' ? filter_var($_POST['fk_subproceso'], FILTER_SANITIZE_NUMBER_INT) : null;
         $fecha_emision = filter_var($_POST['fecha_emision'], FILTER_SANITIZE_STRING);
         $num_revision = filter_var($_POST['num_revision'], FILTER_SANITIZE_NUMBER_INT);
         $fk_proceso = filter_var($_POST['fk_proceso'], FILTER_SANITIZE_NUMBER_INT);
@@ -347,6 +360,7 @@ class ControllersDocumentos extends Controller
             echo json_encode(['message' => 'Error al actualizar documento.', 'error' => $updated]);
         }
     }
+    
     
 
     

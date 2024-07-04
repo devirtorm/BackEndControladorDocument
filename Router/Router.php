@@ -106,8 +106,8 @@ $router->put('/documentos/:id/desactivar', 'Documentos@desactivarDocumento');
 $router->put('/documentos/:id/activar', 'Documentos@activarDocumento'); 
 $router->post('/documentos/:id', 'Documentos@actualizarDocumento'); 
 $router->delete('/documentos/:id', 'Documentos@eliminarDocumento');
-$router->get('/documentos-procesos/:id', 'Documentos@obtenerDocumentoByProceso');
-
+$router->get('/documentos-procesos/:id', 'Documentos@obtenerDocumentoByProceso'); 
+$router->get('/documentos-by-id-detalles/:id', 'Documentos@obtenerDocumentosByid');
 
 //########################## RUTAS PARA CATEGORIA #######################################
 
@@ -227,9 +227,9 @@ $router->get('/authors/:author/:page', 'Books@searchBooksByAuthors');
 
 /* GRÁFICAS */
 $router->get('/graficas/documenttipo', 'Graficas@GraficaCantDocumentTipo'); 
-$router->get('/graficas/documentostotales', 'Graficas@TotalDocumentos'); 
-$router->get('/graficas/sinautorizar', 'Graficas@DocumentosSinAutorizar'); 
-$router->get('/graficas/sinrevisar', 'Graficas@documentosSinRevisar'); 
+$router->get('/graficas/documentostotales/:id', 'Graficas@TotalDocumentos'); 
+$router->get('/graficas/sinautorizar/:id', 'Graficas@DocumentosSinAutorizar'); 
+$router->get('/graficas/sinrevisar/:id', 'Graficas@documentosSinRevisar'); 
 $router->get('/graficas/departamentodoc', 'Graficas@GraficaCantDocumentDepartamento'); 
 
 
