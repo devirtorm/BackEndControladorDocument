@@ -149,6 +149,7 @@ WHERE
     public function eliminarProceso($id) {
         // Escapar el id para evitar inyecciones SQL
         $id = (int)$id;
+        
     
         // sql statement
         $sql = "DELETE FROM " . DB_PREFIX . "proceso WHERE id_proceso = " . $id;
@@ -180,7 +181,32 @@ WHERE
         return $stmt->rowCount() > 0;
     }
     
+    public function obtenerUsuarioPorToken($token) {
+        $this->limpiarTokensExpirados();
+        $sql = "SELECT u.* FROM " . DB_PREFIX . "usuario u
+                INNER JOIN " . DB_PREFIX . "token_recuperacion t ON u.id_usuario = t.id_usuario
+                WHERE t.token = ? AND t.expiracion > NOW()";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(1, $token, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
     
+    public function actualizarContraseña($userId, $nuevaContrasenia) {
+        $sql = "UPDATE " . DB_PREFIX . "usuario SET contrasenia = ? WHERE id_usuario = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(1, $nuevaContrasenia, PDO::PARAM_STR);
+        $stmt->bindParam(2, $userId, PDO::PARAM_INT);
     
-    
+        if ($stmt->execute()) {
+            // Si la actualización fue exitosa, eliminar el token
+           
+            return true;
+        }
+        return false;
+    }
+
+ 
 }
+    
+    

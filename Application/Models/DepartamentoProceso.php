@@ -7,20 +7,20 @@ class ModelsDepartamentoProceso  extends Model {
     public function departamentoproceso($activo) {
         // sql statement
         $sql = "SELECT 
-    dp.id_departamentoProceso,
-    d.nombre_departamento,
-    p.proceso,
-    dp.fecha,
-    dp.hora,
-    dp.activo
-FROM 
-    departamentoProceso dp
-JOIN 
-    departamento d ON dp.fk_departamento = d.id_departamento
-JOIN 
-    proceso p ON dp.fk_proceso = p.id_proceso;
-
-";
+        dp.id_departamentoProceso,
+        d.nombre_departamento,
+        p.proceso,
+        dp.fecha,
+        dp.hora,
+        dp.activo
+    FROM 
+        " . DB_PREFIX . "departamentoProceso dp
+    JOIN 
+        " . DB_PREFIX . "departamento d ON dp.fk_departamento = d.id_departamento
+    JOIN 
+        " . DB_PREFIX . "proceso p ON dp.fk_proceso = p.id_proceso
+    WHERE 
+        dp.activo = 1";
     
         // exec query
         $query = $this->db->query($sql);
@@ -40,6 +40,39 @@ JOIN
         // Return the data array
         return $data;
     }
+    public function departamentoprocesos($activo) {
+        $sql = "SELECT 
+        dp.id_departamentoProceso,
+        d.nombre_departamento,
+        p.proceso,
+        dp.fecha,
+        dp.hora,
+        dp.activo
+    FROM 
+        " . DB_PREFIX . "departamentoProceso dp
+    JOIN 
+        " . DB_PREFIX . "departamento d ON dp.fk_departamento = d.id_departamento
+    JOIN 
+        " . DB_PREFIX . "proceso p ON dp.fk_proceso = p.id_proceso
+    WHERE 
+        dp.activo = $activo";
+    
+        // exec query
+        $query = $this->db->query($sql);
+    
+        // Initialize data as an empty array
+        $data = [];
+    
+        $data = [];
+        if ($stmt->rowCount() > 0) {
+            $data['data'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $data['data'] = [];
+        }
+    
+        return $data;
+    }
+    
     public function proceso($id) {
         $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "proceso WHERE id_proceso = $id");
 
@@ -55,28 +88,8 @@ JOIN
 
         return $data;
     }   
-    public function buscarUsuarioPorCorreo($correo) {
-        $sql = "SELECT * FROM " . DB_PREFIX . "usuario WHERE correo = ?";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(1, $correo, PDO::PARAM_STR);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-    public function limpiarTokensExpirados() {
-        $sql = "DELETE FROM " . DB_PREFIX . "token_recuperacion WHERE expiracion < NOW()";
-        $stmt = $this->db->prepare($sql);
-        return $stmt->execute();
-    }
 
-    public function guardarToken($idUsuario, $token, $expiracion) {
-        $this->limpiarTokensExpirados();
-        $sql = "INSERT INTO " . DB_PREFIX . "token_recuperacion (id_usuario, token, expiracion) VALUES (?, ?, ?)";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(1, $idUsuario, PDO::PARAM_INT);
-        $stmt->bindParam(2, $token, PDO::PARAM_STR);
-        $stmt->bindParam(3, $expiracion, PDO::PARAM_STR);
-        return $stmt->execute();
-    }
+
     
     public function insertDepartamento($usuarioData) {
         // Extract person data

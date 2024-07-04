@@ -49,8 +49,8 @@ class ControllersDepartamentos extends Controller
         $data = json_decode($json_data, true);
         
         if ($data !== null && isset($data['nombre_departamento'], $data['fk_area'])) {
-            $nombre_departamento = filter_var($data['nombre_departamento'], FILTER_SANITIZE_STRING);
-            $fk_area = filter_var($data['fk_area'], FILTER_SANITIZE_STRING);
+            $nombre_departamento = filter_var($data['nombre_departamento'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $fk_area = filter_var($data['fk_area'], FILTER_SANITIZE_SPECIAL_CHARS);
             
             $inserted = $model->insertDepartamento([
                 'nombre_departamento' => $nombre_departamento, 
@@ -162,28 +162,30 @@ class ControllersDepartamentos extends Controller
         }
     }
     
-
     public function actualizarDepartamento($param) {
         $model = $this->model('Departamentos');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
         $data = json_decode($json_data, true);
-    
+        
         // Verificar si los datos son válidos
-        if ($data !== null && isset($data['nombre_departamento'])) {
-            $nombre_departamento = filter_var($data['nombre_departamento'], FILTER_SANITIZE_STRING);
-            $fk_persona = filter_var($data['fk_persona'], FILTER_SANITIZE_STRING);
-            $fk_area = filter_var($data['fk_area'], FILTER_SANITIZE_STRING);
+        if ($data !== null && isset($data['nombre_departamento']) && isset($data['fk_area'])) {
+            $nombre_departamento = filter_var($data['nombre_departamento'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $fk_area = filter_var($data['fk_area'], FILTER_SANITIZE_NUMBER_INT);
             
             if (isset($param['id']) && $this->validId($param['id'])) {
-                // Actualizar el área existente
+                // Actualizar el departamento existente
                 $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-                $updated = $model->updateDepartamento(['id' => $id, 'nombre_departamento' => $nombre_departamento, 'fk_persona' => $fk_persona, 'fk_area' => $fk_area]);
-        
+                $updated = $model->updateDepartamento([
+                    'id' => $id, 
+                    'nombre_departamento' => $nombre_departamento,
+                    'fk_area' => $fk_area
+                ]);
+                
                 if ($updated) {
                     $this->response->sendStatus(200);
                     $this->response->setContent([
-                        'message' => 'departamento actualizado correctamente.'
+                        'message' => 'Departamento actualizado correctamente.'
                     ]);
                 } else {
                     $this->response->sendStatus(500);
@@ -191,8 +193,18 @@ class ControllersDepartamentos extends Controller
                         'message' => 'Error: No se pudo actualizar el departamento.'
                     ]);
                 }
-            } 
-        } 
+            } else {
+                $this->response->sendStatus(400);
+                $this->response->setContent([
+                    'message' => 'Error: ID de departamento inválido.'
+                ]);
+            }
+        } else {
+            $this->response->sendStatus(400);
+            $this->response->setContent([
+                'message' => 'Error: Datos incompletos o inválidos.'
+            ]);
+        }
     }
     
     

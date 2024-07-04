@@ -137,27 +137,24 @@ WHERE d.activo = $activo";
         }
     }
 
-
     public function updateDepartamento($departamentoData) {
         $id = $departamentoData['id'];
         $nombre_departamento = $departamentoData['nombre_departamento'];
-        $fk_persona = $departamentoData['fk_persona'];
         $fk_area = $departamentoData['fk_area'];
     
         try {
-            $sql = "UPDATE " . DB_PREFIX . "departamento SET nombre_departamento = ?, fk_persona = ?, fk_area = ? WHERE id_departamento = ?";
+            $sql = "UPDATE " . DB_PREFIX . "departamento SET nombre_departamento = ?, fk_area = ? WHERE id_departamento = ?";
             $stmt = $this->db->prepare($sql);
     
             $stmt->bindParam(1, $nombre_departamento, PDO::PARAM_STR);
-            $stmt->bindParam(2, $fk_persona, PDO::PARAM_STR);
-            $stmt->bindParam(3, $fk_area, PDO::PARAM_STR);
-            $stmt->bindParam(4, $id, PDO::PARAM_INT);
+            $stmt->bindParam(2, $fk_area, PDO::PARAM_INT);
+            $stmt->bindParam(3, $id, PDO::PARAM_INT);
     
             $stmt->execute();
     
             return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
-            error_log("error al actualizar area: " . $e->getMessage());
+            error_log("Error al actualizar departamento: " . $e->getMessage());
             return false;
         }
     }
@@ -185,7 +182,7 @@ WHERE d.activo = $activo";
         $activo = (int)$activo;
     
         // sql statement
-        $sql = "UPDATE " . DB_PREFIX . "departamento SET activo = :activo WHERE id_departamento = :id";
+        $sql = "UPDATE " . DB_PREFIX . "departamentoProceso SET activo = :activo WHERE id_departamentopr = :id";
     
         // Preparar y ejecutar la consulta
         $stmt = $this->db->prepare($sql);

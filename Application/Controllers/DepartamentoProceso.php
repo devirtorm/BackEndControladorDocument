@@ -109,12 +109,19 @@ class ControllersDepartamentoProceso extends Controller
     private function validId($id) {
         return filter_var($id, FILTER_VALIDATE_INT) !== false && $id > 0;
     }
+    public function depaproceso()
+    {
+        $model = $this->model('DepartamentoProceso');
+        $data_list = $model->departamentoprocesos(0);
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
 
-    public function desactivarUsuario($param) {
+    public function desactivarDepartamentoProceso($param) {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
-            $model = $this->model('Usuario');
+            $model = $this->model('DepartamentoProceso');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
             $updated = $model->actualizarActivo($id, 0);
     
