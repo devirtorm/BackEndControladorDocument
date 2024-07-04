@@ -15,8 +15,8 @@ class ControllersUsuario extends Controller
             $mail->isSMTP();
             $mail->Host = 'smtp.gmail.com';
             $mail->SMTPAuth = true;
-            $mail->Username = 'correo'; // Tu correo de Gmail
-            $mail->Password = 'contra'; // Tu contraseña de Gmail
+            $mail->Username = 'al05-005-0320@utdelacosta.edu.mx'; // Tu correo de Gmail
+            $mail->Password = 'Coah1307'; // Tu contraseña de Gmail Controlador27
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
     
