@@ -40,12 +40,12 @@ class ControllersGraficas extends Controller
     }
 
 
-    public function TotalDocumentos()
+    public function TotalDocumentos($param)
     {
         try {
             // Conectar con el modelo
             $model = $this->model('Graficas');
-            $data_list = $model->cantDocumentosCard();
+            $data_list = $model->cantDocumentosCard($param['id']);
 
             // Enviar respuesta
             $this->response->sendStatus(200);
@@ -57,12 +57,12 @@ class ControllersGraficas extends Controller
         }
     }
 
-    public function documentosSinRevisar()
+    public function documentosSinRevisar($param)
     {
         try {
             // Conectar con el modelo
             $model = $this->model('Graficas');
-            $data_list = $model->documentosPorRevisar();
+            $data_list = $model->documentosPorRevisar($param['id']);
 
             // Enviar respuesta
             $this->response->sendStatus(200);
@@ -75,12 +75,12 @@ class ControllersGraficas extends Controller
     }
 
 
-    public function DocumentosSinAutorizar()
+    public function DocumentosSinAutorizar($param)
     {
         try {
             // Conectar con el modelo
             $model = $this->model('Graficas');
-            $data_list = $model->documentosPorAutorizar();
+            $data_list = $model->documentosPorAutorizar($param['id']);
 
             // Enviar respuesta
             $this->response->sendStatus(200);
