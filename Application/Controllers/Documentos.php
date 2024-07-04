@@ -117,8 +117,7 @@ class ControllersDocumentos extends Controller
         error_log("nombre_departamento: $nombre_departamento");
     
         $archivo = $_FILES['archivo'];
-        $base_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/document/macroprocesos/";
-        
+        $base_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\documents\\macroprocesos\\";
         if (!file_exists($base_dir)) {
             error_log("Base directory does not exist: " . $base_dir);
             echo json_encode(['message' => 'El directorio base no existe.']);

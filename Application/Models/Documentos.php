@@ -59,10 +59,10 @@ class ModelsDocumentos extends Model
                 $value['categoria'] = $categoria_data['data'];
 
                 // llamar a 'area' funcion que obtiene los datos de area
-                $subproceso_data = $this->subproceso($value['fk_subproceso']);
+                $subproceso_data = $this->proceso($value['fk_proceso']);
 
                 // Add the area data to the department data
-                $value['subproceso'] = $subproceso_data['data'];
+                $value['proceso'] = $subproceso_data['data'];
 
 
                 // agregar area a los resultados
@@ -145,13 +145,13 @@ class ModelsDocumentos extends Model
         return $data;
     }
 
-    public function subproceso($id)
+    public function proceso($id)
     {
         // Sanitizar el ID para prevenir SQL Injection
         $id = (int)$id;
     
         // Construir la consulta SQL
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "subproceso WHERE id_subproceso = $id");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "proceso WHERE id_proceso = $id");
     
         $data = [];
     
@@ -160,14 +160,14 @@ class ModelsDocumentos extends Model
             // Obtener la primera fila (ya que se espera solo una persona con un ID específico)
             $data['data'] = $query->row;
     
-            // Obtener el id_proceso del subproceso
-            $id_proceso = $data['data']['fk_proceso'];
+            // Obtener el id_macroproceso del proceso
+            $id_proceso = $data['data']['fk_macroproceso'];
     
             // Llamar a la función proceso para obtener los datos del proceso
-            $proceso_data = $this->proceso($id_proceso);
+            $proceso_data = $this->macroproceso($id_proceso);
     
             // Añadir los datos del proceso al array de datos del subproceso
-            $data['data']['proceso'] = $proceso_data['data'];
+            $data['data']['macroproceso'] = $proceso_data['data'];
         } else {
             // Devolver un array vacío si no se encuentra ninguna dato con el ID dado
             $data['data'] = [];
@@ -177,12 +177,12 @@ class ModelsDocumentos extends Model
         return $data;
     }
 
-    public function proceso($id) {
+    public function macroproceso($id) {
         // Sanitizar el ID para prevenir SQL Injection
         $id = (int)$id;
     
         // Construir la consulta SQL
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "proceso WHERE id_proceso = $id");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "macroproceso WHERE id_macroproceso = $id");
     
         $data = [];
     
@@ -228,8 +228,8 @@ class ModelsDocumentos extends Model
             $value['categoria'] = $categoria_data['data'];
     
             // Llamar a 'subproceso' funcion que obtiene los datos del subproceso
-            $subproceso_data = $this->subproceso($value['fk_subproceso']);
-            $value['subproceso'] = $subproceso_data['data'];
+            $subproceso_data = $this->proceso($value['fk_proceso']);
+            $value['proceso'] = $subproceso_data['data'];
     
             // Agregar el documento con sus datos relacionados al resultado
             $data['data'] = $value;
