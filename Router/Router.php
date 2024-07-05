@@ -108,7 +108,10 @@ $router->post('/documentos/:id', 'Documentos@actualizarDocumento');
 $router->delete('/documentos/:id', 'Documentos@eliminarDocumento');
 $router->get('/documentos-procesos/:id', 'Documentos@obtenerDocumentoByProceso'); 
 $router->get('/documentos-by-id-detalles/:id', 'Documentos@obtenerDocumentosByid');
-
+$router->put('/revisar/:id', 'Documentos@revisarDocumento');
+$router->put('/des-revisar/:id', 'Documentos@DesRevisarDocumento');
+$router->put('/autorizar/:id', 'Documentos@autorizarDocumento');
+$router->put('/desautorizar/:id', 'Documentos@DesAutorizarDocumento');
 //########################## RUTAS PARA CATEGORIA #######################################
 
 $router->post('/categorias', 'Categorias@crearCategoria'); 
@@ -245,3 +248,7 @@ $router->get('/graficas/departamentodoc', 'Graficas@GraficaCantDocumentDepartame
 
 /* BUSCADOR */
 $router->get('/buscar', 'Documentos@buscar'); 
+
+/* BITÁCORA */
+$router->get('/bitacora', 'Bitacora@getBitacora');
+

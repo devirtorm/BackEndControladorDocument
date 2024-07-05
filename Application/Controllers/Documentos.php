@@ -130,7 +130,8 @@ class ControllersDocumentos extends Controller
         error_log("nombre_departamento: $nombre_departamento");
     
         $archivo = $_FILES['archivo'];
-        $base_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\documents\\macroprocesos\\";
+        $base_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/document/macroprocesos/";
+      /*   $base_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\documents\\macroprocesos\\"; */
         if (!file_exists($base_dir)) {
             error_log("Base directory does not exist: " . $base_dir);
             echo json_encode(['message' => 'El directorio base no existe.']);
@@ -363,13 +364,6 @@ class ControllersDocumentos extends Controller
     
 
     
-    
-    
-    
-
-
-
-
     public function eliminarDocumento($param)
     {
         // Verificar si el parámetro 'id' está presente y es válido
@@ -467,6 +461,130 @@ class ControllersDocumentos extends Controller
         }
     }
 
+    
+    public function DesRevisarDocumento($param)
+    {
+        // Verificar si el parámetro 'id' está presente y es válido
+        if (isset($param['id']) && $this->validId($param['id'])) {
+
+            $model = $this->model('Documentos');
+            $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
+            $updated = $model->revisarDocumentoAdmin($id, 0);
+
+            // Preparar la respuesta
+            if ($updated) {
+                $this->response->sendStatus(200);
+                $this->response->setContent([
+                    'message' => 'Documento no revisado correctamente.'
+
+                ]);
+            } else {
+                $this->response->sendStatus(200);
+                $this->response->setContent([
+                    'message' => 'Error: No se pudo revisado el documento.'
+                ]);
+            }
+        } else {
+            // Preparar la respuesta para parámetro inválido
+            $this->response->sendStatus(400);
+            $this->response->setContent([
+                'message' => 'Invalid ID or ID is missing.'
+            ]);
+        }
+    }
+    public function revisarDocumento($param)
+    {
+        // Verificar si el parámetro 'id' está presente y es válido
+        if (isset($param['id']) && $this->validId($param['id'])) {
+
+            $model = $this->model('Documentos');
+            $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
+            $updated = $model->revisarDocumentoAdmin($id, 1);
+
+            // Preparar la respuesta
+            if ($updated) {
+                $this->response->sendStatus(200);
+                $this->response->setContent([
+                    'message' => 'Documento revisado correctamente.'
+
+                ]);
+            } else {
+                $this->response->sendStatus(200);
+                $this->response->setContent([
+                    'message' => 'Error: No se pudo revisado el documento.'
+                ]);
+            }
+        } else {
+            // Preparar la respuesta para parámetro inválido
+            $this->response->sendStatus(400);
+            $this->response->setContent([
+                'message' => 'Invalid ID or ID is missing.'
+            ]);
+        }
+    }
+
+    public function autorizarDocumento($param)
+    {
+        // Verificar si el parámetro 'id' está presente y es válido
+        if (isset($param['id']) && $this->validId($param['id'])) {
+
+            $model = $this->model('Documentos');
+            $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
+            $updated = $model->autorizarDocumentoAdmin($id, 1);
+
+            // Preparar la respuesta
+            if ($updated) {
+                $this->response->sendStatus(200);
+                $this->response->setContent([
+                    'message' => 'Documento autorizado correctamente.'
+
+                ]);
+            } else {
+                $this->response->sendStatus(200);
+                $this->response->setContent([
+                    'message' => 'Error: No se pudo autorizar el documento.'
+                ]);
+            }
+        } else {
+            // Preparar la respuesta para parámetro inválido
+            $this->response->sendStatus(400);
+            $this->response->setContent([
+                'message' => 'Invalid ID or ID is missing.'
+            ]);
+        }
+    }
+
+
+    public function DesAutorizarDocumento($param)
+    {
+        // Verificar si el parámetro 'id' está presente y es válido
+        if (isset($param['id']) && $this->validId($param['id'])) {
+
+            $model = $this->model('Documentos');
+            $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
+            $updated = $model->autorizarDocumentoAdmin($id, 0);
+
+            // Preparar la respuesta
+            if ($updated) {
+                $this->response->sendStatus(200);
+                $this->response->setContent([
+                    'message' => 'Documento no autorizado correctamente.'
+
+                ]);
+            } else {
+                $this->response->sendStatus(200);
+                $this->response->setContent([
+                    'message' => 'Error: No se pudo autorizado el documento.'
+                ]);
+            }
+        } else {
+            // Preparar la respuesta para parámetro inválido
+            $this->response->sendStatus(400);
+            $this->response->setContent([
+                'message' => 'Invalid ID or ID is missing.'
+            ]);
+        }
+    }
 
     public function obtener()
     {

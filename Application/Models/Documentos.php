@@ -261,7 +261,7 @@ class ModelsDocumentos extends Model
     {
         try {
             // SQL statement
-            $sql = "SELECT  " . DB_PREFIX . "documento.titulo,
+            $sql = "SELECT  " . DB_PREFIX . "documento.id_documento,documento.titulo,
         documento.url,
         proceso.proceso,
         macroproceso.macroproceso AS macroproceso_nombre,
@@ -475,7 +475,43 @@ class ModelsDocumentos extends Model
         // Verificar si la fila fue afectada (actualizada)
         return $stmt->rowCount() > 0;
     }
+    public function revisarDocumentoAdmin($id, $activo)
+    {
+        // Escapar el id y el valor de activo para evitar inyecciones SQL
+        $id = (int)$id;
+        $activo = (int)$activo;
 
+        // sql statement
+        $sql = "UPDATE " . DB_PREFIX . "documento SET revisado = :revisado WHERE id_documento = :id";
+
+        // Preparar y ejecutar la consulta
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':revisado', $activo, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Verificar si la fila fue afectada (actualizada)
+        return $stmt->rowCount() > 0;
+    }
+    public function autorizarDocumentoAdmin($id, $activo)
+    {
+        // Escapar el id y el valor de activo para evitar inyecciones SQL
+        $id = (int)$id;
+        $activo = (int)$activo;
+
+        // sql statement
+        $sql = "UPDATE " . DB_PREFIX . "documento SET autorizado = :autorizado WHERE id_documento = :id";
+
+        // Preparar y ejecutar la consulta
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':autorizado', $activo, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Verificar si la fila fue afectada (actualizada)
+        return $stmt->rowCount() > 0;
+    }
+    
 
 /* Consulta para poder obtener la id del archivo que necesitamos descargar desde el nabvar "procesos específicos" */
 public function documentProcesosEspecificos()
