@@ -51,6 +51,8 @@ class ModelsTiposDocumentos extends Model {
     public function insertTipoDocumento($Data) {
         // Extract person data
         $tipo_documento = $Data['tipo_documento'];
+        $fk_categoria = $Data['fk_categoria'];
+
 
 
     
@@ -63,14 +65,15 @@ class ModelsTiposDocumentos extends Model {
 
             
             // Prepare SQL statement
-            $sql = "INSERT INTO " . DB_PREFIX . "tipo_documento (tipo_documento, fecha, hora, activo) VALUES (?, ?, ?, ?)";
+            $sql = "INSERT INTO " . DB_PREFIX . "tipo_documento (tipo_documento, fk_categoria, fecha, hora, activo) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
     
             // Bind parameters
             $stmt->bindParam(1, $tipo_documento, PDO::PARAM_STR);
-            $stmt->bindParam(2, $fecha, PDO::PARAM_STR);
-            $stmt->bindParam(3, $hora, PDO::PARAM_STR);
-            $stmt->bindParam(4, $activo, PDO::PARAM_STR);
+            $stmt->bindParam(2, $fk_categoria, PDO::PARAM_STR);
+            $stmt->bindParam(3, $fecha, PDO::PARAM_STR);
+            $stmt->bindParam(4, $hora, PDO::PARAM_STR);
+            $stmt->bindParam(5, $activo, PDO::PARAM_STR);
     
             // Execute the query
             $stmt->execute();
@@ -93,13 +96,16 @@ class ModelsTiposDocumentos extends Model {
     public function updateTipoDocumento($data) {
         $id = $data['id'];
         $tipo_documento = $data['tipo_documento'];
+        $fk_categoria = $data['fk_categoria'];
+
     
         try {
-            $sql = "UPDATE " . DB_PREFIX . "tipo_documento SET tipo_documento = ? WHERE id_tipo = ?";
+            $sql = "UPDATE " . DB_PREFIX . "tipo_documento SET tipo_documento = ?, fk_categoria = ? WHERE id_tipo = ?";
             $stmt = $this->db->prepare($sql);
     
             $stmt->bindParam(1, $tipo_documento, PDO::PARAM_STR);
-            $stmt->bindParam(2, $id, PDO::PARAM_INT);
+            $stmt->bindParam(2, $fk_categoria, PDO::PARAM_STR);
+            $stmt->bindParam(3, $id, PDO::PARAM_INT);
     
             $stmt->execute();
     
