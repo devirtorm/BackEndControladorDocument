@@ -88,10 +88,10 @@ class ControllersProcesos extends Controller
         error_log("JSON Data: " . $json_data);
         $data = json_decode($json_data, true);
     
-        if ($data !== null && isset($data['proceso']) && isset($data['proposito'])) {
+        if ($data !== null && isset($data['proceso']) && isset($data['macroproceso'])) {
             $proceso = filter_var($data['proceso'], FILTER_SANITIZE_STRING);
-            $proposito = filter_var($data['proposito'], FILTER_SANITIZE_STRING);
-            $inserted = $model->insertProceso(['proceso' => $proceso, 'proposito' => $proposito]);
+            $macroproceso = filter_var($data['macroproceso'], FILTER_SANITIZE_STRING);
+            $inserted = $model->insertProceso(['proceso' => $proceso, 'macroproceso' => $macroproceso]);
     
             if ($inserted) {
                 echo json_encode(['message' => 'Proceso guardado correctamente.']);
@@ -206,24 +206,24 @@ class ControllersProcesos extends Controller
         $data = json_decode($json_data, true);
     
         // Verificar si los datos son válidos
-        if ($data !== null && isset($data['proceso']) && isset($data['proposito'])) {
+        if ($data !== null && isset($data['proceso']) && isset($data['macroproceso'])) {
             $proceso = filter_var($data['proceso'], FILTER_SANITIZE_STRING);
-            $proposito = filter_var($data['proposito'], FILTER_SANITIZE_STRING);
+            $macroproceso = filter_var($data['macroproceso'], FILTER_SANITIZE_STRING);
             
             if (isset($param['id']) && $this->validId($param['id'])) {
                 // Actualizar el área existente
                 $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-                $updated = $model->updateProceso(['id' => $id, 'proceso' => $proceso, 'proposito' => $proposito]);
+                $updated = $model->updateProceso(['id' => $id, 'proceso' => $proceso, 'macroproceso' => $macroproceso]);
         
                 if ($updated) {
                     $this->response->sendStatus(200);
                     $this->response->setContent([
-                        'message' => 'Departamento actualizada correctamente.'
+                        'message' => 'proceso actualizado correctamente.'
                     ]);
                 } else {
                     $this->response->sendStatus(500);
                     $this->response->setContent([
-                        'message' => 'Error: No se pudo actualizar el departamento.'
+                        'message' => 'Error: No se pudo actualizar el proceso.'
                     ]);
                 }
             } 
