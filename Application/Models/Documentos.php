@@ -9,7 +9,7 @@ class ModelsDocumentos extends Model
         $id = (int)$id;
     
         // Construir la consulta SQL
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "documento WHERE fk_proceso = $id");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "documento WHERE fk_proceso = $id AND activo = 1 AND autorizado = 1 AND revisado = 1");
     
         $data = [];
     
@@ -75,6 +75,7 @@ class ModelsDocumentos extends Model
         // Return the data array
         return $data;
     }
+    
 
     public function departamento($id)
     {

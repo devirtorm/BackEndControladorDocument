@@ -17,6 +17,7 @@ class ControllersDocumentos extends Controller
         $this->response->sendStatus(200);
         $this->response->setContent($data_list);
     }
+    
     public function obtenerDocumentosByid($param)
     {
 
