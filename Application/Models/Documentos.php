@@ -25,56 +25,67 @@ class ModelsDocumentos extends Model
         // Devolver el array de datos
         return $data;
     }
-
-    public function documentos($activo,$id)
+    public function documentos($activo, $id)
     {
-        // sql statement
-        $sql = "SELECT * FROM " . DB_PREFIX . "documento WHERE activo = $activo and fk_departamento=$id";
-
-        // exec query
+        // Obtener el nombre del departamento
+        $sql1 = "SELECT dp.nombre_departamento 
+                 FROM usuario us 
+                 INNER JOIN departamento dp ON dp.id_departamento = us.fk_departamento 
+                 WHERE us.fk_departamento = $id";
+    
+        $query1 = $this->db->query($sql1);
+        
+        // Inicializar variable para el nombre del departamento
+        $nombre_departamento = '';
+    
+        // Verificar si hay filas en el resultado
+        if ($query1->num_rows) {
+            $nombre_departamento = $query1->row['nombre_departamento'];
+        }
+    
+        // Construir la consulta adecuada basada en el nombre del departamento
+        if (strtolower($nombre_departamento) == 'calidad' || strtolower($nombre_departamento) == 'calidad') {
+            $sql = "SELECT * FROM " . DB_PREFIX . "documento WHERE activo = $activo";
+        } else {
+            $sql = "SELECT * FROM " . DB_PREFIX . "documento WHERE activo = $activo AND fk_departamento = $id";
+        }
+    
+        // Ejecutar la consulta
         $query = $this->db->query($sql);
-
-        // Initialize data as an empty array
+    
+        // Inicializar los datos como un array vacío
         $data = [];
-
-        // Check if there are any rows
+    
+        // Verificar si hay filas en el resultado
         if ($query->num_rows) {
             foreach ($query->rows as $value) {
-                // llamar a 'area' funcion que obtiene los datos de area
+                // Llamar a la función 'departamento' para obtener los datos del departamento
                 $departamento_data = $this->departamento($value['fk_departamento']);
-
-                // Add the area data to the department data
                 $value['departamento'] = $departamento_data['data'];
-
-                // llamar a 'area' funcion que obtiene los datos de area
+    
+                // Llamar a la función 'tipoDocumento' para obtener los datos del tipo de documento
                 $tipo_documento_data = $this->tipoDocumento($value['fk_tipo_documento']);
-
-                // Add the area data to the department data
                 $value['tipo_documento'] = $tipo_documento_data['data'];
-
-                // llamar a 'area' funcion que obtiene los datos de area
+    
+                // Llamar a la función 'categoria' para obtener los datos de la categoría
                 $categoria_data = $this->categoria($value['fk_categoria']);
-
-                // Add the area data to the department data
                 $value['categoria'] = $categoria_data['data'];
-
-                // llamar a 'area' funcion que obtiene los datos de area
+    
+                // Llamar a la función 'subproceso' para obtener los datos del subproceso
                 $subproceso_data = $this->subproceso($value['fk_subproceso']);
-
-                // Add the area data to the department data
                 $value['subproceso'] = $subproceso_data['data'];
-
-
-                // agregar area a los resultados
+    
+                // Agregar los datos al array de resultados
                 $data['data'][] = $value;
             }
         } else {
             $data['data'] = [];
         }
-
-        // Return the data array
+    
+        // Devolver el array de datos
         return $data;
     }
+    
 
     public function departamento($id)
     {

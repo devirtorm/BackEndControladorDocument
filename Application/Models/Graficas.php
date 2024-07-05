@@ -95,20 +95,33 @@ ORDER BY
 
 
     /* Función para obtener los datos de la card de homeAdmin */
-    public function
-        cantDocumentosCard($id) {
+    public function cantDocumentosCard($id)
+    {
         try {
-            // sql statement
-            $sql = "SELECT " . DB_PREFIX . "
-                  COUNT(*) AS total_documentos FROM documento where fk_departamento=$id";
-
-            // exec query
+            // Obtener el nombre del departamento
+            $sql1 = "SELECT dp.nombre_departamento 
+                     FROM usuario us 
+                     INNER JOIN departamento dp ON dp.id_departamento = us.fk_departamento 
+                     WHERE us.fk_departamento = $id";
+    
+            $query1 = $this->db->query($sql1);
+            $nombre_departamento = '';
+    
+            if ($query1->num_rows) {
+                $nombre_departamento = $query1->row['nombre_departamento'];
+            }
+    
+            // Construir la consulta adecuada basada en el nombre del departamento
+            if (strtolower($nombre_departamento) == 'Calidad' || strtolower($nombre_departamento) == 'calidad') {
+                $sql = "SELECT COUNT(*) AS total_documentos FROM " . DB_PREFIX . "documento";
+            } else {
+                $sql = "SELECT COUNT(*) AS total_documentos FROM " . DB_PREFIX . "documento WHERE fk_departamento = $id";
+            }
+    
+            // Ejecutar la consulta
             $query = $this->db->query($sql);
-
-            // Initialize data as an empty array
             $data = [];
-
-            // Check if there are any rows
+    
             if ($query->num_rows) {
                 foreach ($query->rows as $value) {
                     $data['data'][] = $value;
@@ -116,15 +129,14 @@ ORDER BY
             } else {
                 $data['data'] = [];
             }
-
-            // Return the data array
+    
             return $data;
-
+    
         } catch (\Exception $e) {
             throw new \Exception('Error ejecutando la consulta: ' . $e->getMessage());
         }
     }
-
+    
 
     
 
@@ -132,16 +144,30 @@ ORDER BY
     public function documentosPorRevisar($id)
     {
         try {
-            // sql statement
-            $sql = "SELECT " . DB_PREFIX . "  COUNT(*) AS por_revisar FROM documento where revisado=0 and fk_departamento=$id";
-
-            // exec query
+            // Obtener el nombre del departamento
+            $sql1 = "SELECT dp.nombre_departamento 
+                     FROM usuario us 
+                     INNER JOIN departamento dp ON dp.id_departamento = us.fk_departamento 
+                     WHERE us.fk_departamento = $id";
+    
+            $query1 = $this->db->query($sql1);
+            $nombre_departamento = '';
+    
+            if ($query1->num_rows) {
+                $nombre_departamento = $query1->row['nombre_departamento'];
+            }
+    
+            // Construir la consulta adecuada basada en el nombre del departamento
+            if (strtolower($nombre_departamento) == 'Calidad' || strtolower($nombre_departamento) == 'calidad') {
+                $sql = "SELECT COUNT(*) AS por_revisar FROM " . DB_PREFIX . "documento WHERE revisado = 0";
+            } else {
+                $sql = "SELECT COUNT(*) AS por_revisar FROM " . DB_PREFIX . "documento WHERE revisado = 0 AND fk_departamento = $id";
+            }
+    
+            // Ejecutar la consulta
             $query = $this->db->query($sql);
-
-            // Initialize data as an empty array
             $data = [];
-
-            // Check if there are any rows
+    
             if ($query->num_rows) {
                 foreach ($query->rows as $value) {
                     $data['data'][] = $value;
@@ -149,14 +175,14 @@ ORDER BY
             } else {
                 $data['data'] = [];
             }
-
-            // Return the data array
+    
             return $data;
-
+    
         } catch (\Exception $e) {
             throw new \Exception('Error ejecutando la consulta: ' . $e->getMessage());
         }
     }
+    
 
 
 
@@ -164,16 +190,30 @@ ORDER BY
     public function documentosPorAutorizar($id)
     {
         try {
-            // sql statement
-            $sql = "SELECT " . DB_PREFIX . "COUNT(*) AS por_autorizar FROM documento where autorizado=0 and fk_departamento=$id";
-
-            // exec query
+            // Obtener el nombre del departamento
+            $sql1 = "SELECT dp.nombre_departamento 
+                     FROM usuario us 
+                     INNER JOIN departamento dp ON dp.id_departamento = us.fk_departamento 
+                     WHERE us.fk_departamento = $id";
+    
+            $query1 = $this->db->query($sql1);
+            $nombre_departamento = '';
+    
+            if ($query1->num_rows) {
+                $nombre_departamento = $query1->row['nombre_departamento'];
+            }
+    
+            // Construir la consulta adecuada basada en el nombre del departamento
+            if (strtolower($nombre_departamento) == 'Calidad' || strtolower($nombre_departamento) == 'calidad') {
+                $sql = "SELECT COUNT(*) AS por_autorizar FROM " . DB_PREFIX . "documento WHERE autorizado = 0";
+            } else {
+                $sql = "SELECT COUNT(*) AS por_autorizar FROM " . DB_PREFIX . "documento WHERE autorizado = 0 AND fk_departamento = $id";
+            }
+    
+            // Ejecutar la consulta
             $query = $this->db->query($sql);
-
-            // Initialize data as an empty array
             $data = [];
-
-            // Check if there are any rows
+    
             if ($query->num_rows) {
                 foreach ($query->rows as $value) {
                     $data['data'][] = $value;
@@ -181,14 +221,14 @@ ORDER BY
             } else {
                 $data['data'] = [];
             }
-
-            // Return the data array
+    
             return $data;
-
+    
         } catch (\Exception $e) {
             throw new \Exception('Error ejecutando la consulta: ' . $e->getMessage());
         }
     }
+    
 }
 
 
