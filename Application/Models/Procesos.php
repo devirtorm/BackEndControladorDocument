@@ -52,18 +52,44 @@ class ModelsProcesos extends Model {
     public function getProcesosByDepartamento($id) {
         // Sanitizar el ID para prevenir SQL Injection
         $id = (int)$id;
-        
-        // Construir la consulta SQL
-        $sql = "SELECT dp.fk_departamento,
-                       dp.fk_proceso,
-                       d.nombre_departamento,
-                       p.proceso,
-					   mp.macroproceso
-                FROM departamentoProceso dp
-                INNER JOIN departamento d ON dp.fk_departamento = d.id_departamento
-                INNER JOIN proceso p ON dp.fk_proceso = p.id_proceso
-				INNER JOIN macroproceso mp on p.fk_macroproceso=mp.id_macroproceso
-                WHERE d.activo = 1 AND dp.fk_departamento = $id";
+    
+        // Obtener el nombre del departamento
+        $sqlDepartamento = "SELECT nombre_departamento FROM departamento WHERE id_departamento = $id";
+        $queryDepartamento = $this->db->query($sqlDepartamento);
+    
+        if ($queryDepartamento->num_rows) {
+            $nombre_departamento = $queryDepartamento->row['nombre_departamento'];
+    
+            // Verificar si el departamento es "rectoría"
+            if (strtolower($nombre_departamento) === 'Calidad' || strtolower($nombre_departamento) === 'calidad') {
+                // Construir la consulta SQL para todos los procesos
+                $sql = "SELECT dp.fk_departamento,
+                               dp.fk_proceso,
+                               d.nombre_departamento,
+                               p.proceso,
+                               mp.macroproceso
+                        FROM departamentoProceso dp
+                        INNER JOIN departamento d ON dp.fk_departamento = d.id_departamento
+                        INNER JOIN proceso p ON dp.fk_proceso = p.id_proceso
+                        INNER JOIN macroproceso mp on p.fk_macroproceso=mp.id_macroproceso
+                        WHERE d.activo = 1";
+            } else {
+                // Construir la consulta SQL para el departamento específico
+                $sql = "SELECT dp.fk_departamento,
+                               dp.fk_proceso,
+                               d.nombre_departamento,
+                               p.proceso,
+                               mp.macroproceso
+                        FROM departamentoProceso dp
+                        INNER JOIN departamento d ON dp.fk_departamento = d.id_departamento
+                        INNER JOIN proceso p ON dp.fk_proceso = p.id_proceso
+                        INNER JOIN macroproceso mp on p.fk_macroproceso=mp.id_macroproceso
+                        WHERE d.activo = 1 AND dp.fk_departamento = $id";
+            }
+        } else {
+            // Si no se encuentra el departamento, devolver un array vacío
+            return ['data' => []];
+        }
     
         // Ejecutar la consulta
         $query = $this->db->query($sql);
@@ -83,6 +109,7 @@ class ModelsProcesos extends Model {
         // Devolver el array de datos
         return $data;
     }
+    
 
 
 /* obtener el subproceso dependiendo del proceso que seleccione en el select del front */
