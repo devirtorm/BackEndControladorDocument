@@ -171,6 +171,19 @@ $router->put('/carreras/desactivar/:id', 'Carreras@DesactivarCarrera'); // Desac
 $router->put('/carreras/activar/:id', 'Carreras@ActivarCarrera'); // Activa una carrera
 $router->delete('/carreras/:id', 'Carreras@EliminarCarrera'); // Elimina una carrera
 
+//########################## RUTAS PARA CARRERA_DOCUMENTO #######################################
+
+$router->get('/carrera_documentos/activas', 'CarreraDocumentos@ObtenerCarreraDocumentosActivos'); // Obtiene todos los documentos asociados a carreras activas
+$router->get('/carrera_documentos/inactivas', 'CarreraDocumentos@ObtenerCarreraDocumentosInactivos'); // Obtiene todos los documentos asociados a carreras inactivas
+$router->get('/carrera_documentos', 'CarreraDocumentos@ObtenerCarreraDocumentos'); // Obtiene todos los documentos asociados a carreras
+$router->get('/carrera_documentos/:id', 'CarreraDocumentos@ObtenerCarreraDocumento'); // Obtiene un documento asociado a una carrera específica
+$router->get('/carrera_documentos/carrera/:fk', 'CarreraDocumentos@ObtenerCarreraDocumentosPorCarrera'); // Obtiene todos los documentos asociados a una carrera específica
+$router->post('/carrera_documentos', 'CarreraDocumentos@CrearCarreraDocumento'); // Crea una nueva asociación de documento y carrera
+$router->put('/carrera_documentos/:id', 'CarreraDocumentos@ActualizarCarreraDocumento'); // Actualiza una asociación de documento y carrera
+$router->put('/carrera_documentos/desactivar/:id', 'CarreraDocumentos@DesactivarCarreraDocumento'); // Desactiva una asociación de documento y carrera
+$router->put('/carrera_documentos/activar/:id', 'CarreraDocumentos@ActivarCarreraDocumento'); // Activa una asociación de documento y carrera
+$router->delete('/carrera_documentos/:id', 'CarreraDocumentos@EliminarCarreraDocumento'); // Elimina una asociación de documento y carrera
+
 //########################## RUTAS PARA CUATRIMESTRES #######################################
 
 $router->get('/cuatrimestres/activas', 'Cuatrimestres@ObtenerCuatrimestresActivos'); // Obtiene todos los datos de todas las cuatrimestres activas
