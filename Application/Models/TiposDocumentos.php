@@ -6,10 +6,10 @@ use MVC\Model;
 class ModelsTiposDocumentos extends Model {
 
     public function tiposDocumentos($activo) {
-        // sql statement
-        $sql = "SELECT * FROM " . DB_PREFIX . "tipo_documento WHERE activo = $activo";
+        // SQL statement
+        $sql = "SELECT * FROM " . DB_PREFIX . "tipo_documento WHERE activo = " . (int)$activo;
     
-        // exec query
+        // Execute query
         $query = $this->db->query($sql);
     
         // Initialize data as an empty array
@@ -17,7 +17,13 @@ class ModelsTiposDocumentos extends Model {
     
         // Check if there are any rows
         if ($query->num_rows) {
-            foreach($query->rows as $value) {
+            foreach ($query->rows as $value) {
+                // Call the 'categoria' function to get the category data
+                $categoria_data = $this->categoria($value['fk_categoria']);
+    
+                // Add the category data to the document type data
+                $value['categoria'] = $categoria_data['data'];
+    
                 // Add the document type data to the result
                 $data['data'][] = $value;
             }
@@ -28,6 +34,30 @@ class ModelsTiposDocumentos extends Model {
         // Return the data array
         return $data;
     }
+    
+    public function categoria($id) {
+        // Sanitize the ID to prevent SQL Injection
+        $id = (int)$id;
+    
+        // SQL statement
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "categoria WHERE id_categoria = $id");
+    
+        // Initialize data as an empty array
+        $data = [];
+    
+        // Check if there are any rows
+        if ($query->num_rows) {
+            // Assuming only one category is expected with a specific ID
+            $data['data'] = $query->row;
+        } else {
+            // Return an empty array if no category is found with the given ID
+            $data['data'] = [];
+        }
+    
+        // Return the data array
+        return $data;
+    }
+    
 
     
     
