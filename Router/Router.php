@@ -173,16 +173,11 @@ $router->delete('/carreras/:id', 'Carreras@EliminarCarrera'); // Elimina una car
 
 //########################## RUTAS PARA CARRERA_DOCUMENTO #######################################
 
-$router->get('/carrera_documentos/activas', 'CarreraDocumentos@ObtenerCarreraDocumentosActivos'); // Obtiene todos los documentos asociados a carreras activas
-$router->get('/carrera_documentos/inactivas', 'CarreraDocumentos@ObtenerCarreraDocumentosInactivos'); // Obtiene todos los documentos asociados a carreras inactivas
-$router->get('/carrera_documentos', 'CarreraDocumentos@ObtenerCarreraDocumentos'); // Obtiene todos los documentos asociados a carreras
-$router->get('/carrera_documentos/:id', 'CarreraDocumentos@ObtenerCarreraDocumento'); // Obtiene un documento asociado a una carrera específica
-$router->get('/carrera_documentos/carrera/:fk', 'CarreraDocumentos@ObtenerCarreraDocumentosPorCarrera'); // Obtiene todos los documentos asociados a una carrera específica
-$router->post('/carrera_documentos', 'CarreraDocumentos@CrearCarreraDocumento'); // Crea una nueva asociación de documento y carrera
-$router->put('/carrera_documentos/:id', 'CarreraDocumentos@ActualizarCarreraDocumento'); // Actualiza una asociación de documento y carrera
-$router->put('/carrera_documentos/desactivar/:id', 'CarreraDocumentos@DesactivarCarreraDocumento'); // Desactiva una asociación de documento y carrera
-$router->put('/carrera_documentos/activar/:id', 'CarreraDocumentos@ActivarCarreraDocumento'); // Activa una asociación de documento y carrera
-$router->delete('/carrera_documentos/:id', 'CarreraDocumentos@EliminarCarreraDocumento'); // Elimina una asociación de documento y carrera
+$router->get('/carreradocumentos', 'CarreraDocumentos@ObtenerCarreraDocumentos'); // Obtiene todos los documentos asociados a carreras
+$router->get('/carreradocumentos/:id', 'CarreraDocumentos@ObtenerCarreraDocumento'); // Obtiene un documento asociado a una carrera específica
+$router->post('/carreradocumentos', 'CarreraDocumentos@CrearCarreraDocumento'); // Crea una nueva asociación de documento y carrera
+$router->put('/carreradocumentos/:id', 'CarreraDocumentos@ActualizarCarreraDocumento'); // Actualiza una asociación de documento y carrera
+$router->delete('/carreradocumentos/:id', 'CarreraDocumentos@EliminarCarreraDocumento'); // Elimina una asociación de documento y carrera
 
 //########################## RUTAS PARA CUATRIMESTRES #######################################
 
