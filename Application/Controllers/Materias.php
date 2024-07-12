@@ -78,19 +78,24 @@ class ControllersMaterias extends Controller
         }
     
         if ($nombre_materia && $archivo_materia && $fk_carrera && $fk_cuatrimestre !== null) {
-            $target_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/document/";
+            // Detectar sistema operativo
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\document\\materias\\";
+            } else {
+                $target_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/document/";
+            }
             
             // Sanitizar el nombre del archivo
-            $file_name = preg_replace("/[^a-zA-Z0-9.]/", "_", basename($archivo_materia["name"]));
+            $file_name = preg_replace("/[^\p{L}\p{N}.]/u", "_", basename($archivo_materia["name"]));
             $target_file = $target_dir . $file_name;
             
             $uploadOk = 1;
             $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
     
-            if (!in_array($fileType, ['pdf', 'doc', 'docx', 'xlsx'])) {
-                echo json_encode(['message' => 'Solo se permiten archivos PDF, DOC , DOCX y XLSX.']);
+            if (!in_array($fileType, ['pdf', 'doc', 'docx', 'rtf', 'xlsx', 'xls'])) {
+                echo json_encode(['message' => 'Solo se permiten archivos PDF, DOC, DOCX, RTF, XLSX y XLS.']);
                 $uploadOk = 0;
-            }
+            }            
     
             if ($uploadOk == 0) {
                 echo json_encode(['message' => 'Lo siento, tu archivo no fue subido.']);
@@ -124,7 +129,7 @@ class ControllersMaterias extends Controller
     
                 if (file_exists($target_file)) {
                     error_log("Archivo subido correctamente: " . $target_file);
-                    $archivo_materia_url = "http://localhost/controlador_archivos/backend/asset/document/" . $file_name;
+                    $archivo_materia_url = "http://localhost/controlador_archivos/backend/asset/document/materias/" . $file_name;
     
                     $inserted = $model->createMateria([
                         'nombre_materia' => $nombre_materia,
@@ -148,8 +153,6 @@ class ControllersMaterias extends Controller
         }
     }
     
-    
-
     public function ActualizarMateria() {
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
@@ -168,20 +171,25 @@ class ControllersMaterias extends Controller
         $archivo_url = null;
     
         if ($nombre_materia && $fk_carrera && $fk_cuatrimestre) {
+            // Detectar sistema operativo y establecer directorio base
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\document\\materias\\";
+            } else {
+                $target_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/document/materias/";
+            }
+
             // Si se proporcionó un nuevo archivo, manejar la actualización del archivo
             if ($archivo_materia && $archivo_materia['error'] === UPLOAD_ERR_OK) {
-                $target_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/document/";
-    
-                $file_name = preg_replace("/[^a-zA-Z0-9.]/", "_", basename($archivo_materia["name"]));
+                $file_name = preg_replace("/[^\p{L}\p{N}.]/u", "_", basename($archivo_materia["name"]));
                 $target_file = $target_dir . $file_name;
     
                 $uploadOk = 1;
                 $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
     
-                $allowedFileTypes = ['pdf', 'doc', 'docx', 'xlsx'];
+                $allowedFileTypes = ['pdf', 'doc', 'docx', 'rtf', 'xlsx', 'xls'];
     
                 if (!in_array($fileType, $allowedFileTypes)) {
-                    echo json_encode(['message' => 'Lo siento, solo se permiten archivos PDF, DOC, DOCX, y XLSX.']);
+                    echo json_encode(['message' => 'Lo siento, solo se permiten archivos PDF, DOC, DOCX, RTF, XLSX Y XLS.']);
                     $uploadOk = 0;
                 }
     
@@ -190,7 +198,7 @@ class ControllersMaterias extends Controller
                     return;
                 } else {
                     if (move_uploaded_file($archivo_materia["tmp_name"], $target_file)) {
-                        $archivo_url = "http://localhost/controlador_archivos/backend/asset/document/" . $file_name;
+                        $archivo_url = "http://localhost/controlador_archivos/backend/asset/document/materias/" . $file_name;
                     } else {
                         echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.']);
                         return;
@@ -201,7 +209,7 @@ class ControllersMaterias extends Controller
             $data = [
                 'id' => $id,
                 'nombre_materia' => $nombre_materia,
-                'archivo_url' => $archivo_url, // Puede ser null si no se actualizó el archivo
+                'archivo_url' => $archivo_url,
                 'fk_carrera' => $fk_carrera,
                 'fk_cuatrimestre' => $fk_cuatrimestre
             ];
@@ -217,7 +225,6 @@ class ControllersMaterias extends Controller
             echo json_encode(['message' => 'Error: Los datos de materia son inválidos o incompletos.']);
         }
     }
-    
     
     // Método validId para validar el ID
     private function validId($id) {
