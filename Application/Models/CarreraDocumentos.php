@@ -48,7 +48,7 @@ class ModelsCarreraDocumentos extends Model
                 ];
             }
         } else {
-            $data['data'] = ['No se encontro ningun valor'];
+            $data['data'] = [];
         }
 
         return $data;
@@ -122,7 +122,7 @@ class ModelsCarreraDocumentos extends Model
                 ];
             }
         } else {
-            $data['data'] = ['No hay ningun registro activo'];
+            $data['data'] = [];
         }
 
         return $data;
@@ -173,7 +173,7 @@ class ModelsCarreraDocumentos extends Model
                 ];
             }
         } else {
-            $data['data'] = ['No hay ningun registro inactivo'];
+            $data['data'] = [];
         }
 
         return $data;
