@@ -1,0 +1,225 @@
+<?php
+
+use MVC\Model;
+
+class ModelsCarreraDocumentos extends Model
+{
+    public function CarreraDocumentos($id)
+    {
+        // Obtener el nombre del departamento
+        $sql1 = "SELECT dp.nombre_departamento 
+                FROM usuario us 
+                INNER JOIN departamento dp ON dp.id_departamento = us.fk_departamento 
+                WHERE us.fk_departamento = $id";
+
+        $query1 = $this->db->query($sql1);
+        
+        $nombre_departamento = '';
+        if ($query1->num_rows) {
+            $nombre_departamento = $query1->row['nombre_departamento'];
+        }
+
+        // Construir la consulta adecuada basada en el nombre del departamento
+        if (strtolower($nombre_departamento) == 'calidad') {
+            $sql = "SELECT cd.*, c.nombre_carrera, d.titulo 
+                    FROM carrera_documento cd
+                    LEFT JOIN carrera c ON cd.fk_carrera = c.id_carrera
+                    LEFT JOIN documento d ON cd.fk_documento = d.id_documento";
+        } else {
+            $sql = "SELECT cd.*, c.nombre_carrera, d.titulo 
+                    FROM carrera_documento cd
+                    LEFT JOIN carrera c ON cd.fk_carrera = c.id_carrera
+                    LEFT JOIN documento d ON cd.fk_documento = d.id_documento
+                    WHERE d.fk_departamento = $id";
+        }
+
+        $query = $this->db->query($sql);
+        $data = [];
+
+        if ($query->num_rows) {
+            foreach ($query->rows as $value) {
+                $data['data'][] = [
+                    'id_carrera_documento' => $value['id_carrera_documento'],
+                    'fk_carrera' => $value['fk_carrera'],
+                    'fk_documento' => $value['fk_documento'],
+                    'nombre_carrera' => $value['nombre_carrera'],
+                    'nombre_documento' => $value['titulo'],
+                    'activo' => $value['activo'],
+                ];
+            }
+        } else {
+            $data['data'] = ['No se encontro ningun valor'];
+        }
+
+        return $data;
+    }
+
+    public function CarreraDocumento($id)
+    {
+        try {
+            $sql = "SELECT cd.*, c.nombre_carrera, d.titulo 
+                    FROM carrera_documento cd
+                    LEFT JOIN carrera c ON cd.fk_carrera = c.id_carrera
+                    LEFT JOIN documento d ON cd.fk_documento = d.id_documento
+                    WHERE id_carrera_documento = ?";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id]);
+
+            if ($stmt->rowCount() > 0) {
+                return $stmt->fetch(PDO::FETCH_ASSOC);
+            } else {
+                echo "El id proporcionado es: ";
+                return;
+            }
+        } catch (PDOException $e) {
+            echo "Error al ejecutar la consulta: " . $e->getMessage();
+            return null;
+        }
+    }
+
+    public function CarreraDocumentosActivas($id)
+    {
+        // Obtener el nombre del departamento
+        $sql1 = "SELECT dp.nombre_departamento 
+                FROM usuario us 
+                INNER JOIN departamento dp ON dp.id_departamento = us.fk_departamento 
+                WHERE us.fk_departamento = $id";
+
+        $query1 = $this->db->query($sql1);
+        
+        $nombre_departamento = '';
+        if ($query1->num_rows) {
+            $nombre_departamento = $query1->row['nombre_departamento'];
+        }
+
+        // Construir la consulta adecuada basada en el nombre del departamento
+        if (strtolower($nombre_departamento) == 'calidad') {
+            $sql = "SELECT cd.*, c.nombre_carrera, d.titulo 
+                    FROM carrera_documento cd
+                    LEFT JOIN carrera c ON cd.fk_carrera = c.id_carrera
+                    LEFT JOIN documento d ON cd.fk_documento = d.id_documento
+                    WHERE cd.activo = 1";
+        } else {
+            $sql = "SELECT cd.*, c.nombre_carrera, d.titulo 
+                    FROM carrera_documento cd
+                    LEFT JOIN carrera c ON cd.fk_carrera = c.id_carrera
+                    LEFT JOIN documento d ON cd.fk_documento = d.id_documento
+                    WHERE d.fk_departamento = $id AND cd.activo = 1";
+        }
+
+        $query = $this->db->query($sql);
+        $data = [];
+
+        if ($query->num_rows) {
+            foreach ($query->rows as $value) {
+                $data['data'][] = [
+                    'id_carrera_documento' => $value['id_carrera_documento'],
+                    'fk_carrera' => $value['fk_carrera'],
+                    'fk_documento' => $value['fk_documento'],
+                    'nombre_carrera' => $value['nombre_carrera'],
+                    'nombre_documento' => $value['titulo'],
+                    'activo' => $value['activo']
+                ];
+            }
+        } else {
+            $data['data'] = ['No hay ningun registro activo'];
+        }
+
+        return $data;
+    }
+
+    public function CarreraDocumentosInactivas($id)
+    {
+        // Obtener el nombre del departamento
+        $sql1 = "SELECT dp.nombre_departamento 
+                FROM usuario us 
+                INNER JOIN departamento dp ON dp.id_departamento = us.fk_departamento 
+                WHERE us.fk_departamento = $id";
+
+        $query1 = $this->db->query($sql1);
+        
+        $nombre_departamento = '';
+        if ($query1->num_rows) {
+            $nombre_departamento = $query1->row['nombre_departamento'];
+        }
+
+        // Construir la consulta adecuada basada en el nombre del departamento
+        if (strtolower($nombre_departamento) == 'calidad') {
+            $sql = "SELECT cd.*, c.nombre_carrera, d.titulo 
+                    FROM carrera_documento cd
+                    LEFT JOIN carrera c ON cd.fk_carrera = c.id_carrera
+                    LEFT JOIN documento d ON cd.fk_documento = d.id_documento
+                    WHERE cd.activo = 0";
+        } else {
+            $sql = "SELECT cd.*, c.nombre_carrera, d.titulo 
+                    FROM carrera_documento cd
+                    LEFT JOIN carrera c ON cd.fk_carrera = c.id_carrera
+                    LEFT JOIN documento d ON cd.fk_documento = d.id_documento
+                    WHERE d.fk_departamento = $id AND cd.activo = 0";
+        }
+
+        $query = $this->db->query($sql);
+        $data = [];
+
+        if ($query->num_rows) {
+            foreach ($query->rows as $value) {
+                $data['data'][] = [
+                    'id_carrera_documento' => $value['id_carrera_documento'],
+                    'fk_carrera' => $value['fk_carrera'],
+                    'fk_documento' => $value['fk_documento'],
+                    'nombre_carrera' => $value['nombre_carrera'],
+                    'nombre_documento' => $value['titulo'],
+                    'activo' => $value['activo']
+                ];
+            }
+        } else {
+            $data['data'] = ['No hay ningun registro inactivo'];
+        }
+
+        return $data;
+    }
+
+    public function createCarreraDocumento($data)
+    {
+        $fk_carrera = $data['fk_carrera'];
+        $fk_documento = $data['fk_documento'];
+
+        try {
+            $sql = "INSERT INTO carrera_documento (fk_carrera, fk_documento) VALUES (?, ?)";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(1, $fk_carrera, PDO::PARAM_INT);
+            $stmt->bindParam(2, $fk_documento, PDO::PARAM_INT);
+
+            if ($stmt->execute()) {
+                return true;
+            } else {
+                error_log("Error executing query: " . implode(", ", $stmt->errorInfo()));
+                return false;
+            }
+        } catch (PDOException $e) {
+            echo "Error al ejecutar la consulta: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function updateCarreraDocumento($id, $fk_carrera, $fk_documento)
+    {
+        $sql = "UPDATE carrera_documento SET fk_carrera = ?, fk_documento = ? WHERE id_carrera_documento = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(1, $fk_carrera, PDO::PARAM_INT);
+        $stmt->bindParam(2, $fk_documento, PDO::PARAM_INT);
+        $stmt->bindParam(3, $id, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    public function deleteCarreraDocumento($id)
+    {
+        $sql = "DELETE FROM carrera_documento WHERE id_carrera_documento = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(1, $id, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+}
+?>

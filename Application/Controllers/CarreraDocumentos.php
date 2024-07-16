@@ -4,27 +4,65 @@ use MVC\Controller;
 
 class ControllersCarreraDocumentos extends Controller
 {
-    public function ObtenerCarreraDocumentos()
+    public function ObtenerCarreraDocumentos($param)
     {
+        // Conectar al modelo
         $model = $this->model('CarreraDocumentos');
-        $data_list = $model->CarreraDocumentos();
 
+        // Llamar a la función del modelo
+        $data_list = $model->CarreraDocumentos($param['id']);
+
+        // Enviar respuesta
         $this->response->sendStatus(200);
         $this->response->setContent($data_list);
     }
 
     public function ObtenerCarreraDocumento($id)
     {
-        $model = $this->model('CarreraDocumentos');
-        $carreraDocumento = $model->CarreraDocumento($id);
+        $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
+        $id = end($segments);
+        $id = intval($id);
 
-        if ($carreraDocumento) {
-            $this->response->sendStatus(200);
-            $this->response->setContent($carreraDocumento);
-        } else {
-            $this->response->sendStatus(404);
-            $this->response->setContent(['error' => 'Documento no encontrado']);
+        if ($id === 0) {
+            echo json_encode(['message' => 'Error: ID inválido.']);
+            return;
         }
+
+        // Conectar al modelo
+        $model = $this->model('CarreraDocumentos');
+        
+        // Llamar a la función del modelo
+        $data_list = $model->CarreraDocumento($id);
+
+        // Enviar respuesta
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
+
+    public function ObtenerCarreraDocumentosActivas($param)
+    {
+        // Conectar al modelo
+        $model = $this->model('CarreraDocumentos');
+
+        // Llamar a la función del modelo
+        $data_list = $model->CarreraDocumentosActivas($param['id']);
+
+        // Enviar respuesta
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
+
+    public function ObtenerCarreraDocumentosInactivas($param)
+    {
+        // Conectar al modelo
+        $model = $this->model('CarreraDocumentos');
+
+        // Llamar a la función del modelo
+        $data_list = $model->CarreraDocumentosInactivas($param['id']);
+
+        // Enviar respuesta
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
     }
 
     public function CrearCarreraDocumento()
