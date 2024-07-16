@@ -111,8 +111,59 @@ class ControllersCarreraDocumentos extends Controller
         }
     }
 
+    public function DesactivarCarreraDocumento($id)
+    {
+        $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
+        $id = end($segments);
+        $id = intval($id);
+
+        if ($id === 0) {
+            echo json_encode(['message' => 'Error: ID inválido.']);
+            return;
+        }
+
+        $model = $this->model('CarreraDocumentos');
+        $updated = $model->updateActivo($id, 0);
+
+        if ($updated) {
+            echo json_encode(['message' => 'Asociación desactivada correctamente.']);
+        } else {
+            echo json_encode(['message' => 'Error al desactivar la asociación.']);
+        }
+    }
+
+    public function ActivarCarreraDocumento($id)
+    {
+        $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
+        $id = end($segments);
+        $id = intval($id);
+
+        if ($id === 0) {
+            echo json_encode(['message' => 'Error: ID inválido.']);
+            return;
+        }
+
+        $model = $this->model('CarreraDocumentos');
+        $updated = $model->updateActivo($id, 1);
+
+        if ($updated) {
+            echo json_encode(['message' => 'Asociación activada correctamente.']);
+        } else {
+            echo json_encode(['message' => 'Error al activar la asociación.']);
+        }
+    }
+
     public function EliminarCarreraDocumento($id)
     {
+        $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
+        $id = end($segments);
+        $id = intval($id);
+
+        if ($id === 0) {
+            echo json_encode(['message' => 'Error: ID inválido.']);
+            return;
+        }
+
         $model = $this->model('CarreraDocumentos');
         $deleted = $model->deleteCarreraDocumento($id);
 

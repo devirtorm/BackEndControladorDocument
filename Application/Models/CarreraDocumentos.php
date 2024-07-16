@@ -213,6 +213,16 @@ class ModelsCarreraDocumentos extends Model
         return $stmt->execute();
     }
 
+    public function updateActivo($id, $activo)
+    {
+        $sql = "UPDATE carrera_documento SET activo = ? WHERE id_carrera_documento = ?";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(1, $activo, PDO::PARAM_INT);
+        $stmt->bindParam(2, $id, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
     public function deleteCarreraDocumento($id)
     {
         $sql = "DELETE FROM carrera_documento WHERE id_carrera_documento = ?";
