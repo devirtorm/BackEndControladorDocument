@@ -71,11 +71,13 @@ class ControllersCarreraDocumentos extends Controller
         $json_data = file_get_contents('php://input');
         $data = json_decode($json_data, true);
 
-        if ($data !== null && isset($data['fk_carrera']) && isset($data['fk_documento'])) {
+        if ($data !== null && isset($data['fk_carrera']) && isset($data['fk_documento']) && isset($data['tsu']) && isset($data['ing'])) {
             $fk_carrera = filter_var($data['fk_carrera'], FILTER_VALIDATE_INT);
             $fk_documento = filter_var($data['fk_documento'], FILTER_VALIDATE_INT);
+            $tsu = filter_var($data['tsu'], FILTER_VALIDATE_BOOL);
+            $ing = filter_var($data['ing'], FILTER_VALIDATE_BOOL);
 
-            $inserted = $model->createCarreraDocumento(['fk_carrera' => $fk_carrera, 'fk_documento' => $fk_documento]);
+            $inserted = $model->createCarreraDocumento(['fk_carrera' => $fk_carrera, 'fk_documento' => $fk_documento, 'tsu' => $tsu, 'ing' => $ing]);
 
             if ($inserted) {
                 // Retorna una respuesta exitosa
