@@ -44,6 +44,8 @@ class ModelsCarreraDocumentos extends Model
                     'fk_documento' => $value['fk_documento'],
                     'nombre_carrera' => $value['nombre_carrera'],
                     'nombre_documento' => $value['titulo'],
+                    'tsu' => $value['tsu'],
+                    'ing' => $value['ing'],
                     'activo' => $value['activo'],
                 ];
             }
@@ -118,6 +120,8 @@ class ModelsCarreraDocumentos extends Model
                     'fk_documento' => $value['fk_documento'],
                     'nombre_carrera' => $value['nombre_carrera'],
                     'nombre_documento' => $value['titulo'],
+                    'tsu' => $value['tsu'],
+                    'ing' => $value['ing'],
                     'activo' => $value['activo']
                 ];
             }
@@ -169,6 +173,8 @@ class ModelsCarreraDocumentos extends Model
                     'fk_documento' => $value['fk_documento'],
                     'nombre_carrera' => $value['nombre_carrera'],
                     'nombre_documento' => $value['titulo'],
+                    'tsu' => $value['tsu'],
+                    'ing' => $value['ing'],
                     'activo' => $value['activo']
                 ];
             }
@@ -183,12 +189,18 @@ class ModelsCarreraDocumentos extends Model
     {
         $fk_carrera = $data['fk_carrera'];
         $fk_documento = $data['fk_documento'];
+        $tsu = $data['tsu'];
+        $ing = $data['ing'];
+        $activo = 1;
 
         try {
-            $sql = "INSERT INTO carrera_documento (fk_carrera, fk_documento) VALUES (?, ?)";
+            $sql = "INSERT INTO carrera_documento (fk_carrera, fk_documento, tsu, ing, activo) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(1, $fk_carrera, PDO::PARAM_INT);
             $stmt->bindParam(2, $fk_documento, PDO::PARAM_INT);
+            $stmt->bindParam(3, $tsu, PDO::PARAM_BOOL);
+            $stmt->bindParam(4, $ing, PDO::PARAM_BOOL);
+            $stmt->bindParam(5, $activo, PDO::PARAM_INT);
 
             if ($stmt->execute()) {
                 return true;
