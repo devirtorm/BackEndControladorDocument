@@ -63,15 +63,38 @@ class ModelsCarreraDocumentos extends Model
                     FROM carrera_documento cd
                     LEFT JOIN carrera c ON cd.fk_carrera = c.id_carrera
                     LEFT JOIN documento d ON cd.fk_documento = d.id_documento
-                    WHERE id_carrera_documento = ?";
+                    WHERE id_carrera_documento = ? AND cd.activo = 1";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$id]);
 
             if ($stmt->rowCount() > 0) {
                 return $stmt->fetch(PDO::FETCH_ASSOC);
             } else {
-                echo "El id proporcionado es: ";
+                echo "Datos encontrados: ";
                 return;
+            }
+        } catch (PDOException $e) {
+            echo "Error al ejecutar la consulta: " . $e->getMessage();
+            return null;
+        }
+    }
+
+    public function CarreraDocumentoporCarrera($id)
+    {
+        try {
+            $sql = "SELECT cd.*, c.nombre_carrera, d.titulo, d.url 
+                    FROM carrera_documento cd
+                    LEFT JOIN carrera c ON cd.fk_carrera = c.id_carrera
+                    LEFT JOIN documento d ON cd.fk_documento = d.id_documento
+                    WHERE c.id_carrera = ? AND cd.activo = 1";
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute([$id]);
+
+            if ($stmt->rowCount() > 0) {
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            } else {
+                echo "Datos encontrados: ";
+                return [];
             }
         } catch (PDOException $e) {
             echo "Error al ejecutar la consulta: " . $e->getMessage();

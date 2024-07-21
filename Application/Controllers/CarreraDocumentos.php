@@ -39,6 +39,28 @@ class ControllersCarreraDocumentos extends Controller
         $this->response->setContent($data_list);
     }
 
+    public function ObtenerCarreraDocumentoporCarrera($id)
+    {
+        $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
+        $id = end($segments);
+        $id = intval($id);
+
+        if ($id === 0) {
+            echo json_encode(['message' => 'Error: ID inválido.']);
+            return;
+        }
+
+        // Conectar al modelo
+        $model = $this->model('CarreraDocumentos');
+        
+        // Llamar a la función del modelo
+        $data_list = $model->CarreraDocumentoporCarrera($id);
+
+        // Enviar respuesta
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
+
     public function ObtenerCarreraDocumentosActivas($param)
     {
         // Conectar al modelo
