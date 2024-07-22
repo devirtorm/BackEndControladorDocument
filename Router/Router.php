@@ -179,7 +179,7 @@ $router->get('/carreradocumentos/:id', 'CarreraDocumentos@ObtenerCarreraDocument
 $router->get('/carreradocumentos/especifico/:id', 'CarreraDocumentos@ObtenerCarreraDocumento'); // Obtiene un documento asociado a un id específica
 $router->get('/carreradocumentos/carrera/:id', 'CarreraDocumentos@ObtenerCarreraDocumentoporCarrera'); // Obtiene un documento asociado a una carrera específica
 $router->post('/carreradocumentos', 'CarreraDocumentos@CrearCarreraDocumento'); // Crea una nueva asociación de documento y carrera
-$router->put('/carreradocumentos/:id', 'CarreraDocumentos@ActualizarCarreraDocumento'); // Actualiza una asociación de documento y carrera
+$router->put('/carreradocumentos/actualizar/:id', 'CarreraDocumentos@ActualizarCarreraDocumento'); // Actualiza una asociación de documento y carrera
 $router->put('/carreradocumentos/desactivar/:id', 'CarreraDocumentos@DesactivarCarreraDocumento'); // Desactiva una asociación de documento y carrera
 $router->put('/carreradocumentos/activar/:id', 'CarreraDocumentos@ActivarCarreraDocumento'); // Activa una asociación de documento y carrera
 $router->delete('/carreradocumentos/:id', 'CarreraDocumentos@EliminarCarreraDocumento'); // Elimina una asociación de documento y carrera
