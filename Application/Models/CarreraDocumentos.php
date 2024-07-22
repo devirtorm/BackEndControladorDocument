@@ -237,13 +237,19 @@ class ModelsCarreraDocumentos extends Model
         }
     }
 
-    public function updateCarreraDocumento($id, $fk_carrera, $fk_documento)
+    public function updateCarreraDocumento($id, $fk_carrera, $fk_documento, $tsu, $ing)
     {
-        $sql = "UPDATE carrera_documento SET fk_carrera = ?, fk_documento = ? WHERE id_carrera_documento = ?";
+        // Convertir tsu e ing a enteros (0 o 1) para asegurar que bindParam reciba los tipos correctos
+        $tsu_int = $tsu ? 1 : 0;
+        $ing_int = $ing ? 1 : 0;
+
+        $sql = "UPDATE carrera_documento SET fk_carrera = ?, fk_documento = ?, tsu = ?, ing = ? WHERE id_carrera_documento = ?";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(1, $fk_carrera, PDO::PARAM_INT);
         $stmt->bindParam(2, $fk_documento, PDO::PARAM_INT);
-        $stmt->bindParam(3, $id, PDO::PARAM_INT);
+        $stmt->bindParam(3, $tsu_int, PDO::PARAM_INT);
+        $stmt->bindParam(4, $ing_int, PDO::PARAM_INT);
+        $stmt->bindParam(5, $id, PDO::PARAM_INT);
 
         return $stmt->execute();
     }
