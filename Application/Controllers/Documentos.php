@@ -11,20 +11,20 @@ class ControllersDocumentos extends Controller
         // Connect to database
         $model = $this->model('Documentos');
 
-        $data_list = $model->documentos(1,$param['id']);
+        $data_list = $model->documentos(1, $param['id']);
 
         // Send Response
         $this->response->sendStatus(200);
         $this->response->setContent($data_list);
     }
-    
+
     public function obtenerDocumentosByid($param)
     {
 
         // Connect to database
         $model = $this->model('Documentos');
 
-        $data_list = $model->documentoDetalle(1,$param['id']);
+        $data_list = $model->documentoDetalle(1, $param['id']);
 
         // Send Response
         $this->response->sendStatus(200);
@@ -38,7 +38,7 @@ class ControllersDocumentos extends Controller
         // Connect to database
         $model = $this->model('Documentos');
 
-        $data_list = $model->documentos(0,$param['id']);
+        $data_list = $model->documentos(0, $param['id']);
 
         // Send Response
         $this->response->sendStatus(200);
@@ -69,7 +69,7 @@ class ControllersDocumentos extends Controller
         $this->response->setContent($result);
     }
 
-    
+
 
     public function crearDocumento()
     {
@@ -86,8 +86,8 @@ class ControllersDocumentos extends Controller
         error_log("max_execution_time: " . ini_get('max_execution_time'));
     
         $required_fields = [
-            'titulo', 'fk_departamento', 'nombre_macro_proceso', 'nombre_proceso', 
-            'nombre_departamento', 'fk_subproceso', 'fk_proceso', 'fk_categoria', 
+            'titulo', 'fk_departamento', 'nombre_macro_proceso', 'nombre_proceso',
+            'nombre_departamento', 'fk_subproceso', 'fk_proceso', 'fk_categoria',
             'fk_tipo_documento', 'num_revision', 'fecha_emision'
         ];
     
@@ -129,9 +129,16 @@ class ControllersDocumentos extends Controller
         error_log("nombre_macro_proceso: $nombre_macro_proceso");
         error_log("nombre_proceso: $nombre_proceso");
         error_log("nombre_departamento: $nombre_departamento");
+    
+        if (!is_numeric($num_revision)) {
+            error_log("num_revision is not numeric: " . $_POST['num_revision']);
+            echo json_encode(['message' => 'Error: num_revision debe ser un valor numérico.']);
+            return;
+        }
+    
         $archivo = $_FILES['archivo'];
-        $base_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/document/macroprocesos/";
-      /*   $base_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\documents\\macroprocesos\\"; */
+        //$base_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/document/macroprocesos/";
+        $base_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\document\\macroprocesos\\";
         if (!file_exists($base_dir)) {
             error_log("Base directory does not exist: " . $base_dir);
             echo json_encode(['message' => 'El directorio base no existe.']);
@@ -182,11 +189,20 @@ class ControllersDocumentos extends Controller
             } while (file_exists($target_file));
         }
     
+        $upload_max_filesize = ini_get('upload_max_filesize');
+        $post_max_size = ini_get('post_max_size');
+    
+        error_log("upload_max_filesize: $upload_max_filesize");
+        error_log("post_max_size: $post_max_size");
+    
         $max_size = min(
-            $this->return_bytes(ini_get('upload_max_filesize')),
-            $this->return_bytes(ini_get('post_max_size')),
+            $this->return_bytes($upload_max_filesize),
+            $this->return_bytes($post_max_size),
             5 * 1024 * 1024  // 5MB
         );
+    
+        error_log("Calculated max_size: $max_size");
+    
         if ($archivo["size"] > $max_size) {
             error_log("File too large: " . $archivo["size"] . " bytes. Max allowed: " . $max_size);
             echo json_encode(['message' => 'Lo siento, tu archivo es demasiado grande.']);
@@ -205,7 +221,6 @@ class ControllersDocumentos extends Controller
             $error = error_get_last();
             error_log("Error moving file: " . $error['message']);
             error_log("From: " . $archivo["tmp_name"] . " To: " . $target_file);
-            echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.', 'error' => $error['message']]);
             return;
         }
     
@@ -233,45 +248,49 @@ class ControllersDocumentos extends Controller
         }
     }
     
-    private function return_bytes($val) {
+    private function return_bytes($val)
+    {
         $val = trim($val);
-        $last = strtolower($val[strlen($val)-1]);
-        switch($last) {
+        $last = strtolower($val[strlen($val) - 1]);
+        $num = (int)substr($val, 0, -1); // Get the numeric part of the string
+    
+        switch ($last) {
             case 'g':
-                $val *= 1024;
+                $num *= 1024;
             case 'm':
-                $val *= 1024;
+                $num *= 1024;
             case 'k':
-                $val *= 1024;
+                $num *= 1024;
         }
-        return $val;
+        return $num;
     }
     
-    
-    
+
+
+
 
     public function actualizarDocumento($param)
     {
         error_log("--- actualizarDocumento() called ---");
         error_log("POST variables: " . print_r($_POST, true));
         error_log("FILES variables: " . print_r($_FILES, true));
-    
+
         $model = $this->model('Documentos');
         $archivo_url = null;
-    
+
         if (!isset($param['id']) || !$this->validId($param['id'])) {
             echo json_encode(['message' => 'Error: ID de documento inválido.']);
             return;
         }
-    
+
         $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-    
+
         $required_fields = [
-            'titulo', 'fk_departamento', 'nombre_macro_proceso', 'nombre_proceso', 
-            'nombre_departamento', 'fk_proceso', 'fk_categoria', 
+            'titulo', 'fk_departamento', 'nombre_macro_proceso', 'nombre_proceso',
+            'nombre_departamento', 'fk_proceso', 'fk_categoria',
             'fk_tipo_documento', 'num_revision', 'fecha_emision'
         ];
-    
+
         foreach ($required_fields as $field) {
             if (!isset($_POST[$field]) || $_POST[$field] === '') {
                 error_log("Missing required field: " . $field);
@@ -279,7 +298,7 @@ class ControllersDocumentos extends Controller
                 return;
             }
         }
-    
+
         $titulo = filter_var($_POST['titulo'], FILTER_SANITIZE_STRING);
         $fk_departamento = filter_var($_POST['fk_departamento'], FILTER_SANITIZE_NUMBER_INT);
         $fk_categoria = filter_var($_POST['fk_categoria'], FILTER_SANITIZE_NUMBER_INT);
@@ -291,12 +310,12 @@ class ControllersDocumentos extends Controller
         $nombre_macro_proceso = preg_replace('/[^A-Za-z0-9\-]/', '_', filter_var($_POST['nombre_macro_proceso'], FILTER_SANITIZE_STRING));
         $nombre_proceso = preg_replace('/[^A-Za-z0-9\-]/', '_', filter_var($_POST['nombre_proceso'], FILTER_SANITIZE_STRING));
         $nombre_departamento = preg_replace('/[^A-Za-z0-9\-]/', '_', filter_var($_POST['nombre_departamento'], FILTER_SANITIZE_STRING));
-    
+
         $base_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/document/macroprocesos/";
         $macro_dir = $base_dir . $nombre_macro_proceso . '/';
         $proceso_dir = $macro_dir . 'proceso/' . $nombre_proceso . '/';
         $target_dir = $proceso_dir . 'departamento/' . $nombre_departamento . '/';
-    
+
         // Crear directorios si no existen
         if (!file_exists($macro_dir)) {
             mkdir($macro_dir, 0755, true);
@@ -307,21 +326,21 @@ class ControllersDocumentos extends Controller
         if (!file_exists($target_dir)) {
             mkdir($target_dir, 0755, true);
         }
-    
+
         // Verificar permisos de escritura
         if (!is_writable($target_dir)) {
             echo json_encode(['message' => 'Error: No se puede escribir en el directorio de destino.']);
             return;
         }
-    
+
         if (isset($_FILES['archivo']) && $_FILES['archivo']['error'] === UPLOAD_ERR_OK) {
             $archivo = $_FILES['archivo'];
-            
+
             $original_name = pathinfo($archivo["name"], PATHINFO_FILENAME);
             $file_extension = strtolower(pathinfo($archivo["name"], PATHINFO_EXTENSION));
             $sanitized_filename = preg_replace("/[^a-zA-Z0-9.]/", "_", $original_name) . "." . $file_extension;
             $target_file = $target_dir . $sanitized_filename;
-    
+
             // Check if file already exists, generate unique filename if needed
             if (file_exists($target_file)) {
                 $increment = 1;
@@ -331,7 +350,7 @@ class ControllersDocumentos extends Controller
                     $increment++;
                 } while (file_exists($target_file));
             }
-    
+
             $max_size = min(
                 $this->return_bytes(ini_get('upload_max_filesize')),
                 $this->return_bytes(ini_get('post_max_size')),
@@ -341,13 +360,13 @@ class ControllersDocumentos extends Controller
                 echo json_encode(['message' => 'Lo siento, tu archivo es demasiado grande.']);
                 return;
             }
-    
+
             $allowed_extensions = ['pdf', 'doc', 'docx', 'xlsx'];
             if (!in_array($file_extension, $allowed_extensions)) {
                 echo json_encode(['message' => 'Lo siento, solo se permiten archivos PDF, DOC, DOCX y XLSX.']);
                 return;
             }
-    
+
             if (!copy($archivo["tmp_name"], $target_file)) {
                 $error = error_get_last();
                 echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.', 'error' => $error['message']]);
@@ -355,10 +374,10 @@ class ControllersDocumentos extends Controller
             } else {
                 unlink($archivo["tmp_name"]);
             }
-    
+
             $archivo_url = "http://localhost/controlador_archivos/backend/asset/document/macroprocesos/$nombre_macro_proceso/proceso/$nombre_proceso/departamento/$nombre_departamento/" . basename($target_file);
         }
-    
+
         $data = [
             'id' => $id,
             'titulo' => $titulo,
@@ -371,20 +390,20 @@ class ControllersDocumentos extends Controller
             'num_revision' => $num_revision,
             'fk_proceso' => $fk_proceso,
         ];
-    
+
         $updated = $model->updateDocumento($data);
-    
+
         if ($updated === true) {
             echo json_encode(['message' => 'Documento actualizado correctamente.', 'archivo_url' => $archivo_url]);
         } else {
             echo json_encode(['message' => 'Error al actualizar documento.', 'error' => $updated]);
         }
     }
-    
-    
-    
 
-    
+
+
+
+
     public function eliminarDocumento($param)
     {
         // Verificar si el parámetro 'id' está presente y es válido
@@ -482,7 +501,7 @@ class ControllersDocumentos extends Controller
         }
     }
 
-    
+
     public function DesRevisarDocumento($param)
     {
         // Verificar si el parámetro 'id' está presente y es válido
@@ -630,7 +649,4 @@ class ControllersDocumentos extends Controller
         $this->response->sendStatus(200);
         $this->response->setContent($data_list);
     }
-
-
-
 }
