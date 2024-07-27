@@ -311,7 +311,10 @@ class ControllersDocumentos extends Controller
         $nombre_proceso = preg_replace('/[^A-Za-z0-9\-]/', '_', filter_var($_POST['nombre_proceso'], FILTER_SANITIZE_STRING));
         $nombre_departamento = preg_replace('/[^A-Za-z0-9\-]/', '_', filter_var($_POST['nombre_departamento'], FILTER_SANITIZE_STRING));
 
-        $base_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/document/macroprocesos/";
+        //$base_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/document/macroprocesos/";
+        $base_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\document\\macroprocesos\\";
+
+        
         $macro_dir = $base_dir . $nombre_macro_proceso . '/';
         $proceso_dir = $macro_dir . 'proceso/' . $nombre_proceso . '/';
         $target_dir = $proceso_dir . 'departamento/' . $nombre_departamento . '/';
