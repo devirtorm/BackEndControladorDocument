@@ -137,8 +137,8 @@ class ControllersDocumentos extends Controller
         }
     
         $archivo = $_FILES['archivo'];
-        //$base_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/document/macroprocesos/";
-        $base_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\document\\macroprocesos\\";
+        $base_dir = $_SERVER['DOCUMENT_ROOT'] . '/controlador_archivos/backend/asset/document/macroprocesos/';
+    
         if (!file_exists($base_dir)) {
             error_log("Base directory does not exist: " . $base_dir);
             echo json_encode(['message' => 'El directorio base no existe.']);
@@ -224,7 +224,7 @@ class ControllersDocumentos extends Controller
             return;
         }
     
-        $archivo_url = "http://localhost/controlador_archivos/backend/asset/document/macroprocesos/$nombre_macro_proceso/proceso/$nombre_proceso/departamento/$nombre_departamento/" . basename($target_file);
+        $archivo_url = 'http://localhost/' . 'controlador_archivos/backend/asset/document/macroprocesos/' . $nombre_macro_proceso . '/proceso/' . $nombre_proceso . '/departamento/' . $nombre_departamento . '/' . basename($target_file);
         error_log("File successfully uploaded. URL: " . $archivo_url);
     
         $inserted = $model->insertDocumento([
@@ -310,11 +310,8 @@ class ControllersDocumentos extends Controller
         $nombre_macro_proceso = preg_replace('/[^A-Za-z0-9\-]/', '_', filter_var($_POST['nombre_macro_proceso'], FILTER_SANITIZE_STRING));
         $nombre_proceso = preg_replace('/[^A-Za-z0-9\-]/', '_', filter_var($_POST['nombre_proceso'], FILTER_SANITIZE_STRING));
         $nombre_departamento = preg_replace('/[^A-Za-z0-9\-]/', '_', filter_var($_POST['nombre_departamento'], FILTER_SANITIZE_STRING));
-
-        //$base_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/document/macroprocesos/";
-        $base_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\document\\macroprocesos\\";
-
-        
+    
+        $base_dir = $_SERVER['DOCUMENT_ROOT'] . '/controlador_archivos/backend/asset/document/macroprocesos/';
         $macro_dir = $base_dir . $nombre_macro_proceso . '/';
         $proceso_dir = $macro_dir . 'proceso/' . $nombre_proceso . '/';
         $target_dir = $proceso_dir . 'departamento/' . $nombre_departamento . '/';
@@ -369,13 +366,11 @@ class ControllersDocumentos extends Controller
                 echo json_encode(['message' => 'Lo siento, solo se permiten archivos PDF, DOC, DOCX y XLSX.']);
                 return;
             }
-
-            if (!copy($archivo["tmp_name"], $target_file)) {
+    
+            if (!move_uploaded_file($archivo["tmp_name"], $target_file)) {
                 $error = error_get_last();
                 echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.', 'error' => $error['message']]);
                 return;
-            } else {
-                unlink($archivo["tmp_name"]);
             }
 
             $archivo_url = "http://localhost/controlador_archivos/backend/asset/document/macroprocesos/$nombre_macro_proceso/proceso/$nombre_proceso/departamento/$nombre_departamento/" . basename($target_file);
