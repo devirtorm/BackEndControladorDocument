@@ -26,7 +26,8 @@ class ControllersLogin extends Controller
                 'id_usuario' => $user['id_usuario'],
                 'contrasenia' => $user['contrasenia'],
                 'fk_departamento' => $user['fk_departamento'],
-                'nombre_departamento' => $user['nombre_departamento']
+                'nombre_departamento' => $user['nombre_departamento'],
+                'nombre_rol' => $user['nombre_rol']
 
             ]));
             } else {

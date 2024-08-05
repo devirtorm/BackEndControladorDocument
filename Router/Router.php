@@ -22,17 +22,9 @@ $router->get('/usuarios/:id', 'Usuario@obtenerUsuario');
 $router->delete('/usuarios:id', 'Usuario@eliminarUsuario');
 $router->put('/usuarios/:id/desactivar', 'Usuario@desactivarUsuario');
 $router->put('/usuarios/:id/activar', 'Usuario@activarUsuario');
-$router->put('/usuarios/:id', 'Usuario@actualizarPersona');
+$router->put('/usuarios/:id', 'Usuario@actualizarUsuario');
 
-// Rutas para el manejo de personas
-$router->post('/personas', 'Personas@crearPersona');
-$router->get('/personas/desactivadas', 'Personas@obtenerPersonasDesactivadas');
-$router->get('/personas', 'Personas@personas');
-$router->get('/personas/:id', 'Personas@obtenerPersona');
-$router->delete('/personas/:id', 'Personas@eliminarPersona');
-$router->put('/personas/:id/desactivar', 'Personas@desactivarPersona');
-$router->put('/personas/:id/activar', 'Personas@activarPersona');
-$router->put('/personas/:id', 'Personas@actualizarPersona');
+
 
 //########################## RUTAS PARA ROLES #######################################
 $router->post('/rol', 'Roles@crearRol'); // Crea nuevos roles
