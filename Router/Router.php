@@ -265,3 +265,8 @@ $router->get('/buscar', 'Documentos@buscar');
 /* BITÁCORA */
 $router->get('/bitacora', 'Bitacora@getBitacora');
 
+
+/* NOTIFICACIONES */
+$router->get('/cantidad-notificaciones', 'Notificaciones@cantidadDeNotificaciones');
+$router->get('/data-mensajes', 'Notificaciones@allDataMenssages');
+$router->put('/actualizar-estado/:id', 'Notificaciones@actualizarVistoMensaje');
