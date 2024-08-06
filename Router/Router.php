@@ -217,8 +217,17 @@ $router->put('/materias/activar/:id', 'Materias@ActivarMateria'); // Activa una 
 $router->delete('/materias/:id', 'Materias@EliminarMateria'); // Elimina una materia
 
 //########################## RUTAS PARA MACROPROCESOS #######################################
-$router->get('/macroprocesos', 'Macroprocesos@obtenerMacroprocesos'); // Obtiene todos los datos de los macroprocesos activos
 
+$router->get('/macroprocesos/activas', 'Macroprocesos@ObtenerMacroprocesosActivos'); // Obtiene todos los datos de todos los macroprocesos activos
+$router->get('/macroprocesos/inactivas', 'Macroprocesos@ObtenerMacroprocesosInactivos'); // Obtiene todos los datos de todos los macroprocesos inactivos
+$router->get('/macroprocesos', 'Macroprocesos@ObtenerMacroprocesos'); // Obtiene todos los datos de todos los macroprocesos para el acordeon
+$router->get('/macroprocesos', 'Macroprocesos@ObtenerTodoslosMacroprocesos'); // Obtiene todos los datos de todos los macroprocesos
+$router->get('/macroprocesos/:id', 'Macroprocesos@obtenerMacroproceso'); // Obtiene datos de una macroproceso en especifico
+$router->post('/macroprocesos', 'Macroprocesos@CrearMacroproceso'); // Crea nuevos macroprocesos
+$router->put('/macroprocesos/:id', 'Macroprocesos@ActualizarMacroproceso'); // Actualiza datos de un macroproceso
+$router->put('/macroprocesos/desactivar/:id', 'Macroprocesos@DesactivarMacroproceso'); // Desactiva un macroproceso
+$router->put('/macroprocesos/activar/:id', 'Macroprocesos@ActivarMacroproceso'); // Activa un macroproceso
+$router->delete('/macroprocesos/:id', 'Macroprocesos@EliminarMacroproceso'); // Elimina un macroproceso
 
 //########################## RUTA DE LOGIN #######################################
 
