@@ -227,12 +227,12 @@ class ControllersUsuario extends Controller
                     ]));
                    
                
-            }} else {
+            } else {
                 $this->response->sendStatus(401);
-                $this->response->setContent(json_encode(['message' => 'Credenciales inválidas']));
+                $this->response->setContent(json_encode(['message' => 'Credenciales inválidas/correo no existe']));
             }
         }
-    
+    }
 
 
 

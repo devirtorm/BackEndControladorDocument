@@ -5,15 +5,18 @@ use MVC\Model;
 class ModelsProcesos extends Model {
 
     public function procesos($activo) {
-        // sql statement
-        $sql = "SELECT * FROM " . DB_PREFIX . "proceso WHERE activo = $activo";
-    
-        // exec query
+        // SQL statement with JOIN to fetch macroproceso name
+        $sql = "SELECT p.id_proceso, p.proceso, p.fecha, p.hora, m.macroproceso 
+                FROM proceso p
+                INNER JOIN macroproceso m ON p.fk_macroproceso = m.id_macroproceso
+                WHERE p.activo = $activo";
+        
+        // Execute query
         $query = $this->db->query($sql);
-    
+        
         // Initialize data as an empty array
         $data = [];
-    
+        
         // Check if there are any rows
         if ($query->num_rows) {
             foreach($query->rows as $value) {
@@ -22,10 +25,11 @@ class ModelsProcesos extends Model {
         } else {
             $data['data'] = [];
         }
-    
+        
         // Return the data array
         return $data;
     }
+    
 
     public function getProcesosBymacroprocesoId($id) {
         // Sanitizar el ID para prevenir SQL Injection
@@ -38,10 +42,10 @@ class ModelsProcesos extends Model {
     
         // Verificar si hay alguna fila en el resultado
         if ($query->num_rows) {
-            // Obtener la primera fila (ya que se espera solo una persona con un ID específico)
-            $data['data'] = $query->row;
+            // Obtener todas las filas
+            $data['data'] = $query->rows;
         } else {
-            // Devolver un array vacío si no se encuentra ninguna persona con el ID dado
+            // Devolver un array vacío si no se encuentra ninguna fila
             $data['data'] = [];
         }
     
@@ -52,18 +56,44 @@ class ModelsProcesos extends Model {
     public function getProcesosByDepartamento($id) {
         // Sanitizar el ID para prevenir SQL Injection
         $id = (int)$id;
-        
-        // Construir la consulta SQL
-        $sql = "SELECT dp.fk_departamento,
-                       dp.fk_proceso,
-                       d.nombre_departamento,
-                       p.proceso,
-					   mp.macroproceso
-                FROM departamentoProceso dp
-                INNER JOIN departamento d ON dp.fk_departamento = d.id_departamento
-                INNER JOIN proceso p ON dp.fk_proceso = p.id_proceso
-				INNER JOIN macroproceso mp on p.fk_macroproceso=mp.id_macroproceso
-                WHERE d.activo = 1 AND dp.fk_departamento = $id";
+    
+        // Obtener el nombre del departamento
+        $sqlDepartamento = "SELECT nombre_departamento FROM departamento WHERE id_departamento = $id";
+        $queryDepartamento = $this->db->query($sqlDepartamento);
+    
+        if ($queryDepartamento->num_rows) {
+            $nombre_departamento = $queryDepartamento->row['nombre_departamento'];
+    
+            // Verificar si el departamento es "rectoría"
+            if (strtolower($nombre_departamento) === 'Calidad' || strtolower($nombre_departamento) === 'calidad') {
+                // Construir la consulta SQL para todos los procesos
+                $sql = "SELECT dp.fk_departamento,
+                               dp.fk_proceso,
+                               d.nombre_departamento,
+                               p.proceso,
+                               mp.macroproceso
+                        FROM departamentoProceso dp
+                        INNER JOIN departamento d ON dp.fk_departamento = d.id_departamento
+                        INNER JOIN proceso p ON dp.fk_proceso = p.id_proceso
+                        INNER JOIN macroproceso mp on p.fk_macroproceso=mp.id_macroproceso
+                        WHERE d.activo = 1";
+            } else {
+                // Construir la consulta SQL para el departamento específico
+                $sql = "SELECT dp.fk_departamento,
+                               dp.fk_proceso,
+                               d.nombre_departamento,
+                               p.proceso,
+                               mp.macroproceso
+                        FROM departamentoProceso dp
+                        INNER JOIN departamento d ON dp.fk_departamento = d.id_departamento
+                        INNER JOIN proceso p ON dp.fk_proceso = p.id_proceso
+                        INNER JOIN macroproceso mp on p.fk_macroproceso=mp.id_macroproceso
+                        WHERE d.activo = 1 AND dp.fk_departamento = $id";
+            }
+        } else {
+            // Si no se encuentra el departamento, devolver un array vacío
+            return ['data' => []];
+        }
     
         // Ejecutar la consulta
         $query = $this->db->query($sql);
@@ -83,6 +113,7 @@ class ModelsProcesos extends Model {
         // Devolver el array de datos
         return $data;
     }
+    
 
 
 /* obtener el subproceso dependiendo del proceso que seleccione en el select del front */
@@ -135,58 +166,59 @@ class ModelsProcesos extends Model {
     
     
     public function insertProceso($procesoData) {
-        // Extract person data
+        // Extract process data
         $proceso = $procesoData['proceso'];
-        $proposito = $procesoData['proposito'];
+        $macroproceso = $procesoData['macroproceso']; // Asegúrate de que coincida con el arreglo de datos recibido
     
         try {
             // Get current date and time
             $fecha = date('Y-m-d');
             $hora = date('H:i:s');
             $activo = 1;
-
-
-            
+    
             // Prepare SQL statement
-            $sql = "INSERT INTO " . DB_PREFIX . "proceso (proceso, proposito, fecha, hora, activo) VALUES (?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO " . DB_PREFIX . "proceso (proceso, fk_macroproceso, fecha, hora, activo) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
     
             // Bind parameters
             $stmt->bindParam(1, $proceso, PDO::PARAM_STR);
-            $stmt->bindParam(2, $proposito, PDO::PARAM_STR);
+            $stmt->bindParam(2, $macroproceso, PDO::PARAM_INT); // Asegúrate de que sea PDO::PARAM_INT si es un ID numérico
             $stmt->bindParam(3, $fecha, PDO::PARAM_STR);
             $stmt->bindParam(4, $hora, PDO::PARAM_STR);
-            $stmt->bindParam(5, $activo, PDO::PARAM_STR);
+            $stmt->bindParam(5, $activo, PDO::PARAM_INT);
     
             // Execute the query
             $stmt->execute();
     
             // Check if the query was successful
             if ($stmt->rowCount() > 0) {
-                // Person inserted successfully
+                // Proceso insertado correctamente
                 return true;
             } else {
-                // Failed to insert person
+                // Fallo al insertar el proceso
                 return false;
             }
         } catch (PDOException $e) {
-            // Handle any potential errors here
+            // Maneja errores potenciales aquí
+            error_log("Error en insertProceso: " . $e->getMessage());
             return false;
         }
     }
+    
 
 
     public function updateProceso($procesoData) {
         $id = $procesoData['id'];
         $proceso = $procesoData['proceso'];
-        $proposito = $procesoData['proposito'];
+        $macroproceso = $procesoData['macroproceso']; // Asegúrate de que coincida con el arreglo de datos recibido
+    
     
         try {
-            $sql = "UPDATE " . DB_PREFIX . "proceso SET proceso = ?, proposito = ? WHERE id_proceso = ?";
+            $sql = "UPDATE " . DB_PREFIX . "proceso SET proceso = ?, fk_macroproceso = ? WHERE id_proceso = ?";
             $stmt = $this->db->prepare($sql);
     
             $stmt->bindParam(1, $proceso, PDO::PARAM_STR);
-            $stmt->bindParam(2, $proposito, PDO::PARAM_STR);
+            $stmt->bindParam(2, $macroproceso, PDO::PARAM_STR);
             $stmt->bindParam(3, $id, PDO::PARAM_INT);
     
             $stmt->execute();

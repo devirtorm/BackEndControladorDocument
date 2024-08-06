@@ -24,6 +24,22 @@ $router->put('/usuarios/:id/desactivar', 'Usuario@desactivarUsuario');
 $router->put('/usuarios/:id/activar', 'Usuario@activarUsuario');
 $router->put('/usuarios/:id', 'Usuario@actualizarUsuario');
 
+// Rutas para el manejo de Objetivos
+$router->get('/objetivos', 'Objetivos@objetivos'); // Obtiene todos los objetivos
+$router->get('/objetivos/desactivados', 'Objetivos@obtenerDesactivados'); // Obtiene todos los objetivos desactivados
+$router->put('/objetivos/:id/desactivar', 'Objetivos@desactivarObjetivo');
+$router->put('/objetivos/:id/activar', 'Objetivos@activarObjetivo');
+$router->delete('/objetivos/:id', 'Objetivos@eliminarObjetivo');
+
+
+// Rutas para el manejo de Valores
+$router->post('/valores', 'Valores@crearValor');
+$router->get('/valores', 'Valores@valores'); // Obtiene todos los valores
+$router->get('/valores/desactivados', 'Valores@ObtenerOff'); // Obtiene todos los valores desactivados
+$router->put('/valores/:id/desactivar', 'Valores@desactivarValor');
+$router->put('/valores/:id/activar', 'Valores@activarValor');
+$router->delete('/valores/:id', 'Valores/eliminarValor');
+$router->put('/valores/:id', 'Valores/actualizarValores');
 
 
 //########################## RUTAS PARA ROLES #######################################
@@ -100,7 +116,10 @@ $router->post('/documentos/:id', 'Documentos@actualizarDocumento');
 $router->delete('/documentos/:id', 'Documentos@eliminarDocumento');
 $router->get('/documentos-procesos/:id', 'Documentos@obtenerDocumentoByProceso'); 
 $router->get('/documentos-by-id-detalles/:id', 'Documentos@obtenerDocumentosByid');
-
+$router->put('/revisar/:id', 'Documentos@revisarDocumento');
+$router->put('/des-revisar/:id', 'Documentos@DesRevisarDocumento');
+$router->put('/autorizar/:id', 'Documentos@autorizarDocumento');
+$router->put('/desautorizar/:id', 'Documentos@DesAutorizarDocumento');
 //########################## RUTAS PARA CATEGORIA #######################################
 
 $router->post('/categorias', 'Categorias@crearCategoria'); 
@@ -159,6 +178,19 @@ $router->put('/carreras/:id', 'Carreras@ActualizarCarrera'); // Actualiza datos 
 $router->put('/carreras/desactivar/:id', 'Carreras@DesactivarCarrera'); // Desactiva una carrera
 $router->put('/carreras/activar/:id', 'Carreras@ActivarCarrera'); // Activa una carrera
 $router->delete('/carreras/:id', 'Carreras@EliminarCarrera'); // Elimina una carrera
+
+//########################## RUTAS PARA CARRERA_DOCUMENTO #######################################
+
+$router->get('/carreradocumentos/activas/:id', 'CarreraDocumentos@ObtenerCarreraDocumentosActivas'); // Obtiene todos los documentos activos asociados a carreras
+$router->get('/carreradocumentos/inactivas/:id', 'CarreraDocumentos@ObtenerCarreraDocumentosInactivas'); // Obtiene todos los documentos inactivos asociados a carreras
+$router->get('/carreradocumentos/:id', 'CarreraDocumentos@ObtenerCarreraDocumentos'); // Obtiene todos los documentos asociados a carreras
+$router->get('/carreradocumentos/especifico/:id', 'CarreraDocumentos@ObtenerCarreraDocumento'); // Obtiene un documento asociado a un id específica
+$router->get('/carreradocumentos/carrera/:id', 'CarreraDocumentos@ObtenerCarreraDocumentoporCarrera'); // Obtiene un documento asociado a una carrera específica
+$router->post('/carreradocumentos', 'CarreraDocumentos@CrearCarreraDocumento'); // Crea una nueva asociación de documento y carrera
+$router->put('/carreradocumentos/actualizar/:id', 'CarreraDocumentos@ActualizarCarreraDocumento'); // Actualiza una asociación de documento y carrera
+$router->put('/carreradocumentos/desactivar/:id', 'CarreraDocumentos@DesactivarCarreraDocumento'); // Desactiva una asociación de documento y carrera
+$router->put('/carreradocumentos/activar/:id', 'CarreraDocumentos@ActivarCarreraDocumento'); // Activa una asociación de documento y carrera
+$router->delete('/carreradocumentos/:id', 'CarreraDocumentos@EliminarCarreraDocumento'); // Elimina una asociación de documento y carrera
 
 //########################## RUTAS PARA CUATRIMESTRES #######################################
 
@@ -237,3 +269,12 @@ $router->get('/graficas/departamentodoc', 'Graficas@GraficaCantDocumentDepartame
 
 /* BUSCADOR */
 $router->get('/buscar', 'Documentos@buscar'); 
+
+/* BITÁCORA */
+$router->get('/bitacora', 'Bitacora@getBitacora');
+
+
+/* NOTIFICACIONES */
+$router->get('/cantidad-notificaciones', 'Notificaciones@cantidadDeNotificaciones');
+$router->get('/data-mensajes', 'Notificaciones@allDataMenssages');
+$router->put('/actualizar-estado/:id', 'Notificaciones@actualizarVistoMensaje');

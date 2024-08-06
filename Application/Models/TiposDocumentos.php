@@ -6,10 +6,10 @@ use MVC\Model;
 class ModelsTiposDocumentos extends Model {
 
     public function tiposDocumentos($activo) {
-        // sql statement
-        $sql = "SELECT * FROM " . DB_PREFIX . "tipo_documento WHERE activo = $activo";
+        // SQL statement
+        $sql = "SELECT * FROM " . DB_PREFIX . "tipo_documento WHERE activo = " . (int)$activo;
     
-        // exec query
+        // Execute query
         $query = $this->db->query($sql);
     
         // Initialize data as an empty array
@@ -17,7 +17,13 @@ class ModelsTiposDocumentos extends Model {
     
         // Check if there are any rows
         if ($query->num_rows) {
-            foreach($query->rows as $value) {
+            foreach ($query->rows as $value) {
+                // Call the 'categoria' function to get the category data
+                $categoria_data = $this->categoria($value['fk_categoria']);
+    
+                // Add the category data to the document type data
+                $value['categoria'] = $categoria_data['data'];
+    
                 // Add the document type data to the result
                 $data['data'][] = $value;
             }
@@ -28,6 +34,30 @@ class ModelsTiposDocumentos extends Model {
         // Return the data array
         return $data;
     }
+    
+    public function categoria($id) {
+        // Sanitize the ID to prevent SQL Injection
+        $id = (int)$id;
+    
+        // SQL statement
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "categoria WHERE id_categoria = $id");
+    
+        // Initialize data as an empty array
+        $data = [];
+    
+        // Check if there are any rows
+        if ($query->num_rows) {
+            // Assuming only one category is expected with a specific ID
+            $data['data'] = $query->row;
+        } else {
+            // Return an empty array if no category is found with the given ID
+            $data['data'] = [];
+        }
+    
+        // Return the data array
+        return $data;
+    }
+    
 
     
     
@@ -51,6 +81,8 @@ class ModelsTiposDocumentos extends Model {
     public function insertTipoDocumento($Data) {
         // Extract person data
         $tipo_documento = $Data['tipo_documento'];
+        $fk_categoria = $Data['fk_categoria'];
+
 
 
     
@@ -63,14 +95,15 @@ class ModelsTiposDocumentos extends Model {
 
             
             // Prepare SQL statement
-            $sql = "INSERT INTO " . DB_PREFIX . "tipo_documento (tipo_documento, fecha, hora, activo) VALUES (?, ?, ?, ?)";
+            $sql = "INSERT INTO " . DB_PREFIX . "tipo_documento (tipo_documento, fk_categoria, fecha, hora, activo) VALUES (?, ?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
     
             // Bind parameters
             $stmt->bindParam(1, $tipo_documento, PDO::PARAM_STR);
-            $stmt->bindParam(2, $fecha, PDO::PARAM_STR);
-            $stmt->bindParam(3, $hora, PDO::PARAM_STR);
-            $stmt->bindParam(4, $activo, PDO::PARAM_STR);
+            $stmt->bindParam(2, $fk_categoria, PDO::PARAM_STR);
+            $stmt->bindParam(3, $fecha, PDO::PARAM_STR);
+            $stmt->bindParam(4, $hora, PDO::PARAM_STR);
+            $stmt->bindParam(5, $activo, PDO::PARAM_STR);
     
             // Execute the query
             $stmt->execute();
@@ -93,13 +126,16 @@ class ModelsTiposDocumentos extends Model {
     public function updateTipoDocumento($data) {
         $id = $data['id'];
         $tipo_documento = $data['tipo_documento'];
+        $fk_categoria = $data['fk_categoria'];
+
     
         try {
-            $sql = "UPDATE " . DB_PREFIX . "tipo_documento SET tipo_documento = ? WHERE id_tipo = ?";
+            $sql = "UPDATE " . DB_PREFIX . "tipo_documento SET tipo_documento = ?, fk_categoria = ? WHERE id_tipo = ?";
             $stmt = $this->db->prepare($sql);
     
             $stmt->bindParam(1, $tipo_documento, PDO::PARAM_STR);
-            $stmt->bindParam(2, $id, PDO::PARAM_INT);
+            $stmt->bindParam(2, $fk_categoria, PDO::PARAM_STR);
+            $stmt->bindParam(3, $id, PDO::PARAM_INT);
     
             $stmt->execute();
     

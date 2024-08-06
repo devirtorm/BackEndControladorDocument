@@ -48,11 +48,14 @@ class ControllersTiposDocumentos extends Controller
         error_log("JSON Data: " . $json_data);
         $data = json_decode($json_data, true);
     
-        if ($data !== null && isset($data['tipo_documento'])) {
+        if ($data !== null && isset($data['tipo_documento'],$data['fk_categoria'])) {
             $tipo_documento = filter_var($data['tipo_documento'], FILTER_SANITIZE_STRING);
-    
+            $fk_categoria = filter_var($data['fk_categoria'], FILTER_SANITIZE_STRING);
+            
             $inserted = $model->insertTipoDocumento([
                 'tipo_documento' => $tipo_documento,
+                'fk_categoria' => $fk_categoria,
+
 
             ]);
     
@@ -171,11 +174,14 @@ class ControllersTiposDocumentos extends Controller
         // Verificar si los datos son válidos
         if ($data !== null && isset($data['tipo_documento'])) {
             $tipo_documento = filter_var($data['tipo_documento'], FILTER_SANITIZE_STRING);
+            $fk_categoria = filter_var($data['fk_categoria'], FILTER_SANITIZE_STRING);
+
             
             if (isset($param['id']) && $this->validId($param['id'])) {
                 // Actualizar el área existente
                 $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-                $updated = $model->updateTipoDocumento(['id' => $id, 'tipo_documento' => $tipo_documento]);
+                
+                $updated = $model->updateTipoDocumento(['id' => $id, 'tipo_documento' => $tipo_documento, 'fk_categoria' => $fk_categoria,]);
         
                 if ($updated) {
                     $this->response->sendStatus(200);

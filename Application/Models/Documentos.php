@@ -9,7 +9,7 @@ class ModelsDocumentos extends Model
         $id = (int)$id;
     
         // Construir la consulta SQL
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "documento WHERE fk_proceso = $id");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "documento WHERE fk_proceso = $id AND activo = 1 AND autorizado = 1 AND revisado = 1");
     
         $data = [];
     
@@ -25,44 +25,57 @@ class ModelsDocumentos extends Model
         // Devolver el array de datos
         return $data;
     }
-
-    public function documentos($activo,$id)
+    public function documentos($activo, $id)
     {
-        // sql statement
-        $sql = "SELECT * FROM " . DB_PREFIX . "documento WHERE activo = $activo and fk_departamento=$id";
-
-        // exec query
+        // Obtener el nombre del departamento
+        $sql1 = "SELECT dp.nombre_departamento 
+                 FROM usuario us 
+                 INNER JOIN departamento dp ON dp.id_departamento = us.fk_departamento 
+                 WHERE us.fk_departamento = $id";
+    
+        $query1 = $this->db->query($sql1);
+        
+        // Inicializar variable para el nombre del departamento
+        $nombre_departamento = '';
+    
+        // Verificar si hay filas en el resultado
+        if ($query1->num_rows) {
+            $nombre_departamento = $query1->row['nombre_departamento'];
+        }
+    
+        // Construir la consulta adecuada basada en el nombre del departamento
+        if (strtolower($nombre_departamento) == 'calidad' || strtolower($nombre_departamento) == 'calidad') {
+            $sql = "SELECT * FROM " . DB_PREFIX . "documento WHERE activo = $activo";
+        } else {
+            $sql = "SELECT * FROM " . DB_PREFIX . "documento WHERE activo = $activo AND fk_departamento = $id";
+        }
+    
+        // Ejecutar la consulta
         $query = $this->db->query($sql);
-
-        // Initialize data as an empty array
+    
+        // Inicializar los datos como un array vacío
         $data = [];
-
-        // Check if there are any rows
+    
+        // Verificar si hay filas en el resultado
         if ($query->num_rows) {
             foreach ($query->rows as $value) {
-                // llamar a 'area' funcion que obtiene los datos de area
+                // Llamar a la función 'departamento' para obtener los datos del departamento
                 $departamento_data = $this->departamento($value['fk_departamento']);
-
-                // Add the area data to the department data
                 $value['departamento'] = $departamento_data['data'];
-
-                // llamar a 'area' funcion que obtiene los datos de area
+    
+                // Llamar a la función 'tipoDocumento' para obtener los datos del tipo de documento
                 $tipo_documento_data = $this->tipoDocumento($value['fk_tipo_documento']);
-
-                // Add the area data to the department data
                 $value['tipo_documento'] = $tipo_documento_data['data'];
-
-                // llamar a 'area' funcion que obtiene los datos de area
+    
+                // Llamar a la función 'categoria' para obtener los datos de la categoría
                 $categoria_data = $this->categoria($value['fk_categoria']);
-
-                // Add the area data to the department data
                 $value['categoria'] = $categoria_data['data'];
 
                 // llamar a 'area' funcion que obtiene los datos de area
-                $subproceso_data = $this->subproceso($value['fk_subproceso']);
+                $subproceso_data = $this->proceso($value['fk_proceso']);
 
                 // Add the area data to the department data
-                $value['subproceso'] = $subproceso_data['data'];
+                $value['proceso'] = $subproceso_data['data'];
 
 
                 // agregar area a los resultados
@@ -71,10 +84,11 @@ class ModelsDocumentos extends Model
         } else {
             $data['data'] = [];
         }
-
-        // Return the data array
+    
+        // Devolver el array de datos
         return $data;
     }
+    
 
     public function departamento($id)
     {
@@ -145,13 +159,13 @@ class ModelsDocumentos extends Model
         return $data;
     }
 
-    public function subproceso($id)
+    public function proceso($id)
     {
         // Sanitizar el ID para prevenir SQL Injection
         $id = (int)$id;
     
         // Construir la consulta SQL
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "subproceso WHERE id_subproceso = $id");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "proceso WHERE id_proceso = $id");
     
         $data = [];
     
@@ -160,14 +174,14 @@ class ModelsDocumentos extends Model
             // Obtener la primera fila (ya que se espera solo una persona con un ID específico)
             $data['data'] = $query->row;
     
-            // Obtener el id_proceso del subproceso
-            $id_proceso = $data['data']['fk_proceso'];
+            // Obtener el id_macroproceso del proceso
+            $id_proceso = $data['data']['fk_macroproceso'];
     
             // Llamar a la función proceso para obtener los datos del proceso
-            $proceso_data = $this->proceso($id_proceso);
+            $proceso_data = $this->macroproceso($id_proceso);
     
             // Añadir los datos del proceso al array de datos del subproceso
-            $data['data']['proceso'] = $proceso_data['data'];
+            $data['data']['macroproceso'] = $proceso_data['data'];
         } else {
             // Devolver un array vacío si no se encuentra ninguna dato con el ID dado
             $data['data'] = [];
@@ -177,12 +191,12 @@ class ModelsDocumentos extends Model
         return $data;
     }
 
-    public function proceso($id) {
+    public function macroproceso($id) {
         // Sanitizar el ID para prevenir SQL Injection
         $id = (int)$id;
     
         // Construir la consulta SQL
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "proceso WHERE id_proceso = $id");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "macroproceso WHERE id_macroproceso = $id");
     
         $data = [];
     
@@ -228,8 +242,8 @@ class ModelsDocumentos extends Model
             $value['categoria'] = $categoria_data['data'];
     
             // Llamar a 'subproceso' funcion que obtiene los datos del subproceso
-            $subproceso_data = $this->subproceso($value['fk_subproceso']);
-            $value['subproceso'] = $subproceso_data['data'];
+            $subproceso_data = $this->proceso($value['fk_proceso']);
+            $value['proceso'] = $subproceso_data['data'];
     
             // Agregar el documento con sus datos relacionados al resultado
             $data['data'] = $value;
@@ -247,7 +261,7 @@ class ModelsDocumentos extends Model
     {
         try {
             // SQL statement
-            $sql = "SELECT  " . DB_PREFIX . "documento.titulo,
+            $sql = "SELECT  " . DB_PREFIX . "documento.id_documento,documento.titulo,
         documento.url,
         proceso.proceso,
         macroproceso.macroproceso AS macroproceso_nombre,
@@ -461,7 +475,43 @@ class ModelsDocumentos extends Model
         // Verificar si la fila fue afectada (actualizada)
         return $stmt->rowCount() > 0;
     }
+    public function revisarDocumentoAdmin($id, $activo)
+    {
+        // Escapar el id y el valor de activo para evitar inyecciones SQL
+        $id = (int)$id;
+        $activo = (int)$activo;
 
+        // sql statement
+        $sql = "UPDATE " . DB_PREFIX . "documento SET revisado = :revisado WHERE id_documento = :id";
+
+        // Preparar y ejecutar la consulta
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':revisado', $activo, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Verificar si la fila fue afectada (actualizada)
+        return $stmt->rowCount() > 0;
+    }
+    public function autorizarDocumentoAdmin($id, $activo)
+    {
+        // Escapar el id y el valor de activo para evitar inyecciones SQL
+        $id = (int)$id;
+        $activo = (int)$activo;
+
+        // sql statement
+        $sql = "UPDATE " . DB_PREFIX . "documento SET autorizado = :autorizado WHERE id_documento = :id";
+
+        // Preparar y ejecutar la consulta
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':autorizado', $activo, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Verificar si la fila fue afectada (actualizada)
+        return $stmt->rowCount() > 0;
+    }
+    
 
 /* Consulta para poder obtener la id del archivo que necesitamos descargar desde el nabvar "procesos específicos" */
 public function documentProcesosEspecificos()
