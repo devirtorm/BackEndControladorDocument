@@ -46,27 +46,18 @@ class ModelsMacroprocesos extends Model
 
     public function MacroprocesosActivos()
     {
-        // sql statement
         $sql = "SELECT * FROM macroproceso WHERE activo = 1";
-
-        // exec query
         $query = $this->db->query($sql);
-
-        // Initialize data as an empty array
         $data = [];
 
-        // Check if there are any rows
         if ($query->num_rows) {
             foreach ($query->rows as $value) {
                 $value['fecha'] = $this->formatDate($value['fecha']);
                 $value['hora'] = $this->formatTime($value['hora']);
-                $data['data'][] = $value;
+                $data[] = $value;
             }
-        } else {
-            $data['data'] = [];
         }
 
-        // Return the data array
         return $data;
     }
 
