@@ -4,10 +4,23 @@ use MVC\Controller;
 
 class ControllersMacroprocesos extends Controller
 {
-    public function ObtenerMacroprocesos()
+    public function obtenerMacroprocesos()
+    {
+
+        // Connect to database
+        $model = $this->model('Macroprocesos');
+
+        $data_list = $model->macroprocesos(1);
+
+        // Send Response
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
+
+    public function ObtenerTodoslosMacroprocesos()
     {
         $model = $this->model('Macroprocesos');
-        $data_list = $model->Macroprocesos();
+        $data_list = $model->TodoslosMacroprocesos();
 
         $this->response->sendStatus(200);
         $this->response->setContent($data_list);
