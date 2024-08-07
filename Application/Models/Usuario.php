@@ -123,27 +123,31 @@ WHERE
     }
 
 
-    public function updateProceso($procesoData) {
+    public function updateUsuario($procesoData) {
         $id = $procesoData['id'];
-        $proceso = $procesoData['proceso'];
-        $proposito = $procesoData['proposito'];
+        $fk_departamento = $procesoData['fk_departamento']; // Asumimos que estás pasando el ID del departamento
+        $correo = $procesoData['correo'];
+        $fk_rol = $procesoData['fk_rol']; // Asumimos que estás pasando el ID del rol
     
         try {
-            $sql = "UPDATE " . DB_PREFIX . "proceso SET proceso = ?, proposito = ? WHERE id_proceso = ?";
+            $sql = "UPDATE " . DB_PREFIX . "usuario SET fk_departamento = ?, correo = ?, fk_rol = ? WHERE id_usuario = ?";
             $stmt = $this->db->prepare($sql);
     
-            $stmt->bindParam(1, $proceso, PDO::PARAM_STR);
-            $stmt->bindParam(2, $proposito, PDO::PARAM_STR);
-            $stmt->bindParam(3, $id, PDO::PARAM_INT);
+            $stmt->bindParam(1, $fk_departamento, PDO::PARAM_INT); // Cambiado a INT
+            $stmt->bindParam(2, $correo, PDO::PARAM_STR);
+            $stmt->bindParam(3, $fk_rol, PDO::PARAM_INT); // Cambiado a INT
+            $stmt->bindParam(4, $id, PDO::PARAM_INT);
     
             $stmt->execute();
     
             return $stmt->rowCount() > 0;
         } catch (PDOException $e) {
-            error_log("Error updating proceso: " . $e->getMessage());
+            error_log("Error updating usuario: " . $e->getMessage());
             return false;
         }
     }
+    
+    
 
 
     public function eliminarProceso($id) {

@@ -22,17 +22,25 @@ $router->get('/usuarios/:id', 'Usuario@obtenerUsuario');
 $router->delete('/usuarios:id', 'Usuario@eliminarUsuario');
 $router->put('/usuarios/:id/desactivar', 'Usuario@desactivarUsuario');
 $router->put('/usuarios/:id/activar', 'Usuario@activarUsuario');
-$router->put('/usuarios/:id', 'Usuario@actualizarPersona');
+$router->put('/usuarios/:id', 'Usuario@actualizarUsuario');
 
-// Rutas para el manejo de personas
-$router->post('/personas', 'Personas@crearPersona');
-$router->get('/personas/desactivadas', 'Personas@obtenerPersonasDesactivadas');
-$router->get('/personas', 'Personas@personas');
-$router->get('/personas/:id', 'Personas@obtenerPersona');
-$router->delete('/personas/:id', 'Personas@eliminarPersona');
-$router->put('/personas/:id/desactivar', 'Personas@desactivarPersona');
-$router->put('/personas/:id/activar', 'Personas@activarPersona');
-$router->put('/personas/:id', 'Personas@actualizarPersona');
+// Rutas para el manejo de Objetivos
+$router->get('/objetivos', 'Objetivos@objetivos'); // Obtiene todos los objetivos
+$router->get('/objetivos/desactivados', 'Objetivos@obtenerDesactivados'); // Obtiene todos los objetivos desactivados
+$router->put('/objetivos/:id/desactivar', 'Objetivos@desactivarObjetivo');
+$router->put('/objetivos/:id/activar', 'Objetivos@activarObjetivo');
+$router->delete('/objetivos/:id', 'Objetivos@eliminarObjetivo');
+
+
+// Rutas para el manejo de Valores
+$router->post('/valores', 'Valores@crearValor');
+$router->get('/valores', 'Valores@valores'); // Obtiene todos los valores
+$router->get('/valores/desactivados', 'Valores@ObtenerOff'); // Obtiene todos los valores desactivados
+$router->put('/valores/:id/desactivar', 'Valores@desactivarValor');
+$router->put('/valores/:id/activar', 'Valores@activarValor');
+$router->delete('/valores/:id', 'Valores/eliminarValor');
+$router->put('/valores/:id', 'Valores/actualizarValores');
+
 
 //########################## RUTAS PARA ROLES #######################################
 $router->post('/rol', 'Roles@crearRol'); // Crea nuevos roles
@@ -209,8 +217,17 @@ $router->put('/materias/activar/:id', 'Materias@ActivarMateria'); // Activa una 
 $router->delete('/materias/:id', 'Materias@EliminarMateria'); // Elimina una materia
 
 //########################## RUTAS PARA MACROPROCESOS #######################################
-$router->get('/macroprocesos', 'Macroprocesos@obtenerMacroprocesos'); // Obtiene todos los datos de los macroprocesos activos
 
+$router->get('/macroprocesos/activas', 'Macroprocesos@ObtenerMacroprocesosActivos'); // Obtiene todos los datos de todos los macroprocesos activos
+$router->get('/macroprocesos/inactivas', 'Macroprocesos@ObtenerMacroprocesosInactivos'); // Obtiene todos los datos de todos los macroprocesos inactivos
+$router->get('/macroprocesos', 'Macroprocesos@ObtenerMacroprocesos'); // Obtiene todos los datos de todos los macroprocesos para el acordeon
+$router->get('/macroprocesos', 'Macroprocesos@ObtenerTodoslosMacroprocesos'); // Obtiene todos los datos de todos los macroprocesos
+$router->get('/macroprocesos/:id', 'Macroprocesos@obtenerMacroproceso'); // Obtiene datos de una macroproceso en especifico
+$router->post('/macroprocesos', 'Macroprocesos@CrearMacroproceso'); // Crea nuevos macroprocesos
+$router->put('/macroprocesos/:id', 'Macroprocesos@ActualizarMacroproceso'); // Actualiza datos de un macroproceso
+$router->put('/macroprocesos/desactivar/:id', 'Macroprocesos@DesactivarMacroproceso'); // Desactiva un macroproceso
+$router->put('/macroprocesos/activar/:id', 'Macroprocesos@ActivarMacroproceso'); // Activa un macroproceso
+$router->delete('/macroprocesos/:id', 'Macroprocesos@EliminarMacroproceso'); // Elimina un macroproceso
 
 //########################## RUTA DE LOGIN #######################################
 
@@ -265,3 +282,8 @@ $router->get('/buscar', 'Documentos@buscar');
 /* BITÁCORA */
 $router->get('/bitacora', 'Bitacora@getBitacora');
 
+
+/* NOTIFICACIONES */
+$router->get('/cantidad-notificaciones', 'Notificaciones@cantidadDeNotificaciones');
+$router->get('/data-mensajes', 'Notificaciones@allDataMenssages');
+$router->put('/actualizar-estado/:id', 'Notificaciones@actualizarVistoMensaje');

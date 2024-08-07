@@ -227,12 +227,12 @@ class ControllersUsuario extends Controller
                     ]));
                    
                
-            }} else {
+            } else {
                 $this->response->sendStatus(401);
-                $this->response->setContent(json_encode(['message' => 'Credenciales inválidas']));
+                $this->response->setContent(json_encode(['message' => 'Credenciales inválidas/correo no existe']));
             }
         }
-    
+    }
 
 
 
@@ -300,37 +300,46 @@ class ControllersUsuario extends Controller
         }
     }
     
+public function actualizarUsuario() {
+    $model = $this->model('Usuario');
+    $json_data = file_get_contents('php://input');
+    error_log("JSON Data: " . $json_data);
+    $data = json_decode($json_data, true);
 
-    public function actualizarProceso($param) {
-        $model = $this->model('Procesos');
-        $json_data = file_get_contents('php://input');
-        error_log("JSON Data: " . $json_data);
-        $data = json_decode($json_data, true);
-    
-        // Verificar si los datos son válidos
-        if ($data !== null && isset($data['proceso']) && isset($data['proposito'])) {
-            $proceso = filter_var($data['proceso'], FILTER_SANITIZE_STRING);
-            $proposito = filter_var($data['proposito'], FILTER_SANITIZE_STRING);
-            
-            if (isset($param['id']) && $this->validId($param['id'])) {
-                // Actualizar el área existente
-                $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-                $updated = $model->updateProceso(['id' => $id, 'proceso' => $proceso, 'proposito' => $proposito]);
-        
-                if ($updated) {
-                    $this->response->sendStatus(200);
-                    $this->response->setContent([
-                        'message' => 'Departamento actualizada correctamente.'
-                    ]);
-                } else {
-                    $this->response->sendStatus(500);
-                    $this->response->setContent([
-                        'message' => 'Error: No se pudo actualizar el departamento.'
-                    ]);
-                }
-            } 
-        } 
+    // Verificar si los datos son válidos
+    if ($data !== null && isset($data['fk_departamento']) && isset($data['correo']) && isset($data['fk_rol']) && isset($data['id'])) {
+        $fk_departamento = filter_var($data['fk_departamento'], FILTER_SANITIZE_NUMBER_INT);
+        $correo = filter_var($data['correo'], FILTER_SANITIZE_EMAIL);
+        $fk_rol = filter_var($data['fk_rol'], FILTER_SANITIZE_NUMBER_INT);
+        $id = filter_var($data['id'], FILTER_SANITIZE_NUMBER_INT);
+
+        // Actualizar el área existente
+        $updated = $model->updateUsuario([
+            'id' => $id,
+            'fk_departamento' => $fk_departamento,
+            'correo' => $correo,
+            'fk_rol' => $fk_rol
+        ]);
+
+        if ($updated) {
+            $this->response->sendStatus(200);
+            $this->response->setContent([
+                'message' => 'Usuario actualizado correctamente.'
+            ]);
+        } else {
+            $this->response->sendStatus(500);
+            $this->response->setContent([
+                'message' => 'Error: No se pudo actualizar el usuario.'
+            ]);
+        }
+    } else {
+        $this->response->sendStatus(400);
+        $this->response->setContent([
+            'message' => 'Datos de entrada inválidos.'
+        ]);
     }
+}
+
     
 
     
