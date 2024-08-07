@@ -120,6 +120,8 @@ $router->put('/revisar/:id', 'Documentos@revisarDocumento');
 $router->put('/des-revisar/:id', 'Documentos@DesRevisarDocumento');
 $router->put('/autorizar/:id', 'Documentos@autorizarDocumento');
 $router->put('/desautorizar/:id', 'Documentos@DesAutorizarDocumento');
+$router->get('/todos-documentos', 'Documentos@allDocumentos');
+
 //########################## RUTAS PARA CATEGORIA #######################################
 
 $router->post('/categorias', 'Categorias@crearCategoria'); 
