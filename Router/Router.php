@@ -30,6 +30,8 @@ $router->get('/objetivos/desactivados', 'Objetivos@obtenerDesactivados'); // Obt
 $router->put('/objetivos/:id/desactivar', 'Objetivos@desactivarObjetivo');
 $router->put('/objetivos/:id/activar', 'Objetivos@activarObjetivo');
 $router->delete('/objetivos/:id', 'Objetivos@eliminarObjetivo');
+$router->post('/objetivos', 'Objetivos@crearObjetivo'); 
+
 
 
 // Rutas para el manejo de Valores
@@ -40,6 +42,7 @@ $router->put('/valores/:id/desactivar', 'Valores@desactivarValor');
 $router->put('/valores/:id/activar', 'Valores@activarValor');
 $router->delete('/valores/:id', 'Valores/eliminarValor');
 $router->put('/valores/:id', 'Valores/actualizarValores');
+
 
 
 //########################## RUTAS PARA ROLES #######################################
