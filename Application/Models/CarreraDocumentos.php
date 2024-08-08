@@ -46,6 +46,8 @@ class ModelsCarreraDocumentos extends Model
                     'nombre_documento' => $value['titulo'],
                     'tsu' => $value['tsu'],
                     'ing' => $value['ing'],
+                    'fecha' => $this->formatDate($value['fecha']),
+                    'hora' => $this->formatTime($value['hora']),
                     'activo' => $value['activo'],
                 ];
             }
@@ -145,6 +147,8 @@ class ModelsCarreraDocumentos extends Model
                     'nombre_documento' => $value['titulo'],
                     'tsu' => $value['tsu'],
                     'ing' => $value['ing'],
+                    'fecha' => $this->formatDate($value['fecha']),
+                    'hora' => $this->formatTime($value['hora']),
                     'activo' => $value['activo']
                 ];
             }
@@ -198,6 +202,8 @@ class ModelsCarreraDocumentos extends Model
                     'nombre_documento' => $value['titulo'],
                     'tsu' => $value['tsu'],
                     'ing' => $value['ing'],
+                    'fecha' => $this->formatDate($value['fecha']),
+                    'hora' => $this->formatTime($value['hora']),
                     'activo' => $value['activo']
                 ];
             }
@@ -210,20 +216,27 @@ class ModelsCarreraDocumentos extends Model
 
     public function createCarreraDocumento($data)
     {
+        date_default_timezone_set('America/Mazatlan');
+
         $fk_carrera = $data['fk_carrera'];
         $fk_documento = $data['fk_documento'];
         $tsu = $data['tsu'];
         $ing = $data['ing'];
+        $fecha = date('Y-m-d');
+        $hora = date('H:i:s');
         $activo = 1;
 
         try {
-            $sql = "INSERT INTO carrera_documento (fk_carrera, fk_documento, tsu, ing, activo) VALUES (?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO carrera_documento (fk_carrera, fk_documento, tsu, ing, fecha, hora, activo) VALUES (?, ?, ?, ?, ?, ?, ?)";
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(1, $fk_carrera, PDO::PARAM_INT);
             $stmt->bindParam(2, $fk_documento, PDO::PARAM_INT);
             $stmt->bindParam(3, $tsu, PDO::PARAM_BOOL);
             $stmt->bindParam(4, $ing, PDO::PARAM_BOOL);
-            $stmt->bindParam(5, $activo, PDO::PARAM_INT);
+            $stmt->bindParam(5, $fecha, PDO::PARAM_STR);
+            $stmt->bindParam(6, $hora, PDO::PARAM_STR);
+            $stmt->bindParam(7, $activo, PDO::PARAM_INT);
+           
 
             if ($stmt->execute()) {
                 return true;
@@ -271,6 +284,18 @@ class ModelsCarreraDocumentos extends Model
         $stmt->bindParam(1, $id, PDO::PARAM_INT);
 
         return $stmt->execute();
+    }
+
+    private function formatDate($date)
+    {
+        $dateTime = new DateTime($date);
+        return $dateTime->format('d-m-Y');
+    }
+
+    private function formatTime($time)
+    {
+        $dateTime = new DateTime($time);
+        return $dateTime->format('h:i:s A');
     }
 }
 ?>
