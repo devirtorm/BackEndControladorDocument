@@ -18,6 +18,20 @@ class ControllersDocumentos extends Controller
         $this->response->setContent($data_list);
     }
 
+    public function allDocumentos()
+    {
+
+        // Connect to database
+        $model = $this->model('Documentos');
+
+        $data_list = $model->todosDocumentos(1);
+
+        // Send Response
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
+
+
     public function obtenerDocumentosByid($param)
     {
 
