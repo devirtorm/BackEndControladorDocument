@@ -182,7 +182,7 @@ WHERE d.activo = $activo";
         $activo = (int)$activo;
     
         // sql statement
-        $sql = "UPDATE " . DB_PREFIX . "departamentoProceso SET activo = :activo WHERE id_departamentopr = :id";
+        $sql = "UPDATE " . DB_PREFIX . "departamento SET activo = :activo WHERE id_departamento = :id";
     
         // Preparar y ejecutar la consulta
         $stmt = $this->db->prepare($sql);
