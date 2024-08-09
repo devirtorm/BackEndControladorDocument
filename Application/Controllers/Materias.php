@@ -82,7 +82,7 @@ class ControllersMaterias extends Controller
             if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
                 $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\document\\materias\\";
             } else {
-                $target_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/document/";
+                $target_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/document/materias/";
             }
             
             // Sanitizar el nombre del archivo
