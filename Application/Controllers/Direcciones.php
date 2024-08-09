@@ -73,9 +73,17 @@ class ControllersDirecciones extends Controller
         error_log("Archivo de logo: " . print_r($logo, true));
     
         if ($nombre_direccion && $logo) {
-            // Ruta donde se almacenará físicamente la imagen
-            $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\images\\direcciones\\";
-            $target_file = $target_dir . basename($logo["name"]);
+            // Detectar sistema operativo
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\images\\direcciones\\";
+            } else {
+                $target_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/images/direcciones/";
+            }
+    
+            // Sanitizar el nombre del archivo
+            $file_name = preg_replace("/[^\p{L}\p{N}.]/u", "_", basename($logo["name"]));
+            $target_file = $target_dir . $file_name;
+    
             $uploadOk = 1;
             $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
     
@@ -95,9 +103,32 @@ class ControllersDirecciones extends Controller
             if ($uploadOk == 0) {
                 echo json_encode(['message' => 'Lo siento, tu archivo no fue subido.']);
             } else {
-                if (move_uploaded_file($logo["tmp_name"], $target_file)) {
+                // Verificar permisos de escritura
+                if (!is_writable($target_dir)) {
+                    error_log("Error: El directorio de destino no tiene permisos de escritura.");
+                    echo json_encode(['message' => 'Error: El directorio de destino no tiene permisos de escritura.']);
+                    return;
+                }
+    
+                // Intentar mover el archivo
+                if (!move_uploaded_file($logo["tmp_name"], $target_file)) {
+                    $error = error_get_last();
+                    error_log("Error al mover el archivo: " . print_r($error, true));
+                    
+                    // Intentar copiar si mover falla
+                    if (!copy($logo["tmp_name"], $target_file)) {
+                        $error = error_get_last();
+                        error_log("Error al copiar el archivo: " . print_r($error, true));
+                        echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.', 'error' => $error]);
+                        return;
+                    } else {
+                        unlink($logo["tmp_name"]);
+                    }
+                }
+    
+                if (file_exists($target_file)) {
                     // URL accesible desde el navegador (almacenada en la base de datos)
-                    $logo_url = "http://localhost/controlador_archivos/backend/asset/images/direcciones/" . basename($logo["name"]);
+                    $logo_url = "http://localhost/controlador_archivos/backend/asset/images/direcciones/" . $file_name;
     
                     $inserted = $model->createDireccion([
                         'nombre_direccion' => $nombre_direccion,
@@ -110,84 +141,81 @@ class ControllersDirecciones extends Controller
                         echo json_encode(['message' => 'Error al crear dirección.']);
                     }
                 } else {
-                    echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.']);
+                    error_log("Error: El archivo no se movió a la ubicación deseada.");
+                    echo json_encode(['message' => 'Error: El archivo no se movió a la ubicación deseada.']);
                 }
             }
         } else {
             echo json_encode(['message' => 'Error: Los datos de dirección son inválidos o incompletos.']);
         }
-    }    
+    }
 
-    public function ActualizarDireccion($param) {
-        error_log("Llamada a ActualizarDireccion con parámetros: " . json_encode($param));
-        
+    public function ActualizarDireccion() {
+        $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
+        $id = end($segments);
+        $id = intval($id);
+    
+        if (!$this->validId($id)) {
+            echo json_encode(['message' => 'Error: ID inválido.']);
+            return;
+        }
+    
         $model = $this->model('Direcciones');
+        $nombre_direccion = isset($_POST['nombre_direccion']) ? filter_var($_POST['nombre_direccion'], FILTER_SANITIZE_STRING) : null;
         $logo = isset($_FILES['logo']) ? $_FILES['logo'] : null;
         $logo_url = null;
     
-        if (method_exists($this, 'validId')) {
-            if (isset($param['id']) && $this->validId($param['id'])) {
-                $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-                error_log("ID validado: $id");
-    
-                if (isset($_POST['nombre_direccion'])) {
-                    $nombre_direccion = filter_var($_POST['nombre_direccion'], FILTER_SANITIZE_STRING);
-                    error_log("Nombre de dirección recibido: $nombre_direccion");
-    
-                    if ($logo) {
-                        $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\images\\direcciones\\";
-                        $target_file = $target_dir . basename($logo["name"]);
-                        $uploadOk = 1;
-                        $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-    
-                        // Allow certain file formats
-                        if (!in_array($fileType, ['jpg', 'jpeg', 'png', 'gif'])) {
-                            echo json_encode(['message' => 'Lo siento, solo se permiten archivos JPG, JPEG, PNG y GIF.']);
-                            $uploadOk = 0;
-                            error_log("Tipo de archivo no permitido: $fileType");
-                        }
-    
-                        if ($uploadOk == 0) {
-                            echo json_encode(['message' => 'Lo siento, tu archivo no fue subido.']);
-                            error_log("Error en la carga del archivo.");
-                            return;
-                        } else {
-                            if (move_uploaded_file($logo["tmp_name"], $target_file)) {
-                                $logo_url = "http://localhost/controlador_archivos/backend/asset/images/direcciones/" . basename($logo["name"]);
-                                error_log("Archivo subido exitosamente: $logo_url");
-                            } else {
-                                echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.']);
-                                error_log("Error moviendo el archivo subido.");
-                                return;
-                            }
-                        }
-                    }
-    
-                    $data = [
-                        'id' => $id,
-                        'nombre_direccion' => $nombre_direccion,
-                        'logo_url' => $logo_url
-                    ];
-    
-                    $updated = $model->updateDireccion($data);
-                    error_log("Resultado de la actualización: " . ($updated ? "Éxito" : "Fallo"));
-    
-                    if ($updated) {
-                        echo json_encode(['message' => 'Dirección actualizada correctamente.', 'logo_url' => $logo_url]);
-                    } else {
-                        echo json_encode(['message' => 'Error: No se pudo actualizar la dirección.']);
-                    }
-                } else {
-                    echo json_encode(['message' => 'Error: Los datos de la dirección son inválidos o incompletos.']);
-                    error_log("Datos de la dirección inválidos o incompletos.");
-                }
+        if ($nombre_direccion) {
+            // Detectar sistema operativo y establecer directorio base
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                $target_dir = "C:\\xampp\\htdocs\\controlador_archivos\\backend\\asset\\images\\direcciones\\";
             } else {
-                echo json_encode(['message' => 'Error: ID de dirección inválido.']);
-                error_log("ID de dirección inválido: " . $param['id']);
+                $target_dir = "/Applications/XAMPP/xamppfiles/htdocs/controlador_archivos/backend/asset/images/direcciones/";
+            }
+    
+            // Si se proporcionó un nuevo logo, manejar la actualización del archivo
+            if ($logo && $logo['error'] === UPLOAD_ERR_OK) {
+                $file_name = preg_replace("/[^\p{L}\p{N}.]/u", "_", basename($logo["name"]));
+                $target_file = $target_dir . $file_name;
+    
+                $uploadOk = 1;
+                $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    
+                $allowedFileTypes = ['jpg', 'jpeg', 'png', 'gif'];
+    
+                if (!in_array($fileType, $allowedFileTypes)) {
+                    echo json_encode(['message' => 'Lo siento, solo se permiten archivos JPG, JPEG, PNG y GIF.']);
+                    $uploadOk = 0;
+                }
+    
+                if ($uploadOk == 0) {
+                    echo json_encode(['message' => 'Lo siento, tu archivo no fue subido.']);
+                    return;
+                } else {
+                    if (move_uploaded_file($logo["tmp_name"], $target_file)) {
+                        $logo_url = "http://localhost/controlador_archivos/backend/asset/images/direcciones/" . $file_name;
+                    } else {
+                        echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.']);
+                        return;
+                    }
+                }
+            }
+    
+            $data = [
+                'id' => $id,
+                'nombre_direccion' => $nombre_direccion,
+                'logo_url' => $logo_url
+            ];
+    
+            $updated = $model->updateDireccion($data);
+    
+            if ($updated) {
+                echo json_encode(['message' => 'Dirección actualizada correctamente.', 'logo_url' => $logo_url]);
+            } else {
+                echo json_encode(['message' => 'Error al actualizar dirección.']);
             }
         } else {
-            echo json_encode(['message' => 'Error: Método validId no existe.']);
-            error_log("Método validId no existe.");
+            echo json_encode(['message' => 'Error: Los datos de dirección son inválidos o incompletos.']);
         }
     }
     
