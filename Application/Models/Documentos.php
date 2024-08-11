@@ -116,34 +116,33 @@ class ModelsDocumentos extends Model
 
     public function todosDocumentos($activo)
     {
-     
         try {
             // SQL statement
             $sql = "SELECT  " . DB_PREFIX . "documento.id_documento,documento.titulo,
-        documento.url,
-        proceso.proceso,
-        macroproceso.macroproceso AS macroproceso_nombre,
-        subproceso.subproceso,
-        departamento.nombre_departamento,
-        categoria.nombre_categoria,
-        tipo_documento.tipo_documento,
-        documento.num_revision,
-		area.nombre_area,
-		documento.fecha,
-		documento.fecha_emision,
-		documento.revisado,
-		documento.autorizado
-		
-    FROM documento
-    JOIN proceso ON documento.fk_proceso = proceso.id_proceso
-    JOIN macroproceso ON proceso.fk_macroproceso = macroproceso.id_macroproceso
-    LEFT JOIN subproceso ON documento.fk_subproceso = subproceso.id_subproceso
-    JOIN departamento ON documento.fk_departamento = departamento.id_departamento
-	join area on departamento.fk_area= area.id_area
-    JOIN categoria ON documento.fk_categoria = categoria.id_categoria
-    JOIN tipo_documento ON documento.fk_tipo_documento = tipo_documento.id_tipo
-    WHERE 
-         documento.activo=$activo";
+                documento.url,
+                proceso.proceso,
+                macroproceso.macroproceso AS macroproceso_nombre,
+                subproceso.subproceso,
+                departamento.nombre_departamento,
+                categoria.nombre_categoria,
+                tipo_documento.tipo_documento,
+                documento.num_revision,
+                area.nombre_area,
+                documento.fecha,
+                documento.fecha_emision,
+                documento.revisado,
+                documento.autorizado
+            FROM documento
+            JOIN proceso ON documento.fk_proceso = proceso.id_proceso
+            JOIN macroproceso ON proceso.fk_macroproceso = macroproceso.id_macroproceso
+            LEFT JOIN subproceso ON documento.fk_subproceso = subproceso.id_subproceso
+            JOIN departamento ON documento.fk_departamento = departamento.id_departamento
+            JOIN area ON departamento.fk_area = area.id_area
+            JOIN categoria ON documento.fk_categoria = categoria.id_categoria
+            JOIN tipo_documento ON documento.fk_tipo_documento = tipo_documento.id_tipo
+            WHERE 
+                documento.activo = $activo
+                AND area.activo = 1 AND departamento.activo = 1 AND proceso.activo = 1 AND macroproceso.activo = 1 AND subproceso.activo = 1 AND categoria.activo = 1 AND tipo_documento.activo = 1";
     
             // Execute query
             $query = $this->db->query($sql);
@@ -165,6 +164,7 @@ class ModelsDocumentos extends Model
             throw new \Exception('Error ejecutando la consulta: ' . $e->getMessage());
         }
     }
+    
 
     public function categoria($id)
     {

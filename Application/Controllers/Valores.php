@@ -103,38 +103,37 @@ class ControllersValores extends Controller
             ]);
         }
     }
+  
     public function actualizarValores() {
-    $model = $this->model('Valores');
-    $json_data = file_get_contents('php://input');
-    error_log("JSON Data: " . $json_data);
-    $data = json_decode($json_data, true);
-
-    // Verificar si los datos son válidos
-    if ($data !== null && isset($data['nombre']) && isset($data['descripcion']) && isset($data['icono']) && isset($data['id'])) {
-        $nombre = filter_var($data['nombre'], FILTER_SANITIZE_SPECIAL_CHARS);
-        $descripcion = filter_var($data['descripcion'], FILTER_SANITIZE_SPECIAL_CHARS);
-        $icono = filter_var($data['icono'], FILTER_SANITIZE_SPECIAL_CHARS);
-        $id = filter_var($data['id'], FILTER_SANITIZE_NUMBER_INT);
-
-        // Validar que los datos no estén vacíos
-        if (!empty($nombre) && !empty($descripcion) && !empty($icono) && $id !== false) {
-            // Actualizar el valor existente
+        $model = $this->model('Valores');
+        $json_data = file_get_contents('php://input');
+        error_log("JSON Data: " . $json_data);
+        $data = json_decode($json_data, true);
+    
+        // Verificar si los datos son válidos
+        if ($data !== null && isset($data['nombre']) && isset($data['descripcion']) && isset($data['icono']) && isset($data['id'])) {
+            $nombre = filter_var($data['nombre'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $descripcion = filter_var($data['descripcion'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $icono = filter_var($data['icono'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $id = filter_var($data['id'], FILTER_SANITIZE_NUMBER_INT);
+    
+            // Actualizar el área existente
             $updated = $model->updateUsuario([
                 'id' => $id,
                 'nombre' => $nombre,
                 'descripcion' => $descripcion,
                 'icono' => $icono
             ]);
-
+    
             if ($updated) {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'Valor actualizado correctamente.'
+                    'message' => 'Usuario actualizado correctamente.'
                 ]);
             } else {
                 $this->response->sendStatus(500);
                 $this->response->setContent([
-                    'message' => 'Error: No se pudo actualizar el valor.'
+                    'message' => 'Error: No se pudo actualizar el usuario.'
                 ]);
             }
         } else {
@@ -143,12 +142,33 @@ class ControllersValores extends Controller
                 'message' => 'Datos de entrada inválidos.'
             ]);
         }
-    } else {
-        $this->response->sendStatus(400);
-        $this->response->setContent([
-            'message' => 'Datos de entrada inválidos.'
+    }
+    
+public function crearValor()
+{
+    $model = $this->model('Valores');
+    $json_data = file_get_contents('php://input');
+    error_log("JSON Data: " . $json_data);
+    $data = json_decode($json_data, true);
+
+    if ($data !== null && isset($data['nombre']) && isset($data['descripcion']) && isset($data['icono'])) {
+        $nombre = filter_var($data['nombre'], FILTER_SANITIZE_SPECIAL_CHARS);
+        $descripcion = filter_var($data['descripcion'], FILTER_SANITIZE_SPECIAL_CHARS);
+        $icono = filter_var($data['icono'], FILTER_SANITIZE_SPECIAL_CHARS);
+
+        $inserted = $model->insertValor([
+            'nombre' => $nombre,
+            'descripcion' => $descripcion,
+            'icono' => $icono
         ]);
+
+        if ($inserted) {
+            echo json_encode(['message' => 'Valor guardado correctamente.']);
+        } else {
+            echo json_encode(['message' => 'Error al guardar el valor.']);
+        }
+    } else {
+        echo json_encode(['message' => 'Error: Los datos del valor son inválidos o incompletos.']);
     }
 }
-
     }

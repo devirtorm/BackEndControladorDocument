@@ -96,6 +96,76 @@ class ModelsObjetivos extends Model {
     
         // Verificar si la fila fue afectada (eliminada)
         return $stmt->rowCount() > 0;
+    }public function insertarObjetivo($data)
+    {
+        try {
+            error_log("Iniciando inserción de objetivo");
+    
+            // Obtener fecha y hora actual
+            $fecha = date('Y-m-d');
+            $hora = date('H:i:s');
+            $activo = 1;
+    
+            // Insertar el objetivo
+            $sql = "INSERT INTO objetivos (numero, descripcion, fecha, hora, active_tab, activo) VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = $this->db->prepare($sql);
+            // Enlazar parámetros
+            $stmt->bindParam(1, $data['numero'], PDO::PARAM_INT);
+            $stmt->bindParam(2, $data['descripcion'], PDO::PARAM_STR);
+            $stmt->bindParam(3, $fecha, PDO::PARAM_STR);
+            $stmt->bindParam(4, $hora, PDO::PARAM_STR);
+            $stmt->bindParam(5, $data['active_tab'], PDO::PARAM_INT);
+            $stmt->bindParam(6, $activo, PDO::PARAM_INT);
+            
+            // Ejecutar la consulta
+            $result = $stmt->execute();
+    
+            if (!$result) {
+                error_log("Error al insertar objetivo: " . print_r($stmt->errorInfo(), true));
+                return false;
+            }
+    
+            // Obtener el ID del objetivo recién insertado
+            $sqlGetId = "SELECT MAX(id) as last_id FROM objetivos WHERE numero = ? AND descripcion = ?";
+            $stmtGetId = $this->db->prepare($sqlGetId);
+            $stmtGetId->bindParam(1, $data['numero'], PDO::PARAM_INT);
+            $stmtGetId->bindParam(2, $data['descripcion'], PDO::PARAM_STR);
+            $stmtGetId->execute();
+            $row = $stmtGetId->fetch(PDO::FETCH_ASSOC);
+            $objetivoId = $row['last_id'];
+    
+            if (!$objetivoId) {
+                error_log("Error al obtener el ID del objetivo recién insertado");
+                return false;
+            }
+    
+            // Insertar los indicadores
+            $stmtIndicador = "INSERT INTO indicadores (objetivo_id, nombre, fecha, hora, activo) VALUES (?, ?, ?, ?, ?)";
+            $stmtI = $this->db->prepare($stmtIndicador);
+            foreach ($data['indicadores'] as $indicador) {
+                // Enlazar parámetros
+                $stmtI->bindParam(1, $objetivoId, PDO::PARAM_INT);
+                $stmtI->bindParam(2, $indicador['nombre'], PDO::PARAM_STR);
+                $stmtI->bindParam(3, $fecha, PDO::PARAM_STR);
+                $stmtI->bindParam(4, $hora, PDO::PARAM_STR);
+                $stmtI->bindParam(5, $activo, PDO::PARAM_INT);
+    
+                $resultIndicador = $stmtI->execute();
+                if (!$resultIndicador) {
+                    error_log("Error al insertar indicador: " . print_r($stmtI->errorInfo(), true));
+                    // Nota: No podemos hacer rollback aquí, así que solo registramos el error y continuamos
+                }
+            }
+    
+            error_log("Proceso de inserción completado");
+            return true;
+    
+        } catch (Exception $e) {
+            error_log("Error en insertarObjetivo: " . $e->getMessage());
+            return false;
+        }
     }
+    
 
 }
+

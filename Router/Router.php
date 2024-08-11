@@ -30,6 +30,8 @@ $router->get('/objetivos/desactivados', 'Objetivos@obtenerDesactivados'); // Obt
 $router->put('/objetivos/:id/desactivar', 'Objetivos@desactivarObjetivo');
 $router->put('/objetivos/:id/activar', 'Objetivos@activarObjetivo');
 $router->delete('/objetivos/:id', 'Objetivos@eliminarObjetivo');
+$router->post('/objetivos', 'Objetivos@crearObjetivo'); 
+
 
 
 // Rutas para el manejo de Valores
@@ -40,6 +42,7 @@ $router->put('/valores/:id/desactivar', 'Valores@desactivarValor');
 $router->put('/valores/:id/activar', 'Valores@activarValor');
 $router->delete('/valores/:id', 'Valores/eliminarValor');
 $router->put('/valores/:id', 'Valores/actualizarValores');
+
 
 
 //########################## RUTAS PARA ROLES #######################################
@@ -220,6 +223,7 @@ $router->delete('/materias/:id', 'Materias@EliminarMateria'); // Elimina una mat
 
 //########################## RUTAS PARA MACROPROCESOS #######################################
 
+$router->get('/macroprocesos-all', 'Macroprocesos@obtenerAllMacroprocesos'); // Obtiene todos los datos de todos los macroprocesos activos
 $router->get('/macroprocesos/activas', 'Macroprocesos@ObtenerMacroprocesosActivos'); // Obtiene todos los datos de todos los macroprocesos activos
 $router->get('/macroprocesos/inactivas', 'Macroprocesos@ObtenerMacroprocesosInactivos'); // Obtiene todos los datos de todos los macroprocesos inactivos
 $router->get('/macroprocesos', 'Macroprocesos@ObtenerMacroprocesos'); // Obtiene todos los datos de todos los macroprocesos para el acordeon

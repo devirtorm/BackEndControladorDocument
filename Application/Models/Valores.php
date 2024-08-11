@@ -110,17 +110,17 @@ class ModelsValores extends Model {
     
     public function updateUsuario($procesoData) {
         $id = $procesoData['id'];
-        $nombre = $procesoData['nombre'];
+        $nombre = $procesoData['nombre']; // Asumimos que estás pasando el ID del departamento
         $descripcion = $procesoData['descripcion'];
-        $icono = $procesoData['icono'];
+        $icono = $procesoData['icono']; // Asumimos que estás pasando el ID del rol
     
         try {
             $sql = "UPDATE " . DB_PREFIX . "valores SET nombre = ?, descripcion = ?, icono = ? WHERE id = ?";
             $stmt = $this->db->prepare($sql);
     
-            $stmt->bindParam(1, $nombre, PDO::PARAM_STR);
+            $stmt->bindParam(1, $nombre, PDO::PARAM_STR); // Cambiado a INT
             $stmt->bindParam(2, $descripcion, PDO::PARAM_STR);
-            $stmt->bindParam(3, $icono, PDO::PARAM_STR);
+            $stmt->bindParam(3, $icono, PDO::PARAM_STR); // Cambiado a INT
             $stmt->bindParam(4, $id, PDO::PARAM_INT);
     
             $stmt->execute();
@@ -131,5 +131,41 @@ class ModelsValores extends Model {
             return false;
         }
     }
-    
+    public function insertValor($valorData) {
+        // Extraer los datos del valor
+        $nombre = $valorData['nombre'];
+        $descripcion = $valorData['descripcion'];
+        $icono = $valorData['icono'];
+
+        try {
+            // Obtener la fecha y hora actual
+            $fecha = date('Y-m-d');
+            $hora = date('H:i:s');
+            $activo = 1;
+
+            // Preparar la declaración SQL
+            $sql = "INSERT INTO valores (nombre, descripcion, icono, fecha, hora, activo) VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = $this->db->prepare($sql);
+
+            // Enlazar parámetros
+            $stmt->bindParam(1, $nombre, PDO::PARAM_STR);
+            $stmt->bindParam(2, $descripcion, PDO::PARAM_STR);
+            $stmt->bindParam(3, $icono, PDO::PARAM_STR);
+            $stmt->bindParam(4, $fecha, PDO::PARAM_STR);
+            $stmt->bindParam(5, $hora, PDO::PARAM_STR);
+            $stmt->bindParam(6, $activo, PDO::PARAM_INT);
+
+            // Ejecutar la consulta
+            $stmt->execute();
+
+            // Verificar si la consulta fue exitosa
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            // Manejar errores potenciales aquí
+            error_log("Error al insertar valor: " . $e->getMessage());
+            return false;
+        }
+    }
+
+
 }

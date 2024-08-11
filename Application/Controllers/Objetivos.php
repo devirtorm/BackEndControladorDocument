@@ -102,4 +102,56 @@ public function eliminarObjetivo($param) {
         ]);
     }
 }
+public function crearObjetivo() {
+    $model = $this->model('Objetivos');
+    $json_data = file_get_contents('php://input');
+    error_log("JSON Data: " . $json_data);
+    $data = json_decode($json_data, true);
+
+    if ($data !== null && 
+        isset($data['numero']) && 
+        isset($data['descripcion']) && 
+        isset($data['active_tab']) && 
+        isset($data['indicadores']) && 
+        is_array($data['indicadores'])) {
+        
+        $numero = filter_var($data['numero'], FILTER_SANITIZE_NUMBER_INT);
+        $descripcion = filter_var($data['descripcion'], FILTER_SANITIZE_SPECIAL_CHARS);
+        $active_tab = filter_var($data['active_tab'], FILTER_SANITIZE_NUMBER_INT);
+        
+        $indicadores = array_map(function($indicador) {
+            return ['nombre' => filter_var($indicador['nombre'], FILTER_SANITIZE_SPECIAL_CHARS)];
+        }, $data['indicadores']);
+
+        $objetivoData = [
+            'numero' => $numero,
+            'descripcion' => $descripcion,
+            'active_tab' => $active_tab,
+            'indicadores' => $indicadores
+        ];
+
+        $inserted = $model->insertarObjetivo($objetivoData);
+
+        if ($inserted) {
+            $this->response->sendStatus(201);
+            $this->response->setContent([
+                'message' => 'Objetivo creado correctamente.',
+                'objetivos' => $model->getObjetivos(1)
+            ]);
+        } else {
+            error_log("Error al insertar el objetivo.");
+            $this->response->sendStatus(500);   
+            $this->response->setContent([
+                'message' => 'Error al crear el objetivo.'
+            ]);
+        }
+    } else {
+        error_log("Datos del objetivo inválidos o incompletos.");
+        $this->response->sendStatus(400);
+        $this->response->setContent([
+            'message' => 'Error: Los datos del objetivo son inválidos o incompletos.'
+        ]);
+    }
+}
+
 }
