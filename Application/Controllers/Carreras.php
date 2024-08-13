@@ -77,6 +77,15 @@ class ControllersCarreras extends Controller
         }
     }
 
+    public function ObtenerCarrerasdeMenosdeDosDocumentosActivas()
+    {
+        $model = $this->model('Carreras');
+        $data_list = $model->CarrerasdeMenosdeDosDocumentosActivas();
+
+        $this->response->sendStatus(200);
+        $this->response->setContent($data_list);
+    }
+
     public function CrearCarrera()
     {
         $model = $this->model('Carreras');

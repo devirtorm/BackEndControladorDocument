@@ -178,6 +178,7 @@ $router->get('/carreras/inactivas', 'Carreras@ObtenerCarrerasInactivas'); // Obt
 $router->get('/carreras', 'Carreras@ObtenerCarreras'); // Obtiene todos los datos de todas las carreras
 $router->get('/carreras/:id', 'Carreras@ObtenerCarrera'); // Obtiene datos de una carrera en especifico
 $router->get('/carreras/direccion/:fk', 'Carreras@ObtenerCarrerasPorDireccion'); // Obtiene datos de una carrera en especifico con la fk
+$router->get('/carreras/menosdedosdocumentos/activas', 'Carreras@ObtenerCarrerasdeMenosdeDosDocumentosActivas'); // Obtiene todos los datos de todas las carreras activas
 $router->post('/carreras', 'Carreras@CrearCarrera'); // Crea nuevas carreras
 $router->put('/carreras/:id', 'Carreras@ActualizarCarrera'); // Actualiza datos de una carrera
 $router->put('/carreras/desactivar/:id', 'Carreras@DesactivarCarrera'); // Desactiva una carrera

@@ -104,6 +104,28 @@ class ModelsCarreras extends Model
         }
     }
 
+    public function CarrerasdeMenosdeDosDocumentosActivas()
+    {
+        $sql = "SELECT c.id_carrera, c.nombre_carrera, c.fk_direccion, c.fecha, c.hora, c.activo
+                FROM carrera c
+                LEFT JOIN carrera_documento cd ON cd.fk_carrera = c.id_carrera
+                AND c.activo = 1
+                GROUP BY c.id_carrera
+                HAVING COUNT(cd.id_carrera_documento) < 2";
+        $query = $this->db->query($sql);
+        $data = [];
+
+        if ($query->num_rows) {
+            foreach ($query->rows as $value) {
+                $value['fecha'] = $this->formatDate($value['fecha']);
+                $value['hora'] = $this->formatTime($value['hora']);
+                $data[] = $value;
+            }
+        }
+
+        return $data;
+    }
+
 
     public function createCarrera($data)
     {
