@@ -151,7 +151,55 @@ public function crearObjetivo() {
         $this->response->setContent([
             'message' => 'Error: Los datos del objetivo son inválidos o incompletos.'
         ]);
+    }}public function actualizarObjetivo($param) {
+        $model = $this->model('Objetivos');
+        $json_data = file_get_contents('php://input');
+        $data = json_decode($json_data, true);
+    
+        if ($data !== null && isset($param['id']) && is_numeric($param['id'])) {
+            $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
+    
+            // Validar y sanitizar los datos del formulario
+            $numero = isset($data['numero']) ? filter_var($data['numero'], FILTER_SANITIZE_NUMBER_INT) : null;
+            $descripcion = isset($data['descripcion']) ? filter_var($data['descripcion'], FILTER_SANITIZE_SPECIAL_CHARS) : null;
+            $active_tab = isset($data['active_tab']) ? filter_var($data['active_tab'], FILTER_SANITIZE_NUMBER_INT) : null;
+            $indicadores = isset($data['indicadores']) ? $data['indicadores'] : [];
+    
+            if ($numero === null || $descripcion === null || $active_tab === null) {
+                $this->response->sendStatus(400);
+                $this->response->setContent([
+                    'message' => 'Datos del objetivo inválidos.'
+                ]);
+                return;
+            }
+    
+            $updated = $model->updateObjetivo([
+                'id' => $id,
+                'numero' => $numero,
+                'descripcion' => $descripcion,
+                'active_tab' => $active_tab,
+                'indicadores' => $indicadores,
+            ]);
+    
+            if ($updated) {
+                $this->response->sendStatus(200);
+                $this->response->setContent([
+                    'message' => 'Objetivo actualizado correctamente.'
+                ]);
+            } else {
+                $this->response->sendStatus(500);
+                $this->response->setContent([
+                    'message' => 'Error: No se pudo actualizar el objetivo.'
+                ]);
+            }
+        } else {
+            $this->response->sendStatus(400);
+            $this->response->setContent([
+                'message' => 'ID no proporcionado o inválido.'
+            ]);
+        }
     }
-}
+    
+    
 
 }

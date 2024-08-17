@@ -31,6 +31,8 @@ $router->put('/objetivos/:id/desactivar', 'Objetivos@desactivarObjetivo');
 $router->put('/objetivos/:id/activar', 'Objetivos@activarObjetivo');
 $router->delete('/objetivos/:id', 'Objetivos@eliminarObjetivo');
 $router->post('/objetivos', 'Objetivos@crearObjetivo'); 
+$router->put('/objetivos/:id', 'Objetivos@actualizarObjetivo'); // Actualiza un objetivo específico
+
 
 
 
@@ -40,8 +42,8 @@ $router->get('/valores', 'Valores@valores'); // Obtiene todos los valores
 $router->get('/valores/desactivados', 'Valores@ObtenerOff'); // Obtiene todos los valores desactivados
 $router->put('/valores/:id/desactivar', 'Valores@desactivarValor');
 $router->put('/valores/:id/activar', 'Valores@activarValor');
-$router->delete('/valores/:id', 'Valores/eliminarValor');
-$router->put('/valores/:id', 'Valores/actualizarValores');
+$router->delete('/valores/:id', 'Valores@eliminarValor');
+$router->put('/valores/:id', 'Valores@actualizarValores');
 
 
 

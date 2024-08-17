@@ -164,7 +164,77 @@ class ModelsObjetivos extends Model {
             error_log("Error en insertarObjetivo: " . $e->getMessage());
             return false;
         }
+    }public function updateObjetivo($data)
+    {
+        try {
+            error_log("Iniciando actualización de objetivo");
+    
+            // Obtener fecha y hora actual
+            $fecha = date('Y-m-d');
+            $hora = date('H:i:s');
+            $activo = 1;
+    
+            // Verificar si se proporciona el ID
+            if (!isset($data['id']) || empty($data['id'])) {
+                error_log("ID no proporcionado o inválido.");
+                return false;
+            }
+    
+            // Actualizar el objetivo
+            $sql = "UPDATE objetivos SET numero = ?, descripcion = ?, fecha = ?, hora = ?, active_tab = ?, activo = ? WHERE id = ?";
+            $stmt = $this->db->prepare($sql);
+    
+            // Enlazar parámetros
+            $stmt->bindParam(1, $data['numero'], PDO::PARAM_INT);
+            $stmt->bindParam(2, $data['descripcion'], PDO::PARAM_STR);
+            $stmt->bindParam(3, $fecha, PDO::PARAM_STR);
+            $stmt->bindParam(4, $hora, PDO::PARAM_STR);
+            $stmt->bindParam(5, $data['active_tab'], PDO::PARAM_INT);
+            $stmt->bindParam(6, $activo, PDO::PARAM_INT);
+            $stmt->bindParam(7, $data['id'], PDO::PARAM_INT);
+    
+            // Ejecutar la consulta
+            $result = $stmt->execute();
+    
+            if (!$result) {
+                error_log("Error al actualizar objetivo: " . print_r($stmt->errorInfo(), true));
+                return false;
+            }
+    
+            // Eliminar indicadores existentes
+            $sqlDeleteIndicators = "DELETE FROM indicadores WHERE objetivo_id = ?";
+            $stmtDelete = $this->db->prepare($sqlDeleteIndicators);
+            $stmtDelete->bindParam(1, $data['id'], PDO::PARAM_INT);
+            $stmtDelete->execute();
+    
+            // Insertar los indicadores actualizados
+            $stmtIndicador = "INSERT INTO indicadores (objetivo_id, nombre, fecha, hora, activo) VALUES (?, ?, ?, ?, ?)";
+            $stmtI = $this->db->prepare($stmtIndicador);
+            foreach ($data['indicadores'] as $indicador) {
+                // Enlazar parámetros
+                $stmtI->bindParam(1, $data['id'], PDO::PARAM_INT);
+                $stmtI->bindParam(2, $indicador['nombre'], PDO::PARAM_STR);
+                $stmtI->bindParam(3, $fecha, PDO::PARAM_STR);
+                $stmtI->bindParam(4, $hora, PDO::PARAM_STR);
+                $stmtI->bindParam(5, $activo, PDO::PARAM_INT);
+    
+                $resultIndicador = $stmtI->execute();
+                if (!$resultIndicador) {
+                    error_log("Error al insertar indicador: " . print_r($stmtI->errorInfo(), true));
+                    // Nota: No podemos hacer rollback aquí, así que solo registramos el error y continuamos
+                }
+            }
+    
+            error_log("Proceso de actualización completado");
+            return true;
+    
+        } catch (Exception $e) {
+            error_log("Error en actualizarObjetivo: " . $e->getMessage());
+            return false;
+        }
     }
+    
+    
     
 
 }
