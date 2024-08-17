@@ -36,7 +36,7 @@ class ModelsProcesos extends Model {
         $id = (int)$id;
     
         // Construir la consulta SQL
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "proceso WHERE fk_macroproceso = $id AND activo = 1");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "proceso WHERE fk_macroproceso = $id");
     
         $data = [];
     

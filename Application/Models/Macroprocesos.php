@@ -6,7 +6,7 @@ class ModelsMacroprocesos extends Model
 {
     public function allMacroprocesos() {
         // sql statement
-        $sql = "SELECT * FROM " . DB_PREFIX . "macroproceso WHERE";
+        $sql = "SELECT * FROM " . DB_PREFIX . "macroproceso";
     
         // exec query
         $query = $this->db->query($sql);

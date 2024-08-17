@@ -9,7 +9,7 @@ class ModelsDocumentos extends Model
         $id = (int)$id;
     
         // Construir la consulta SQL
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "documento WHERE fk_proceso = $id AND activo = 1 AND autorizado = 1 AND revisado = 1");
+        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "documento WHERE fk_proceso = $id AND autorizado = 1 AND revisado = 1");
     
         $data = [];
     
@@ -141,7 +141,7 @@ class ModelsDocumentos extends Model
             JOIN categoria ON documento.fk_categoria = categoria.id_categoria
             JOIN tipo_documento ON documento.fk_tipo_documento = tipo_documento.id_tipo
             WHERE 
-                documento.activo = $activo";
+                documento.activo = $activo and documento.revisado = 1 and documento.autorizado = 1";
     
             // Execute query
             $query = $this->db->query($sql);
