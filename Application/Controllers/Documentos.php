@@ -100,8 +100,8 @@ class ControllersDocumentos extends Controller
         error_log("max_execution_time: " . ini_get('max_execution_time'));
     
         $required_fields = [
-            'titulo', 'fk_departamento', 'nombre_macro_proceso', 'nombre_proceso',
-            'nombre_departamento', 'fk_subproceso', 'fk_proceso', 'fk_categoria',
+            'titulo', 'fk_departamento', 'nombre_macro_proceso', 'nombre_proceso', 
+            'nombre_departamento', 'fk_subproceso', 'fk_proceso', 'fk_categoria', 
             'fk_tipo_documento', 'num_revision', 'fecha_emision'
         ];
     
@@ -143,13 +143,6 @@ class ControllersDocumentos extends Controller
         error_log("nombre_macro_proceso: $nombre_macro_proceso");
         error_log("nombre_proceso: $nombre_proceso");
         error_log("nombre_departamento: $nombre_departamento");
-    
-        if (!is_numeric($num_revision)) {
-            error_log("num_revision is not numeric: " . $_POST['num_revision']);
-            echo json_encode(['message' => 'Error: num_revision debe ser un valor numérico.']);
-            return;
-        }
-    
         $archivo = $_FILES['archivo'];
         $base_dir = $_SERVER['DOCUMENT_ROOT'] . '/controlador_archivos/backend/asset/document/macroprocesos/';
     
@@ -203,20 +196,11 @@ class ControllersDocumentos extends Controller
             } while (file_exists($target_file));
         }
     
-        $upload_max_filesize = ini_get('upload_max_filesize');
-        $post_max_size = ini_get('post_max_size');
-    
-        error_log("upload_max_filesize: $upload_max_filesize");
-        error_log("post_max_size: $post_max_size");
-    
         $max_size = min(
-            $this->return_bytes($upload_max_filesize),
-            $this->return_bytes($post_max_size),
+            $this->return_bytes(ini_get('upload_max_filesize')),
+            $this->return_bytes(ini_get('post_max_size')),
             5 * 1024 * 1024  // 5MB
         );
-    
-        error_log("Calculated max_size: $max_size");
-    
         if ($archivo["size"] > $max_size) {
             error_log("File too large: " . $archivo["size"] . " bytes. Max allowed: " . $max_size);
             echo json_encode(['message' => 'Lo siento, tu archivo es demasiado grande.']);
@@ -235,6 +219,7 @@ class ControllersDocumentos extends Controller
             $error = error_get_last();
             error_log("Error moving file: " . $error['message']);
             error_log("From: " . $archivo["tmp_name"] . " To: " . $target_file);
+            echo json_encode(['message' => 'Lo siento, hubo un error al subir tu archivo.', 'error' => $error['message']]);
             return;
         }
     
