@@ -141,8 +141,7 @@ class ModelsDocumentos extends Model
             JOIN categoria ON documento.fk_categoria = categoria.id_categoria
             JOIN tipo_documento ON documento.fk_tipo_documento = tipo_documento.id_tipo
             WHERE 
-                documento.activo = $activo
-                AND area.activo = 1 AND departamento.activo = 1 AND proceso.activo = 1 AND macroproceso.activo = 1 AND subproceso.activo = 1 AND categoria.activo = 1 AND tipo_documento.activo = 1";
+                documento.activo = $activo";
     
             // Execute query
             $query = $this->db->query($sql);
