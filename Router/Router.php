@@ -223,6 +223,7 @@ $router->delete('/materias/:id', 'Materias@EliminarMateria'); // Elimina una mat
 
 //########################## RUTAS PARA MACROPROCESOS #######################################
 
+$router->get('/macroprocesos-all', 'Macroprocesos@obtenerAllMacroprocesos'); // Obtiene todos los datos de todos los macroprocesos activos
 $router->get('/macroprocesos/activas', 'Macroprocesos@ObtenerMacroprocesosActivos'); // Obtiene todos los datos de todos los macroprocesos activos
 $router->get('/macroprocesos/inactivas', 'Macroprocesos@ObtenerMacroprocesosInactivos'); // Obtiene todos los datos de todos los macroprocesos inactivos
 $router->get('/macroprocesos', 'Macroprocesos@ObtenerMacroprocesos'); // Obtiene todos los datos de todos los macroprocesos para el acordeon
