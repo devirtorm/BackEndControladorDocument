@@ -484,32 +484,29 @@ class ModelsDocumentos extends Model
         }
     }
     
+    
+    
+    
+    
+
+
 
 
     public function eliminarDocumento($id)
     {
         // Escapar el id para evitar inyecciones SQL
         $id = (int)$id;
-    
+
         // sql statement
-        $sql = "DELETE FROM " . DB_PREFIX . "documento WHERE id_documento = :id";
-    
+        $sql = "DELETE FROM " . DB_PREFIX . "documento WHERE id_documento = " . $id;
+
         // Preparar y ejecutar la consulta
         $stmt = $this->db->prepare($sql);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    
-        try {
-            $stmt->execute();
-    
-            // Verificar si la fila fue afectada (eliminada)
-            return $stmt->rowCount() > 0;
-        } catch (PDOException $e) {
-            // Log del error
-            error_log("Error al ejecutar la consulta: " . $e->getMessage());
-            return false;
-        }
+        $stmt->execute();
+
+        // Verificar si la fila fue afectada (eliminada)
+        return $stmt->rowCount() > 0;
     }
-    
 
 
     public function actualizarActivo($id, $activo)
