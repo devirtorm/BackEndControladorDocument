@@ -199,8 +199,9 @@ class ControllersDocumentos extends Controller
         $max_size = min(
             $this->return_bytes(ini_get('upload_max_filesize')),
             $this->return_bytes(ini_get('post_max_size')),
-            5 * 1024 * 1024  // 5MB
+            50 * 1024 * 1024  // 50MB
         );
+        
         if ($archivo["size"] > $max_size) {
             error_log("File too large: " . $archivo["size"] . " bytes. Max allowed: " . $max_size);
             echo json_encode(['message' => 'Lo siento, tu archivo es demasiado grande.']);
@@ -246,25 +247,23 @@ class ControllersDocumentos extends Controller
             echo json_encode(['message' => 'Error al guardar documento.', 'error' => $inserted]);
         }
     }
-    
-    private function return_bytes($val)
-    {
-        $val = trim($val);
-        $last = strtolower($val[strlen($val) - 1]);
-        $num = (int)substr($val, 0, -1); // Get the numeric part of the string
-    
-        switch ($last) {
-            case 'g':
-                $num *= 1024;
-            case 'm':
-                $num *= 1024;
-            case 'k':
-                $num *= 1024;
-        }
-        return $num;
-    }
-    
 
+    private function return_bytes($val)
+{
+    $val = trim($val);
+    $last = strtolower($val[strlen($val) - 1]);
+    $num = (int)substr($val, 0, -1); // Get the numeric part of the string
+
+    switch ($last) {
+        case 'g':
+            $num *= 1024;
+        case 'm':
+            $num *= 1024;
+        case 'k':
+            $num *= 1024;
+    }
+    return $num;
+}
 
 
 
@@ -353,9 +352,11 @@ class ControllersDocumentos extends Controller
             $max_size = min(
                 $this->return_bytes(ini_get('upload_max_filesize')),
                 $this->return_bytes(ini_get('post_max_size')),
-                5 * 1024 * 1024  // 5MB
+                50 * 1024 * 1024  // 50MB
             );
+            
             if ($archivo["size"] > $max_size) {
+                error_log("File too large: " . $archivo["size"] . " bytes. Max allowed: " . $max_size);
                 echo json_encode(['message' => 'Lo siento, tu archivo es demasiado grande.']);
                 return;
             }
@@ -399,37 +400,43 @@ class ControllersDocumentos extends Controller
 
 
 
-
-
     public function eliminarDocumento($param)
     {
-        // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
-
             $model = $this->model('Documentos');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-            $deleted = $model->eliminarDocumento($id);
-
-            // Preparar la respuesta
-            if ($deleted) {
-                $this->response->sendStatus(200);
+    
+            try {
+                $deleted = $model->eliminarDocumento($id);
+    
+                if ($deleted) {
+                    $this->response->sendStatus(200);
+                    $this->response->setContent([
+                        'message' => 'Documento eliminado correctamente.'
+                    ]);
+                } else {
+                    // Error al eliminar, devolver mensaje de error
+                    $this->response->sendStatus(500);
+                    $this->response->setContent([
+                        'message' => 'Error: No se pudo eliminar este documento.'
+                    ]);
+                }
+            } catch (Exception $e) {
+                error_log("Error al eliminar documento: " . $e->getMessage());
+                $this->response->sendStatus(500);
                 $this->response->setContent([
-                    'message' => 'categoria eliminada correctamente.'
-                ]);
-            } else {
-                $this->response->sendStatus(200);
-                $this->response->setContent([
-                    'message' => 'Error: No se pudo eliminar esta categoria.'
+                    'message' => 'Error en el servidor. Inténtelo de nuevo más tarde.'
                 ]);
             }
         } else {
-            // Preparar la respuesta para parámetro inválido
             $this->response->sendStatus(400);
             $this->response->setContent([
                 'message' => 'Invalid ID or ID is missing.'
             ]);
         }
     }
+    
+
 
     // Método auxiliar para validar el ID
     private function validId($id)
