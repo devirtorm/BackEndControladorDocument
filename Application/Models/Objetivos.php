@@ -5,7 +5,7 @@ use MVC\Model;
 class ModelsObjetivos extends Model {
     public function getObjetivos($activo = 1) {
         $sql = "SELECT 
-            o.id, o.numero, o.descripcion,o.fecha,
+            o.id, o.numero, o.descripcion,o.fecha,o.active_tab,
             i.id as indicador_id, i.nombre as indicador_nombre
         FROM 
             objetivos o
@@ -29,6 +29,7 @@ class ModelsObjetivos extends Model {
                         'id' => $row['id'],
                         'numero' => $row['numero'],
                         'descripcion' => $row['descripcion'],
+                        'active_tab' => $row['active_tab'],
                         'fecha' => $row['fecha'],
                         'indicadores' => []
                     ];

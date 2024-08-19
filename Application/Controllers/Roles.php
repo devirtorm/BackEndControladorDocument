@@ -137,7 +137,7 @@ class ControllersRoles extends Controller
         $data = json_decode($json_data, true);
 
         if ($data !== null && isset($data['nombre_rol'])) {
-            $nombre_rol = filter_var($data['nombre_rol'], FILTER_SANITIZE_STRING);
+            $nombre_rol = filter_var($data['nombre_rol'], FILTER_SANITIZE_SPECIAL_CHARS);
             
             if (isset($param['id']) && $this->validId($param['id'])) {
                 $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
