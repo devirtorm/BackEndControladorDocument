@@ -40,38 +40,45 @@ class ModelsDepartamentoProceso  extends Model {
         // Return the data array
         return $data;
     }
-    public function departamentoprocesos($activo) {
+
+    public function departamentoProcesosPapalera($activo)
+    {
         $sql = "SELECT 
-        dp.id_departamentoProceso,
-        d.nombre_departamento,
-        p.proceso,
-        dp.fecha,
-        dp.hora,
-        dp.activo
-    FROM 
-        " . DB_PREFIX . "departamentoProceso dp
-    JOIN 
-        " . DB_PREFIX . "departamento d ON dp.fk_departamento = d.id_departamento
-    JOIN 
-        " . DB_PREFIX . "proceso p ON dp.fk_proceso = p.id_proceso
-    WHERE 
-        dp.activo = $activo";
-    
-        // exec query
+                    dp.id_departamentoProceso,
+                    d.nombre_departamento,
+                    p.proceso,
+                    dp.fecha,
+                    dp.hora,
+                    dp.activo
+                FROM 
+                    departamentoProceso dp
+                JOIN 
+                   departamento d ON dp.fk_departamento = d.id_departamento
+                JOIN 
+                   proceso p ON dp.fk_proceso = p.id_proceso
+                WHERE 
+                    dp.activo = $activo";
         $query = $this->db->query($sql);
     
-        // Initialize data as an empty array
+        // inicializar los datos con array vacio
         $data = [];
     
-        $data = [];
-        if ($stmt->rowCount() > 0) {
-            $data['data'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // consultar si hay alguna fila
+        if ($query->num_rows) {
+            foreach($query->rows as $value) {
+                // agregar datos de categorias al resultado
+                $data['data'][] = $value;
+            }
         } else {
             $data['data'] = [];
         }
     
+        // Retorna los datos del array
         return $data;
     }
+    
+    
+
     
     public function proceso($id) {
         $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "proceso WHERE id_proceso = $id");
@@ -181,7 +188,7 @@ class ModelsDepartamentoProceso  extends Model {
         $activo = (int)$activo;
     
         // sql statement
-        $sql = "UPDATE " . DB_PREFIX . "usuario SET activo = :activo WHERE id_usuario = :id";
+        $sql = "UPDATE " . DB_PREFIX . "departamentoproceso SET activo = :activo WHERE id_departamentoproceso = :id";
     
         // Preparar y ejecutar la consulta
         $stmt = $this->db->prepare($sql);
@@ -192,6 +199,27 @@ class ModelsDepartamentoProceso  extends Model {
         // Verificar si la fila fue afectada (actualizada)
         return $stmt->rowCount() > 0;
     }
+    
+    
+    public function actualizarProcesoDepa($id, $activo) {
+        // Escapar el id y el valor de activo para evitar inyecciones SQL
+        $id = (int)$id;
+        $activo = (int)$activo;
+    
+        // sql statement
+        $sql = "UPDATE " . DB_PREFIX . "departamentoproceso SET activo = :activo WHERE id_departamentoproceso = :id";
+    
+        // Preparar y ejecutar la consulta
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':activo', $activo, PDO::PARAM_INT);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+    
+        // Verificar si la fila fue afectada (actualizada)
+        return $stmt->rowCount() > 0;
+    }
+    
+
     
     
     

@@ -199,7 +199,7 @@ class ControllersDocumentos extends Controller
         $max_size = min(
             $this->return_bytes(ini_get('upload_max_filesize')),
             $this->return_bytes(ini_get('post_max_size')),
-            5 * 1024 * 1024  // 5MB
+            50 * 1024 * 1024  // 50MB
         );
         if ($archivo["size"] > $max_size) {
             error_log("File too large: " . $archivo["size"] . " bytes. Max allowed: " . $max_size);
@@ -263,8 +263,6 @@ class ControllersDocumentos extends Controller
         }
         return $num;
     }
-    
-
 
 
 
@@ -353,13 +351,13 @@ class ControllersDocumentos extends Controller
             $max_size = min(
                 $this->return_bytes(ini_get('upload_max_filesize')),
                 $this->return_bytes(ini_get('post_max_size')),
-                5 * 1024 * 1024  // 5MB
+                50 * 1024 * 1024  // 50MB
             );
             if ($archivo["size"] > $max_size) {
+                error_log("File too large: " . $archivo["size"] . " bytes. Max allowed: " . $max_size);
                 echo json_encode(['message' => 'Lo siento, tu archivo es demasiado grande.']);
                 return;
             }
-
             $allowed_extensions = ['pdf', 'doc', 'docx', 'xlsx'];
             if (!in_array($file_extension, $allowed_extensions)) {
                 echo json_encode(['message' => 'Lo siento, solo se permiten archivos PDF, DOC, DOCX y XLSX.']);
