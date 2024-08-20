@@ -109,13 +109,19 @@ class ControllersDepartamentoProceso extends Controller
     private function validId($id) {
         return filter_var($id, FILTER_VALIDATE_INT) !== false && $id > 0;
     }
-    public function depaproceso()
+
+    
+    public function inactivos()
     {
         $model = $this->model('DepartamentoProceso');
-        $data_list = $model->departamentoprocesos(0);
+        $data_list = $model->departamentoProcesosPapalera(0);
+
         $this->response->sendStatus(200);
         $this->response->setContent($data_list);
     }
+
+    
+
 
     public function desactivarDepartamentoProceso($param) {
         // Verificar si el parámetro 'id' está presente y es válido
@@ -146,6 +152,37 @@ class ControllersDepartamentoProceso extends Controller
         }
     }
 
+
+
+    public function activarDepartamentoProceso($param) {
+        // Verificar si el parámetro 'id' está presente y es válido
+        if (isset($param['id']) && $this->validId($param['id'])) {
+    
+            $model = $this->model('DepartamentoProceso');
+            $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
+            $updated = $model->actualizarProcesoDepa($id, 1);
+    
+            // Preparar la respuesta
+            if ($updated) {
+                $this->response->sendStatus(200);
+                $this->response->setContent([
+                    'message' => 'Proceso activado correctamente.'
+                ]);
+            } else {
+                $this->response->sendStatus(200);
+                $this->response->setContent([
+                    'message' => 'Error: No se pudo activado el proceso.'
+                ]);
+            }
+        } else {
+            // Preparar la respuesta para parámetro inválido
+            $this->response->sendStatus(400);
+            $this->response->setContent([
+                'message' => 'Invalid ID or ID is missing.'
+            ]);
+        }
+    }
+    
     public function activarUsuario($param) {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
