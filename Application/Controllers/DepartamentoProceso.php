@@ -243,6 +243,43 @@ class ControllersDepartamentoProceso extends Controller
             } 
         } 
     }
+
+
+    public function actualizarDepartamentoProceso($param) {
+        $model = $this->model('DepartamentoProceso');
+        $json_data = file_get_contents('php://input');
+        error_log("JSON Data: " . $json_data);
+        $data = json_decode($json_data, true);
+    
+        // Verificar si los datos son válidos
+        if ($data !== null && isset($data['fk_proceso']) && isset($data['fk_departamento']) && isset($param['id']) && $this->validId($param['id'])) {
+            $fk_proceso = filter_var($data['fk_proceso'], FILTER_SANITIZE_NUMBER_INT);
+            $fk_departamento = filter_var($data['fk_departamento'], FILTER_SANITIZE_NUMBER_INT);
+            $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
+            
+            // Llamar al método del modelo para actualizar los datos
+            $updated = $model->actualizarDepartamentoProceso($id, $fk_proceso, $fk_departamento);
+    
+            if ($updated) {
+                $this->response->sendStatus(200);
+                $this->response->setContent([
+                    'message' => 'Relacion departamento-proceso actualizada correctamente.'
+                ]);
+            } else {
+                $this->response->sendStatus(500);
+                $this->response->setContent([
+                    'message' => 'Error: No se pudo actualizar la relacion departamento-proceso. Verifique los registros para más detalles.'
+                ]);
+            }
+        } else {
+            $this->response->sendStatus(400);
+            $this->response->setContent([
+                'message' => 'Error: Datos incompletos o inválidos.'
+            ]);
+        }
+    }
+    
+    
     
     
     
