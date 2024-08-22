@@ -150,13 +150,13 @@ WHERE
     
 
 
-    public function eliminarProceso($id) {
+    public function eliminarUsuario($id) {
         // Escapar el id para evitar inyecciones SQL
         $id = (int)$id;
         
     
         // sql statement
-        $sql = "DELETE FROM " . DB_PREFIX . "proceso WHERE id_proceso = " . $id;
+        $sql = "DELETE FROM " . DB_PREFIX . "usuario WHERE id_usuario = " . $id;
     
         // Preparar y ejecutar la consulta
         $stmt = $this->db->prepare($sql);

@@ -207,8 +207,8 @@ class ControllersProcesos extends Controller
     
         // Verificar si los datos son válidos
         if ($data !== null && isset($data['proceso']) && isset($data['macroproceso'])) {
-            $proceso = filter_var($data['proceso'], FILTER_SANITIZE_STRING);
-            $macroproceso = filter_var($data['macroproceso'], FILTER_SANITIZE_STRING);
+            $proceso = filter_var($data['proceso'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $macroproceso = filter_var($data['macroproceso'], FILTER_SANITIZE_SPECIAL_CHARS);
             
             if (isset($param['id']) && $this->validId($param['id'])) {
                 // Actualizar el área existente

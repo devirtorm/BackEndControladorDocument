@@ -184,8 +184,8 @@ class ControllersDepartamentoProceso extends Controller
     
         // Verificar si los datos son válidos
         if ($data !== null && isset($data['proceso']) && isset($data['proposito'])) {
-            $proceso = filter_var($data['proceso'], FILTER_SANITIZE_STRING);
-            $proposito = filter_var($data['proposito'], FILTER_SANITIZE_STRING);
+            $proceso = filter_var($data['proceso'], FILTER_SANITIZE_SPECIAL_CHARS);
+            $proposito = filter_var($data['proposito'], FILTER_SANITIZE_SPECIAL_CHARS);
             
             if (isset($param['id']) && $this->validId($param['id'])) {
                 // Actualizar el área existente

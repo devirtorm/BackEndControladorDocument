@@ -159,13 +159,13 @@ class ControllersUsuario extends Controller
     }
 
     
-    public function eliminarProceso($param) {
+    public function eliminarUsuario($param) {
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
-            $model = $this->model('Procesos');
+            $model = $this->model('Usuario');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
-            $deleted = $model->eliminarProceso($id);
+            $deleted = $model->eliminarUsuario($id);
     
             // Preparar la respuesta
             if ($deleted) {
