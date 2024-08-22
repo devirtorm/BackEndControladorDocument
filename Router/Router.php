@@ -155,11 +155,13 @@ $router->delete('/departamentos/:id', 'Departamentos@eliminarDepartamentos'); //
 $router->post('/departamentoproceso', 'DepartamentoProceso@crearDepartamentoProceso'); // Crea nuevas areas
 $router->get('/departamentoproceso', 'DepartamentoProceso@departamentoproceso'); // Muestra los registros de los departamentos proceso
 $router->get('/departamentoproceso/:id', 'Departamentos@obtenerDepartamento'); // Muestra los datos de un departamento
-$router->get('/departamentoproceso/desactivados', 'DepartamentoProceso@depaproceso'); // Muestra los registros de las areas
+$router->get('/departamentoprocesoinactivas', 'DepartamentoProceso@inactivos');
+$router->put('/departamentoprocesoactivar/:id', 'DepartamentoProceso@activarDepartamentoProceso'); // activar departamento proceso
 $router->put('/departamentoproceso/:id/desactivar', 'DepartamentoProceso@desactivarDepartamentoProceso'); // Desactiva un departamento en especifico 
 $router->put('/departamentoproceso/:id/activar', 'Departamentos@activarDepartamento'); // Activa un departamento en especifico
-$router->put('/departamentoproceso/:id', 'Departamentos@actualizarDepartamento'); // Actualiza datos de un departamento
+$router->put('/departamentoproceso/:id', 'DepartamentoProceso@actualizarDepartamentoProceso'); // Actualiza datos de un departamento
 $router->delete('/departamentoproceso/:id', 'Departamentos@eliminarDepartamentos'); // Elimina un area en especifico
+
 
 //########################## RUTAS PARA DIRECCIONES #######################################
 
@@ -180,7 +182,7 @@ $router->get('/carreras/inactivas', 'Carreras@ObtenerCarrerasInactivas'); // Obt
 $router->get('/carreras', 'Carreras@ObtenerCarreras'); // Obtiene todos los datos de todas las carreras
 $router->get('/carreras/:id', 'Carreras@ObtenerCarrera'); // Obtiene datos de una carrera en especifico
 $router->get('/carreras/direccion/:fk', 'Carreras@ObtenerCarrerasPorDireccion'); // Obtiene datos de una carrera en especifico con la fk
-$router->get('/carreras/menosdedosdocumentos/activas', 'Carreras@ObtenerCarrerasdeMenosdeDosDocumentosActivas'); // Obtiene todos los datos de todas las carreras activas
+$router->get('/carreras/menosdedosdocumentos/activas', 'Carreras@ObtenerCarrerasdeMenosdeDosDocumentosActivas'); // Obtiene todos los datos de todas las carreras activas que tienen menos de dos doucmentos registrados
 $router->post('/carreras', 'Carreras@CrearCarrera'); // Crea nuevas carreras
 $router->put('/carreras/:id', 'Carreras@ActualizarCarrera'); // Actualiza datos de una carrera
 $router->put('/carreras/desactivar/:id', 'Carreras@DesactivarCarrera'); // Desactiva una carrera
