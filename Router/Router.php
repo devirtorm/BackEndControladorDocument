@@ -19,7 +19,7 @@ $router->post('/usuarios', 'Usuario@crearUsuario');
 $router->get('/usuarios/desactivados', 'Usuario@usuariosDesactivados');
 $router->get('/usuarios', 'Usuario@usuario');
 $router->get('/usuarios/:id', 'Usuario@obtenerUsuario');
-$router->delete('/usuarios:id', 'Usuario@eliminarUsuario');
+$router->delete('/usuarios/:id', 'Usuario@eliminarUsuario');
 $router->put('/usuarios/:id/desactivar', 'Usuario@desactivarUsuario');
 $router->put('/usuarios/:id/activar', 'Usuario@activarUsuario');
 $router->put('/usuarios/:id', 'Usuario@actualizarUsuario');
@@ -52,7 +52,7 @@ $router->post('/rol', 'Roles@crearRol'); // Crea nuevos roles
 $router->get('/rol/desactivados', 'Roles@obtenerRolesDesactivados'); // Muestra roles desactivados
 $router->get('/rol', 'Roles@obtenerRoles'); // Obtiene todos los roles
 $router->get('/rol/:id', 'Roles@obtenerRol'); // Muestra los datos de un rol
-$router->delete('/rol/:id', 'Roles@eliminarRol'); // Elimina un rol
+$router->delete('/rol/:id', 'Roles@eliminarRol');
 $router->put('/rol/:id/desactivar', 'Roles@desactivarRol'); // Desactiva un rol
 $router->put('/rol/:id/activar', 'Roles@activarRol'); // Activa un rol
 $router->put('/rol/:id', 'Roles@actualizarRol'); // Actualiza datos de un rol

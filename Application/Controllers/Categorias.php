@@ -49,7 +49,7 @@ class ControllersCategorias extends Controller
         $data = json_decode($json_data, true);
     
         if ($data !== null && isset($data['nombre_categoria'])) {
-            $nombre_categoria = filter_var($data['nombre_categoria'], FILTER_SANITIZE_STRING);
+            $nombre_categoria = filter_var($data['nombre_categoria'], FILTER_SANITIZE_SPECIAL_CHARS);
     
             $inserted = $model->insertCategoria([
                 'nombre_categoria' => $nombre_categoria,
