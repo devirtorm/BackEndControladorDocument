@@ -412,7 +412,7 @@ class ControllersDocumentos extends Controller
             if ($deleted) {
                 $this->response->sendStatus(200);
                 $this->response->setContent([
-                    'message' => 'categoria eliminada correctamente.'
+                    'message' => 'Documento eliminado correctamente.'
                 ]);
             } else {
                 $this->response->sendStatus(200);
