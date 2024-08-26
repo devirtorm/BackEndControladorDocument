@@ -160,7 +160,7 @@ $router->put('/departamentoprocesoactivar/:id', 'DepartamentoProceso@activarDepa
 $router->put('/departamentoproceso/:id/desactivar', 'DepartamentoProceso@desactivarDepartamentoProceso'); // Desactiva un departamento en especifico 
 $router->put('/departamentoproceso/:id/activar', 'Departamentos@activarDepartamento'); // Activa un departamento en especifico
 $router->put('/departamentoproceso/:id', 'DepartamentoProceso@actualizarDepartamentoProceso'); // Actualiza datos de un departamento
-$router->delete('/departamentoproceso/:id', 'Departamentos@eliminarDepartamentos'); // Elimina un area en especifico
+$router->delete('/departamentoproceso/:id', 'DepartamentoProceso@eliminarDepartamentoProceso'); // Elimina un area en especifico
 
 
 //########################## RUTAS PARA DIRECCIONES #######################################

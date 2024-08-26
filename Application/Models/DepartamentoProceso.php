@@ -175,13 +175,13 @@ class ModelsDepartamentoProceso  extends Model
     }
 
 
-    public function eliminarProceso($id)
+    public function eliminarDepartamentoProceso($id)
     {
         // Escapar el id para evitar inyecciones SQL
         $id = (int)$id;
 
         // sql statement
-        $sql = "DELETE FROM " . DB_PREFIX . "proceso WHERE id_proceso = " . $id;
+        $sql = "DELETE FROM " . DB_PREFIX . "departamentoproceso WHERE id_departamentoproceso = " . $id;
 
         // Preparar y ejecutar la consulta
         $stmt = $this->db->prepare($sql);
