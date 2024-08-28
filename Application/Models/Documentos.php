@@ -429,6 +429,10 @@ class ModelsDocumentos extends Model
         $fk_proceso = $data['fk_proceso'];
         $archivo_url = isset($data['archivo_url']) ? $data['archivo_url'] : null;
     
+        // Campos revisado y autorizado siempre se establecen en 0
+        $revisado = 0;
+        $autorizado = 0;
+    
         try {
             $fecha = date('Y-m-d');
             $hora = date('H:i:s');
@@ -444,7 +448,9 @@ class ModelsDocumentos extends Model
                         hora = ?, 
                         num_revision = ?, 
                         fecha_emision = ?, 
-                        fk_proceso = ?";
+                        fk_proceso = ?, 
+                        revisado = ?, 
+                        autorizado = ?";
     
             // Añade la URL del archivo solo si se proporciona una nueva
             if ($archivo_url) {
@@ -463,16 +469,18 @@ class ModelsDocumentos extends Model
             $stmt->bindParam(5, $fk_subproceso, $fk_subproceso !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
             $stmt->bindParam(6, $fecha, PDO::PARAM_STR);
             $stmt->bindParam(7, $hora, PDO::PARAM_STR);
-            $stmt->bindParam(8, $num_revision, PDO::PARAM_STR);
-            $stmt->bindParam(9, $fecha_emision, PDO::PARAM_STR);
+            $stmt->bindParam(8, $num_revision, PDO::PARAM_INT);
+            $stmt->bindParam(9, $fecha_emision, PDO::PARAM_STR); // Debe ser PDO::PARAM_STR para una fecha
             $stmt->bindParam(10, $fk_proceso, PDO::PARAM_INT);
+            $stmt->bindParam(11, $revisado, PDO::PARAM_INT);
+            $stmt->bindParam(12, $autorizado, PDO::PARAM_INT);
     
             // Añade el archivo URL a los parámetros si es necesario
             if ($archivo_url) {
-                $stmt->bindParam(11, $archivo_url, PDO::PARAM_STR);
-                $stmt->bindParam(12, $id, PDO::PARAM_INT);
+                $stmt->bindParam(13, $archivo_url, PDO::PARAM_STR);
+                $stmt->bindParam(14, $id, PDO::PARAM_INT);
             } else {
-                $stmt->bindParam(11, $id, PDO::PARAM_INT);
+                $stmt->bindParam(13, $id, PDO::PARAM_INT);
             }
     
             $stmt->execute();
@@ -615,7 +623,7 @@ JOIN departamento ON documento.fk_departamento = departamento.id_departamento
 JOIN categoria ON documento.fk_categoria = categoria.id_categoria
 JOIN tipo_documento ON documento.fk_tipo_documento = tipo_documento.id_tipo
 WHERE 
-    documento.activo = 1";
+     documento.activo = 1 and documento.revisado=1 and documento.autorizado=1";
 
         // Execute query
         $query = $this->db->query($sql);
