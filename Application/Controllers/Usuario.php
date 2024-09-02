@@ -299,46 +299,54 @@ class ControllersUsuario extends Controller
             ]);
         }
     }
+    public function actualizarUsuario() {
+        $model = $this->model('Usuario');
+        $json_data = file_get_contents('php://input');
+        error_log("JSON Data: " . $json_data);
+        $data = json_decode($json_data, true);
     
-public function actualizarUsuario() {
-    $model = $this->model('Usuario');
-    $json_data = file_get_contents('php://input');
-    error_log("JSON Data: " . $json_data);
-    $data = json_decode($json_data, true);
-
-    // Verificar si los datos son válidos
-    if ($data !== null && isset($data['fk_departamento']) && isset($data['correo']) && isset($data['fk_rol']) && isset($data['id'])) {
-        $fk_departamento = filter_var($data['fk_departamento'], FILTER_SANITIZE_NUMBER_INT);
-        $correo = filter_var($data['correo'], FILTER_SANITIZE_EMAIL);
-        $fk_rol = filter_var($data['fk_rol'], FILTER_SANITIZE_NUMBER_INT);
-        $id = filter_var($data['id'], FILTER_SANITIZE_NUMBER_INT);
-
-        // Actualizar el área existente
-        $updated = $model->updateUsuario([
-            'id' => $id,
-            'fk_departamento' => $fk_departamento,
-            'correo' => $correo,
-            'fk_rol' => $fk_rol
-        ]);
-
-        if ($updated) {
-            $this->response->sendStatus(200);
-            $this->response->setContent([
-                'message' => 'Usuario actualizado correctamente.'
-            ]);
+        // Verificar si los datos son válidos
+        if ($data !== null && isset($data['fk_departamento']) && isset($data['correo']) && isset($data['fk_rol']) && isset($data['id'])) {
+            $fk_departamento = filter_var($data['fk_departamento'], FILTER_SANITIZE_NUMBER_INT);
+            $correo = filter_var($data['correo'], FILTER_SANITIZE_EMAIL);
+            $fk_rol = filter_var($data['fk_rol'], FILTER_SANITIZE_NUMBER_INT);
+            $id = filter_var($data['id'], FILTER_SANITIZE_NUMBER_INT);
+    
+            // Validar si la sanitización devolvió valores válidos
+            if ($fk_departamento && $correo && $fk_rol && $id) {
+                // Actualizar el usuario existente
+                $updated = $model->updateUsuario([
+                    'id' => $id,
+                    'fk_departamento' => $fk_departamento,
+                    'correo' => $correo,
+                    'fk_rol' => $fk_rol
+                ]);
+    
+                if ($updated) {
+                    $this->response->sendStatus(200);
+                    $this->response->setContent([
+                        'message' => 'Usuario actualizado correctamente.'
+                    ]);
+                } else {
+                    $this->response->sendStatus(500);
+                    $this->response->setContent([
+                        'message' => 'Error: No se pudo actualizar el usuario.'
+                    ]);
+                }
+            } else {
+                $this->response->sendStatus(400);
+                $this->response->setContent([
+                    'message' => 'Datos de entrada no válidos tras sanitización.'
+                ]);
+            }
         } else {
-            $this->response->sendStatus(500);
+            $this->response->sendStatus(400);
             $this->response->setContent([
-                'message' => 'Error: No se pudo actualizar el usuario.'
+                'message' => 'Datos de entrada inválidos.'
             ]);
         }
-    } else {
-        $this->response->sendStatus(400);
-        $this->response->setContent([
-            'message' => 'Datos de entrada inválidos.'
-        ]);
     }
-}
+    
 
     
 
