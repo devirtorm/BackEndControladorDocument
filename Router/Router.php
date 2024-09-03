@@ -298,3 +298,6 @@ $router->get('/bitacora', 'Bitacora@getBitacora');
 $router->get('/cantidad-notificaciones', 'Notificaciones@cantidadDeNotificaciones');
 $router->get('/data-mensajes', 'Notificaciones@allDataMenssages');
 $router->put('/actualizar-estado/:id', 'Notificaciones@actualizarVistoMensaje');
+
+/* HISOTRIAL */
+$router->get('/historial/:id', 'Documentos@obtenerHistorialDocumento');
