@@ -647,4 +647,40 @@ WHERE
 }
 
 
+
+
+/* Historial de documento */
+
+public function HistorialDocumento($id) {
+    // Sanitizar el ID para prevenir SQL Injection
+    $id = (int)$id;
+
+    // Construir la consulta SQL
+    $query = $this->db->query("SELECT 
+    h.id_historial,
+    h.id_documento,
+    h.campo_modificado,
+    h.valor_anterior,
+    h.valor_nuevo,
+    h.fecha,
+    h.accion,
+    d.titulo AS nombre_documento,
+    dep.nombre_departamento AS nombre_departamento
+FROM 
+     historial_documento h
+JOIN 
+    documento d ON h.id_documento = d.id_documento
+JOIN 
+    departamento dep ON h.fk_departamento = dep.id_departamento
+WHERE 
+    h.id_documento = $id ORDER BY fecha ASC, id_historial ASC");
+
+    // Obtener todas las filas
+    $data = $query->rows; // Cambia de `row` a `rows`
+
+    // Devolver el array de datos
+    return ['data' => $data];
+}
+
+
 }

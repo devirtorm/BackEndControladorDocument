@@ -644,4 +644,21 @@ class ControllersDocumentos extends Controller
         $this->response->sendStatus(200);
         $this->response->setContent($data_list);
     }
+
+
+
+
+
+    /* Historial de documento */
+    public function obtenerHistorialDocumento($param)
+    {
+
+        $model = $this->model('Documentos');
+        $result = $model->HistorialDocumento($param['id']);
+
+        // Send Response
+        $this->response->sendStatus(200);
+        $this->response->setContent($result);
+    }
+
 }
