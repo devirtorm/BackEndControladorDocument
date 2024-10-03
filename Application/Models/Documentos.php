@@ -667,13 +667,16 @@ public function HistorialDocumento($id) {
     d.titulo AS nombre_documento,
     dep.nombre_departamento AS nombre_departamento
 FROM 
-     historial_documento h
+    historial_documento h
 JOIN 
     documento d ON h.id_documento = d.id_documento
 JOIN 
     departamento dep ON h.fk_departamento = dep.id_departamento
 WHERE 
-    h.id_documento = $id ORDER BY fecha ASC, id_historial ASC");
+    h.id_documento = $id
+ORDER BY 
+    fecha DESC, id_historial DESC;
+");
 
     // Obtener todas las filas
     $data = $query->rows; // Cambia de `row` a `rows`

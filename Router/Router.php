@@ -301,3 +301,7 @@ $router->put('/actualizar-estado/:id', 'Notificaciones@actualizarVistoMensaje');
 
 /* HISOTRIAL */
 $router->get('/historial/:id', 'Documentos@obtenerHistorialDocumento');
+
+/* VISTAS */
+$router->get('/vistas/total', 'Vistas@obtenerNumeroVisitas');
+$router->post('/vistas/registrar', 'Vistas@registrarVisita');
