@@ -13,7 +13,7 @@ class ModelsCarreraDocumentos extends Model
                 WHERE us.fk_departamento = $id";
 
         $query1 = $this->db->query($sql1);
-        
+
         $nombre_departamento = '';
         if ($query1->num_rows) {
             $nombre_departamento = $query1->row['nombre_departamento'];
@@ -85,21 +85,21 @@ class ModelsCarreraDocumentos extends Model
     {
         try {
             $sql = "SELECT cd.*, c.nombre_carrera, d.titulo, d.url 
-                    FROM carrera_documento cd
-                    LEFT JOIN carrera c ON cd.fk_carrera = c.id_carrera
-                    LEFT JOIN documento d ON cd.fk_documento = d.id_documento
-                    WHERE c.id_carrera = ? AND cd.activo = 1";
+                FROM carrera_documento cd
+                LEFT JOIN carrera c ON cd.fk_carrera = c.id_carrera
+                LEFT JOIN documento d ON cd.fk_documento = d.id_documento
+                WHERE c.id_carrera = ? AND cd.activo = 1";
             $stmt = $this->db->prepare($sql);
             $stmt->execute([$id]);
 
             if ($stmt->rowCount() > 0) {
                 return $stmt->fetchAll(PDO::FETCH_ASSOC);
             } else {
-                echo "Datos encontrados: ";
-                return [];
+                return [];  // Devolver un array vacío si no hay datos
             }
         } catch (PDOException $e) {
-            echo "Error al ejecutar la consulta: " . $e->getMessage();
+            // Registro de errores y devolución de null si ocurre un error
+            error_log("Error al ejecutar la consulta: " . $e->getMessage());
             return null;
         }
     }
@@ -113,7 +113,7 @@ class ModelsCarreraDocumentos extends Model
                 WHERE us.fk_departamento = $id";
 
         $query1 = $this->db->query($sql1);
-        
+
         $nombre_departamento = '';
         if ($query1->num_rows) {
             $nombre_departamento = $query1->row['nombre_departamento'];
@@ -168,7 +168,7 @@ class ModelsCarreraDocumentos extends Model
                 WHERE us.fk_departamento = $id";
 
         $query1 = $this->db->query($sql1);
-        
+
         $nombre_departamento = '';
         if ($query1->num_rows) {
             $nombre_departamento = $query1->row['nombre_departamento'];
@@ -236,7 +236,7 @@ class ModelsCarreraDocumentos extends Model
             $stmt->bindParam(5, $fecha, PDO::PARAM_STR);
             $stmt->bindParam(6, $hora, PDO::PARAM_STR);
             $stmt->bindParam(7, $activo, PDO::PARAM_INT);
-           
+
 
             if ($stmt->execute()) {
                 return true;
@@ -298,4 +298,3 @@ class ModelsCarreraDocumentos extends Model
         return $dateTime->format('h:i:s A');
     }
 }
-?>
