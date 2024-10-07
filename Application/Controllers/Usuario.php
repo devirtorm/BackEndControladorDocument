@@ -83,7 +83,11 @@ class ControllersUsuario extends Controller
             $contrasenia = filter_var($data['contrasenia'], FILTER_SANITIZE_SPECIAL_CHARS);
             $fk_departamento = filter_var($data['fk_departamento'], FILTER_SANITIZE_SPECIAL_CHARS);
             $fk_rol = filter_var($data['fk_rol'], FILTER_SANITIZE_SPECIAL_CHARS);
-            $inserted = $model->insertUsuario(['correo' => $correo, 'contrasenia' => $contrasenia, 'fk_departamento' => $fk_departamento, 'fk_rol' => $fk_rol]);
+    
+            // Encriptar la contraseña
+            $hashed_contrasenia = password_hash($contrasenia, PASSWORD_BCRYPT);
+    
+            $inserted = $model->insertUsuario(['correo' => $correo, 'contrasenia' => $hashed_contrasenia, 'fk_departamento' => $fk_departamento, 'fk_rol' => $fk_rol]);
     
             if ($inserted) {
                 echo json_encode(['message' => 'Usuario guardado correctamente.']);
@@ -94,6 +98,7 @@ class ControllersUsuario extends Controller
             echo json_encode(['message' => 'Error: Los datos de proceso son inválidos o incompletos.']);
         }
     }
+    
     public function cambiarContrasena() {
         $model = $this->model('Usuario');
         $json_data = file_get_contents('php://input');
@@ -109,7 +114,8 @@ class ControllersUsuario extends Controller
             
             if ($usuario) {
                 if ($contrasenia === $passconfi) {
-                    if ($model->actualizarContraseña($usuario['id_usuario'], $contrasenia)) {
+                    $contrasenia_encriptada = password_hash($contrasenia, PASSWORD_DEFAULT);
+                    if ($model->actualizarContraseña($usuario['id_usuario'], $contrasenia_encriptada)) {
                         echo json_encode(['message' => 'Contraseña actualizada correctamente.']);
                     } else {
                         echo json_encode(['message' => 'Error al actualizar la contraseña.']);

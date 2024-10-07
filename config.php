@@ -24,9 +24,9 @@ define('DATABASE', [
     'Port'   => '5432',
     'Host'   => 'localhost',
     'Driver' => 'PDO',
-    'Name'   => 'portal_calidad9',
+    'Name'   => 'portal_calidad4',
     'User'   => 'postgres',
-    'Pass'   => '12345',
+    'Pass'   => 'Coah13',
     'Prefix' => 'l_'
 ]);
 

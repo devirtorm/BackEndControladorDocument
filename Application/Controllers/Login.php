@@ -17,7 +17,7 @@ class ControllersLogin extends Controller
             $model = $this->model('Login');
             $user = $model->getUserByEmail($email);
 
-            if ($user && $password === $user['contrasenia']) {
+          if ($user && password_verify($password, $user['contrasenia'])) {
               
             // Devolver el correo electrónico y el ID de la persona en la respuesta JSON
             $this->response->sendStatus(200);
