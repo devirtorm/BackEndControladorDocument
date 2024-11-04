@@ -56,6 +56,8 @@ class ControllersCuatrimestres extends Controller
 
     public function CrearCuatrimestre()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Cuatrimestres');
         $json_data = file_get_contents('php://input');
         $data = json_decode($json_data, true);
@@ -76,6 +78,8 @@ class ControllersCuatrimestres extends Controller
 
     public function ActualizarCuatrimestre()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);
@@ -106,6 +110,8 @@ class ControllersCuatrimestres extends Controller
 
     public function DesactivarCuatrimestre()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);
@@ -127,6 +133,8 @@ class ControllersCuatrimestres extends Controller
 
     public function ActivarCuatrimestre()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);
@@ -148,6 +156,8 @@ class ControllersCuatrimestres extends Controller
 
     public function EliminarCuatrimestre($id)
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);

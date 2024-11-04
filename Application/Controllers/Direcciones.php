@@ -64,6 +64,8 @@ class ControllersDirecciones extends Controller
     }
 
     public function CrearDireccion() {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Direcciones');
         $nombre_direccion = isset($_POST['nombre_direccion']) ? filter_var($_POST['nombre_direccion'], FILTER_SANITIZE_STRING) : null;
         $logo = isset($_FILES['logo']) ? $_FILES['logo'] : null;
@@ -151,6 +153,8 @@ class ControllersDirecciones extends Controller
     }
 
     public function ActualizarDireccion() {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);
@@ -225,6 +229,8 @@ class ControllersDirecciones extends Controller
     }    
 
     public function DesactivarDireccion() {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);
@@ -245,6 +251,8 @@ class ControllersDirecciones extends Controller
     }
     
     public function ActivarDireccion() {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);
@@ -266,6 +274,8 @@ class ControllersDirecciones extends Controller
 
     public function EliminarDireccion($id) //funciona
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Obtener el último segmento de la URL que corresponde al ID
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);

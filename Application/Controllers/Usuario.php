@@ -73,6 +73,8 @@ class ControllersUsuario extends Controller
     }
 
     public function crearUsuario() {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Usuario');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
@@ -160,6 +162,8 @@ class ControllersUsuario extends Controller
 
     
     public function eliminarUsuario($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -243,6 +247,8 @@ class ControllersUsuario extends Controller
     }
 
     public function desactivarUsuario($param) {
+        $this->verifyToken(); // Verificar el token JWT
+        
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -272,6 +278,8 @@ class ControllersUsuario extends Controller
     }
 
     public function activarUsuario($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -300,6 +308,8 @@ class ControllersUsuario extends Controller
         }
     }
     public function actualizarUsuario() {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Usuario');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);

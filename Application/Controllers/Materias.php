@@ -56,6 +56,8 @@ class ControllersMaterias extends Controller
 
     public function CrearMateria()
     {
+        $this->verifyToken(); // Verificar el token JWT
+        
         error_log("--- CrearMateria() called ---");
         error_log("POST variables: " . print_r($_POST, true));
         error_log("FILES variables: " . print_r($_FILES, true));
@@ -154,6 +156,8 @@ class ControllersMaterias extends Controller
     }
     
     public function ActualizarMateria() {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);
@@ -233,6 +237,8 @@ class ControllersMaterias extends Controller
 
     public function DesactivarMateria()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);
@@ -254,6 +260,8 @@ class ControllersMaterias extends Controller
 
     public function ActivarMateria()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);
@@ -275,6 +283,8 @@ class ControllersMaterias extends Controller
 
     public function EliminarMateria($id)
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);

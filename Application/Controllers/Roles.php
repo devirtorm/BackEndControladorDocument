@@ -31,6 +31,8 @@ class ControllersRoles extends Controller
     }
 
     public function crearRol() {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Roles');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
@@ -52,6 +54,8 @@ class ControllersRoles extends Controller
     }
 
     public function eliminarRol($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         if (isset($param['id']) && $this->validId($param['id'])) {
             $model = $this->model('Roles');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -81,6 +85,8 @@ class ControllersRoles extends Controller
     }
 
     public function desactivarRol($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         if (isset($param['id']) && $this->validId($param['id'])) {
             $model = $this->model('Roles');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -106,6 +112,8 @@ class ControllersRoles extends Controller
     }
 
     public function activarRol($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         if (isset($param['id']) && $this->validId($param['id'])) {
             $model = $this->model('Roles');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -131,6 +139,8 @@ class ControllersRoles extends Controller
     }
 
     public function actualizarRol($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Roles');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);

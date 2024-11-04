@@ -43,6 +43,8 @@ class ControllersDepartamentos extends Controller
     }
 
     public function crearDepartamento() {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Departamentos');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
@@ -70,6 +72,8 @@ class ControllersDepartamentos extends Controller
 
     
     public function eliminarDepartamentos($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -104,6 +108,8 @@ class ControllersDepartamentos extends Controller
     }
 
     public function desactivarDepartamento($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -133,6 +139,8 @@ class ControllersDepartamentos extends Controller
     }
 
     public function activarDepartamento($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -163,6 +171,8 @@ class ControllersDepartamentos extends Controller
     }
     
     public function actualizarDepartamento($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Departamentos');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);

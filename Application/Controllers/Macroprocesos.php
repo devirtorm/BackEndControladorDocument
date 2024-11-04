@@ -82,6 +82,8 @@ class ControllersMacroprocesos extends Controller
 
     public function CrearMacroproceso()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Macroprocesos');
         $json_data = file_get_contents('php://input');
         $data = json_decode($json_data, true);
@@ -103,6 +105,8 @@ class ControllersMacroprocesos extends Controller
 
     public function ActualizarMacroproceso()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);
@@ -134,6 +138,8 @@ class ControllersMacroprocesos extends Controller
 
     public function DesactivarMacroproceso()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);
@@ -155,6 +161,8 @@ class ControllersMacroprocesos extends Controller
 
     public function ActivarMacroproceso()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);
@@ -176,6 +184,8 @@ class ControllersMacroprocesos extends Controller
 
     public function EliminarMacroproceso($id)
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);

@@ -36,6 +36,9 @@ class ControllersPersonas extends Controller
         }
     
         public function crearPersona() {
+            $this->verifyToken(); // Verificar el token JWT
+
+
             $model = $this->model('Personas');
             $json_data = file_get_contents('php://input');
             error_log("JSON Data: " . $json_data);
@@ -55,6 +58,8 @@ class ControllersPersonas extends Controller
         }
     
         public function eliminarPersona($param) {
+            $this->verifyToken(); // Verificar el token JWT
+
             if (isset($param['id']) && $this->validId($param['id'])) {
                 $model = $this->model('Personas');
                 $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -78,6 +83,8 @@ class ControllersPersonas extends Controller
         }
     
         public function desactivarPersona($param) {
+            $this->verifyToken(); // Verificar el token JWT
+
             if (isset($param['id']) && $this->validId($param['id'])) {
                 $model = $this->model('Personas');
                 $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -97,6 +104,8 @@ class ControllersPersonas extends Controller
         }
     
         public function activarPersona($param) {
+            $this->verifyToken(); // Verificar el token JWT
+
             if (isset($param['id']) && $this->validId($param['id'])) {
                 $model = $this->model('Personas');
                 $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -116,6 +125,8 @@ class ControllersPersonas extends Controller
         }
     
         public function actualizarPersona($param) {
+            $this->verifyToken(); // Verificar el token JWT
+
             $model = $this->model('Personas');
             $json_data = file_get_contents('php://input');
             error_log("JSON Data: " . $json_data);

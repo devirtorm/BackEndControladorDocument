@@ -83,6 +83,8 @@ class ControllersProcesos extends Controller
     }
 
     public function crearProcesos() {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Procesos');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
@@ -107,6 +109,8 @@ class ControllersProcesos extends Controller
 
     
     public function eliminarProceso($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -141,6 +145,8 @@ class ControllersProcesos extends Controller
     }
 
     public function desactivarProceso($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -170,6 +176,8 @@ class ControllersProcesos extends Controller
     }
 
     public function activarProceso($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -200,6 +208,8 @@ class ControllersProcesos extends Controller
     
 
     public function actualizarProceso($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Procesos');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);

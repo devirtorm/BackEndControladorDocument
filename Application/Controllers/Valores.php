@@ -29,6 +29,8 @@ class ControllersValores extends Controller
         $this->response->setContent($data_list);
     }
     public function desactivarValor($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         if (isset($param['id']) && $this->validId($param['id'])) {
             $model = $this->model('Valores');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -56,6 +58,8 @@ class ControllersValores extends Controller
         return filter_var($id, FILTER_VALIDATE_INT) !== false && $id > 0;
     }
     public function activarValor($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         if (isset($param['id']) && $this->validId($param['id'])) {
             $model = $this->model('Valores');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -80,6 +84,8 @@ class ControllersValores extends Controller
         }
     }
     public function eliminarValor($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         if (isset($param['id']) && $this->validId($param['id'])) {
             $model = $this->model('Valores');
             $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -105,6 +111,8 @@ class ControllersValores extends Controller
     }
   
     public function actualizarValores() {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Valores');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
@@ -146,6 +154,8 @@ class ControllersValores extends Controller
     
 public function crearValor()
 {
+    $this->verifyToken(); // Verificar el token JWT
+
     $model = $this->model('Valores');
     $json_data = file_get_contents('php://input');
     error_log("JSON Data: " . $json_data);

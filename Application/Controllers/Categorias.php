@@ -43,6 +43,8 @@ class ControllersCategorias extends Controller
     }
 
     public function crearCategoria() {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Categorias');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
@@ -69,6 +71,8 @@ class ControllersCategorias extends Controller
 
     
     public function eliminarCategoria($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -103,6 +107,8 @@ class ControllersCategorias extends Controller
     }
 
     public function desactivarCategoria($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -132,6 +138,8 @@ class ControllersCategorias extends Controller
     }
 
     public function activarCategoria($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -163,6 +171,8 @@ class ControllersCategorias extends Controller
     
 
     public function actualizarCategoria($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Categorias');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);

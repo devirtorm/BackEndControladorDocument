@@ -35,6 +35,8 @@ class ControllersSubprocesos extends Controller
     }
 
     public function crearSubproceso() {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Subprocesos');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
@@ -56,6 +58,8 @@ class ControllersSubprocesos extends Controller
     }
 
     public function actualizarSubproceso($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Subprocesos');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
@@ -88,6 +92,8 @@ class ControllersSubprocesos extends Controller
 
 
     public function eliminarSubproceso($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -122,6 +128,8 @@ class ControllersSubprocesos extends Controller
     }
 
     public function desactivarSubproceso($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -151,6 +159,8 @@ class ControllersSubprocesos extends Controller
     }
     
     public function activarSubproceso($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     

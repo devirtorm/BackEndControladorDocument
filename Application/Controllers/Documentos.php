@@ -87,6 +87,8 @@ class ControllersDocumentos extends Controller
 
     public function crearDocumento()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         error_log("--- crearDocumento() called ---");
         error_log("POST variables: " . print_r($_POST, true));
         error_log("FILES variables: " . print_r($_FILES, true));
@@ -268,6 +270,8 @@ class ControllersDocumentos extends Controller
 
     public function actualizarDocumento($param)
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         error_log("--- actualizarDocumento() called ---");
         error_log("POST variables: " . print_r($_POST, true));
         error_log("FILES variables: " . print_r($_FILES, true));
@@ -401,6 +405,8 @@ class ControllersDocumentos extends Controller
 
     public function eliminarDocumento($param)
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
 
@@ -437,6 +443,8 @@ class ControllersDocumentos extends Controller
 
     public function desactivarDocumento($param)
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
 
@@ -467,6 +475,8 @@ class ControllersDocumentos extends Controller
 
     public function activarDocumento($param)
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
 
@@ -499,6 +509,8 @@ class ControllersDocumentos extends Controller
 
     public function DesRevisarDocumento($param)
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
 
@@ -529,6 +541,8 @@ class ControllersDocumentos extends Controller
     }
     public function revisarDocumento($param)
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
 
@@ -560,6 +574,8 @@ class ControllersDocumentos extends Controller
 
     public function autorizarDocumento($param)
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
 
@@ -592,6 +608,8 @@ class ControllersDocumentos extends Controller
 
     public function DesAutorizarDocumento($param)
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
 

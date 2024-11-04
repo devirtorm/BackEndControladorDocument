@@ -88,6 +88,8 @@ class ControllersCarreras extends Controller
 
     public function CrearCarrera()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Carreras');
         $json_data = file_get_contents('php://input');
         $data = json_decode($json_data, true);
@@ -109,6 +111,8 @@ class ControllersCarreras extends Controller
 
     public function ActualizarCarrera()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);
@@ -141,6 +145,8 @@ class ControllersCarreras extends Controller
 
     public function DesactivarCarrera()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);
@@ -162,6 +168,8 @@ class ControllersCarreras extends Controller
 
     public function ActivarCarrera()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);
@@ -183,6 +191,8 @@ class ControllersCarreras extends Controller
 
     public function EliminarCarrera($id)
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $segments = explode('/', rtrim($_SERVER['REQUEST_URI'], '/'));
         $id = end($segments);
         $id = intval($id);

@@ -30,6 +30,8 @@ private function validId($id) {
     return filter_var($id, FILTER_VALIDATE_INT) !== false && $id > 0;
 }
 public function activarObjetivo($param) {
+    $this->verifyToken(); // Verificar el token JWT
+
     if (isset($param['id']) && $this->validId($param['id'])) {
         $model = $this->model('Objetivos');
         $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -55,6 +57,8 @@ public function activarObjetivo($param) {
 }
 
 public function desactivarObjetivo($param) {
+    $this->verifyToken(); // Verificar el token JWT
+
     if (isset($param['id']) && $this->validId($param['id'])) {
         $model = $this->model('Objetivos');
         $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -79,6 +83,8 @@ public function desactivarObjetivo($param) {
     }
 }
 public function eliminarObjetivo($param) {
+    $this->verifyToken(); // Verificar el token JWT
+
     if (isset($param['id']) && $this->validId($param['id'])) {
         $model = $this->model('Objetivos');
         $id = filter_var($param['id'], FILTER_SANITIZE_NUMBER_INT);
@@ -103,6 +109,8 @@ public function eliminarObjetivo($param) {
     }
 }
 public function crearObjetivo() {
+    $this->verifyToken(); // Verificar el token JWT
+
     $model = $this->model('Objetivos');
     $json_data = file_get_contents('php://input');
     error_log("JSON Data: " . $json_data);
@@ -151,7 +159,11 @@ public function crearObjetivo() {
         $this->response->setContent([
             'message' => 'Error: Los datos del objetivo son inválidos o incompletos.'
         ]);
-    }}public function actualizarObjetivo($param) {
+    }}
+    
+    public function actualizarObjetivo($param) {
+        $this->verifyToken(); // Verificar el token JWT
+        
         $model = $this->model('Objetivos');
         $json_data = file_get_contents('php://input');
         $data = json_decode($json_data, true);

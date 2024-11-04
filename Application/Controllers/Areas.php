@@ -43,6 +43,8 @@ class ControllersAreas extends Controller
     }
 
     public function crearArea() {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Areas');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
@@ -64,6 +66,8 @@ class ControllersAreas extends Controller
 
     
     public function eliminarArea($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -98,6 +102,8 @@ class ControllersAreas extends Controller
     }
 
     public function desactivarArea($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -127,6 +133,8 @@ class ControllersAreas extends Controller
     }
 
     public function activarArea($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -157,6 +165,8 @@ class ControllersAreas extends Controller
     
 
     public function actualizarArea($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Areas');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);

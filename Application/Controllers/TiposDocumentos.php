@@ -43,6 +43,8 @@ class ControllersTiposDocumentos extends Controller
     }
 
     public function crearTipoDocumento() {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('TiposDocumentos');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);
@@ -72,6 +74,8 @@ class ControllersTiposDocumentos extends Controller
 
     
     public function eliminarTipoDocumento($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -106,6 +110,8 @@ class ControllersTiposDocumentos extends Controller
     }
 
     public function desactivarTipoDocumento($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -135,6 +141,8 @@ class ControllersTiposDocumentos extends Controller
     }
 
     public function activarTipoDocumento($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         // Verificar si el parámetro 'id' está presente y es válido
         if (isset($param['id']) && $this->validId($param['id'])) {
     
@@ -166,6 +174,8 @@ class ControllersTiposDocumentos extends Controller
     
 
     public function actualizarTipoDocumento($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('TiposDocumentos');
         $json_data = file_get_contents('php://input');
         error_log("JSON Data: " . $json_data);

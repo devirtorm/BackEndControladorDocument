@@ -8,6 +8,8 @@
 namespace MVC;
 
 use Exception;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 /**
  * Class Controller, a port of MVC
@@ -60,6 +62,54 @@ class Controller {
             throw new Exception(sprintf('{ %s } this model file not found', $file));
         }
     }
+
+    private $secretKey = '123'; // Debe ser almacenada en un entorno seguro
+
+    public function verifyToken()
+    {
+        $authHeader = $this->getAuthorizationHeader();
+        
+        if ($authHeader && preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
+            $jwt = $matches[1];
+            try {
+                $decoded = JWT::decode($jwt, new Key($this->secretKey, 'HS256'));
+                return $decoded;
+            } catch (\Exception $e) {
+                error_log("JWT Decoding Error: " . $e->getMessage()); // Agrega un log para depurar el error
+                $this->response->sendStatus(401);
+                $this->response->setContent([
+                    'message' => 'Token inválido'
+                ]);
+                exit;
+            }
+        } else {
+            $this->response->sendStatus(400);
+            $this->response->setContent([
+                'message' => 'Token no proporcionado'
+            ]);
+            exit;
+        }
+    }
+
+    private function getAuthorizationHeader()
+    {
+        if (isset($_SERVER['Authorization'])) {
+            return trim($_SERVER["Authorization"]);
+        }
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            return trim($_SERVER["HTTP_AUTHORIZATION"]);
+        }
+        if (function_exists('apache_request_headers')) {
+            $requestHeaders = apache_request_headers();
+            if (isset($requestHeaders['Authorization'])) {
+                return trim($requestHeaders['Authorization']);
+            }
+        }
+        return null;
+    }
+
+
+
 
 	
 }
