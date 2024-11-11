@@ -13,12 +13,9 @@ class ModelsCuatrimestres extends Model
 
         if ($query->num_rows) {
             foreach ($query->rows as $value) {
-                $value['fecha'] = $this->formatDate($value['fecha']);
-                $value['hora'] = $this->formatTime($value['hora']);
                 $data[] = $value;
             }
         }
-
         return $data;
     }
 
@@ -32,8 +29,6 @@ class ModelsCuatrimestres extends Model
 
         if ($query->num_rows) {
             foreach ($query->rows as $value) {
-                $value['fecha'] = $this->formatDate($value['fecha']);
-                $value['hora'] = $this->formatTime($value['hora']);
                 $data[] = $value;
             }
         }
@@ -51,12 +46,9 @@ class ModelsCuatrimestres extends Model
 
         if ($query->num_rows) {
             foreach ($query->rows as $value) {
-                $value['fecha'] = $this->formatDate($value['fecha']);
-                $value['hora'] = $this->formatTime($value['hora']);
                 $data[] = $value;
             }
         }
-
         return $data;
     }
 

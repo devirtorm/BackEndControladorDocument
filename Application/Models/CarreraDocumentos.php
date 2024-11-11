@@ -147,8 +147,8 @@ class ModelsCarreraDocumentos extends Model
                     'nombre_documento' => $value['titulo'],
                     'tsu' => $value['tsu'],
                     'ing' => $value['ing'],
-                    'fecha' => $this->formatDate($value['fecha']),
-                    'hora' => $this->formatTime($value['hora']),
+                    'fecha' => $value['fecha'],
+                    'hora' => $value['hora'],
                     'activo' => $value['activo']
                 ];
             }
@@ -202,8 +202,8 @@ class ModelsCarreraDocumentos extends Model
                     'nombre_documento' => $value['titulo'],
                     'tsu' => $value['tsu'],
                     'ing' => $value['ing'],
-                    'fecha' => $this->formatDate($value['fecha']),
-                    'hora' => $this->formatTime($value['hora']),
+                    'fecha' => $value['fecha'],
+                    'hora' =>$value['hora'],
                     'activo' => $value['activo']
                 ];
             }
