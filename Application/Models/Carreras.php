@@ -32,8 +32,6 @@ class ModelsCarreras extends Model
 
         if ($query->num_rows) {
             foreach ($query->rows as $value) {
-                $value['fecha'] = $this->formatDate($value['fecha']);
-                $value['hora'] = $this->formatTime($value['hora']);
                 $data[] = $value;
             }
         }
@@ -49,11 +47,8 @@ class ModelsCarreras extends Model
                 WHERE c.activo = 0";
         $query = $this->db->query($sql);
         $data = [];
-
         if ($query->num_rows) {
             foreach ($query->rows as $value) {
-                $value['fecha'] = $this->formatDate($value['fecha']);
-                $value['hora'] = $this->formatTime($value['hora']);
                 $data[] = $value;
             }
         }

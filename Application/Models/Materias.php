@@ -12,15 +12,11 @@ class ModelsMaterias extends Model
                 LEFT JOIN cuatrimestre cu ON m.fk_cuatrimestre = cu.id_cuatrimestre";
         $query = $this->db->query($sql);
         $data = [];
-
         if ($query->num_rows) {
             foreach ($query->rows as $value) {
-                $value['fecha'] = $this->formatDate($value['fecha']);
-                $value['hora'] = $this->formatTime($value['hora']);
                 $data[] = $value;
             }
         }
-
         return $data;
     }
 
@@ -36,12 +32,9 @@ class ModelsMaterias extends Model
 
         if ($query->num_rows) {
             foreach ($query->rows as $value) {
-                $value['fecha'] = $this->formatDate($value['fecha']);
-                $value['hora'] = $this->formatTime($value['hora']);
                 $data[] = $value;
             }
         }
-
         return $data;
     }
 
@@ -57,12 +50,9 @@ class ModelsMaterias extends Model
 
         if ($query->num_rows) {
             foreach ($query->rows as $value) {
-                $value['fecha'] = $this->formatDate($value['fecha']);
-                $value['hora'] = $this->formatTime($value['hora']);
                 $data[] = $value;
             }
         }
-
         return $data;
     }
 
