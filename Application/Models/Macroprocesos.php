@@ -58,12 +58,9 @@ class ModelsMacroprocesos extends Model
 
         if ($query->num_rows) {
             foreach ($query->rows as $value) {
-                $value['fecha'] = $this->formatDate($value['fecha']);
-                $value['hora'] = $this->formatTime($value['hora']);
                 $data[] = $value;
             }
         }
-
         return $data;
     }
 
@@ -72,15 +69,11 @@ class ModelsMacroprocesos extends Model
         $sql = "SELECT * FROM macroproceso WHERE activo = 1";
         $query = $this->db->query($sql);
         $data = [];
-
         if ($query->num_rows) {
             foreach ($query->rows as $value) {
-                $value['fecha'] = $this->formatDate($value['fecha']);
-                $value['hora'] = $this->formatTime($value['hora']);
                 $data[] = $value;
             }
         }
-
         return $data;
     }
 
@@ -92,12 +85,9 @@ class ModelsMacroprocesos extends Model
 
         if ($query->num_rows) {
             foreach ($query->rows as $value) {
-                $value['fecha'] = $this->formatDate($value['fecha']);
-                $value['hora'] = $this->formatTime($value['hora']);
                 $data[] = $value;
             }
         }
-
         return $data;
     }
 
