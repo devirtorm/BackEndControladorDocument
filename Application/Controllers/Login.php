@@ -8,6 +8,8 @@ require 'vendor/autoload.php';
 
 class ControllersLogin extends Controller
 {
+    private $secretKey = '123'; // Debe ser almacenada en un entorno seguro
+
     public function loginAction()
     {
         $json_data = file_get_contents('php://input');
