@@ -6,6 +6,8 @@ class ControllersRoles extends Controller
 {
     public function obtenerRoles()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Roles');
         $data_list = $model->roles(1);
 
@@ -14,6 +16,8 @@ class ControllersRoles extends Controller
     }
 
     public function obtenerRol($param) {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Roles');
         $result = $model->rol($param['id']);
 
@@ -23,6 +27,8 @@ class ControllersRoles extends Controller
 
     public function obtenerRolesDesactivados()
     {
+        $this->verifyToken(); // Verificar el token JWT
+
         $model = $this->model('Roles');
         $data_list = $model->rolex(0);
 

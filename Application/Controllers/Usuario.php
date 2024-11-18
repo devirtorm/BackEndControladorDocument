@@ -4,7 +4,6 @@ use PHPMailer\PHPMailer\Exception;
 
 
 use MVC\Controller;
-require 'vendor/autoload.php';
 class ControllersUsuario extends Controller
 {
     function enviarCorreo($destinatario, $asunto, $cuerpo) {
@@ -38,6 +37,8 @@ class ControllersUsuario extends Controller
     public function usuario()
     {
 
+        $this->verifyToken(); // Verificar el token JWT
+
         // Connect to database
         $model = $this->model('Usuario');
 
@@ -51,6 +52,8 @@ class ControllersUsuario extends Controller
 
     public function obtenerUsuario($param) {
 
+        $this->verifyToken(); // Verificar el token JWT
+
             $model = $this->model('Usuario');
             $result = $model->usuario($param['id']);
 
@@ -61,6 +64,8 @@ class ControllersUsuario extends Controller
     
     public function usuariosDesactivados()
     {
+
+        $this->verifyToken(); // Verificar el token JWT
 
         // Connect to database
         $model = $this->model('Usuario');
