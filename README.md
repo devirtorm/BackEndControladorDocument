@@ -1,99 +1,47 @@
+# **Instrucciones para Configurar el Proyecto**
 
-<h2 align="center" >In The Name Of Allah</h2>
+## **Requisitos Previos**
+Antes de comenzar, asegúrate de tener instalados los siguientes programas y herramientas:
 
-# Book Rest API
+- **PHP** (versión 7.4 o superior)
+- **Composer** (gestor de dependencias de PHP)
+- **Servidor web** (Apache o Nginx recomendado)
+- **PostgreSQL** (base de datos)
 
-This project is for searching books with rest API in PHP.
+---
 
-## Setup
+## **Pasos de Configuración**
 
-### Step 1 - Clone or Download
+### **Paso 1 - Configuración del Archivo `config.php`**
+1. Abre el archivo `config.php` en la raíz del proyecto.
+2. Modifica la sección de configuración de la base de datos con los valores correspondientes a tu entorno.
 
-```
-git clone https://github.com/afgprogrammer/php-books-library.git
+   Ejemplo de configuración:
+   ```php
+   // Configuración de la base de datos
+   define('DATABASE', [
+       'Port'   => '5432',        // Puerto de tu base de datos PostgreSQL
+       'Host'   => 'localhost',   // Dirección del servidor de base de datos
+       'Driver' => 'PDO',         // Motor de conexión
+       'Name'   => 'nombre_bd',   // Nombre de la base de datos
+       'User'   => 'usuario_bd',  // Usuario de la base de datos
+       'Pass'   => 'contraseña',  // Contraseña del usuario
+       'Prefix' => ''             // Prefijo de tablas, si aplica
+   ]);
 
-```
+### **Paso 2 - Importar la base de datos **
+1. Localiza el archivo SQL en la carpeta sql del proyecto.
 
-### Step 2 - Change Config File
+2. Importa la base de datos en PostgreSQL utilizando tu herramienta preferida (como pgAdmin o el cliente de línea de comandos).
 
-Please open config.php file and find this code section.
-```PHP
-  // Config Database
-define('DATABASE', [
-    'Port'   => '3306',
-    'Host'   => 'localhost',
-    'Driver' => 'PDO',
-    'Name'   => '',
-    'User'   => '',
-    'Pass'   => '',
-    'Prefix' => ''
-]);
 
-// DB_PREFIX
-define('DB_PREFIX', '');
-```
-update it with your database credentials. you can choose a prefix and the prefix is optional.
+### **Paso 3 - Instalar dependencias **
 
-#### Example
- My config.php file is like this
+1. Asegúrate de estar en la raíz del proyecto.
 
-```PHP
-  // Config Database
-define('DATABASE', [
-    'Port'   => '3306',
-    'Host'   => 'localhost',
-    'Driver' => 'PDO',
-    'Name'   => 'library',
-    'User'   => 'root',
-    'Pass'   => '',
-    'Prefix' => 'l_'
-]);
+2. Ejecuta el siguiente comando para instalar las dependencias necesarias:
 
-// DB_PREFIX
-define('DB_PREFIX', 'l_');
-```
+composer install
 
-### Step 3 - Installation 
-
-After your updated config.php file. please open this path in your browser.
-```
-yourdomain.com/install 
-```
-
-If you see bellow message:
-```
-Your System Is Installed. Please remove SQL file in ...
-```
-It's Done.
-
-## Usage
-
-You can see all the books and authors with bellow URL
-```
-yourdomain.com/all
-```
-For getting all books
-```
-yourdomain.com/books
-```
-
-For getting all authors
-```
-yourdomain.com/authors
-```
-You can search books with title, ISBN and author name
-```
-yourdomain.com/books/title/your-book-title
-yourdomain.com/books/isbn/your-book-isbn
-yourdomain.com/books/author/your-book-author
-```
-And you can see results in other pages
-```
-yourdomain.com/books/your-page-number
-yourdomain.com/authors/your-page-number
-
-yourdomain.com/books/title/your-book-title/your-page-number
-yourdomain.com/books/author/your-book-author/your-page-number
-```
-
-and ...
+Descargará e instalará las librerías necesarias definidas en el archivo composer.json.
+Configurará el proyecto con las dependencias más actualizadas.
